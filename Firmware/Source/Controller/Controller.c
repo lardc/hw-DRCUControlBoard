@@ -265,6 +265,16 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			}
 			break;
 
+		case ACT_DBG_FAN_ON:
+			if (CONTROL_State == DS_None)
+				LL_ExternalFAN(TRUE);
+			break;
+
+		case ACT_DBG_FAN_OFF:
+			if (CONTROL_State == DS_None)
+				LL_ExternalFAN(FALSE);
+			break;
+
 		default:
 			return FALSE;
 	}
