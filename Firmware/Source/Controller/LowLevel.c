@@ -85,25 +85,20 @@ void LL_DAC_Write(uint16_t Data)
 }
 //------------------------------------------------------------------------------
 
-// Power Supply control
-void LL_PowerOn(bool State)
+void LL_PowerOnMechRelay(bool State)
 {
 	if(State)
-		{
-			GPIO_Bit_Set(GPIOB, Pin_8);
-			GPIO_Bit_Set(GPIOB, Pin_9);
-		}
+		GPIO_Bit_Set(GPIOB, Pin_8);
 	else
-		{
-		 	GPIO_Bit_Rst(GPIOB, Pin_8);
-		 	GPIO_Bit_Rst(GPIOB, Pin_9);
-		}
+		GPIO_Bit_Rst(GPIOB, Pin_8);
 }
 //------------------------------------------------------------------------------
 
-// DRCU HVPS On
-void LL_DRCU_HVPS(bool State)
+void LL_PowerOnSolidStateRelay(bool State)
 {
-	State ? GPIO_Bit_Set(GPIOB, Pin_12) : GPIO_Bit_Rst(GPIOB, Pin_12);
+	if(State)
+		GPIO_Bit_Set(GPIOB, Pin_9);
+	else
+		GPIO_Bit_Rst(GPIOB, Pin_9);
 }
 //------------------------------------------------------------------------------

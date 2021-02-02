@@ -161,9 +161,11 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 		case ACT_DBG_PULSE_PS_SW:
 			if (CONTROL_State == DS_None)
 			{
-				LL_PowerOn(TRUE);
+				LL_PowerOnSolidStateRelay(TRUE);
+				LL_PowerOnMechRelay(TRUE);
 				Delay_mS(1000);
-				LL_PowerOn(FALSE);
+				LL_PowerOnSolidStateRelay(FALSE);
+				LL_PowerOnMechRelay(FALSE);
 			}
 			break;
 
@@ -226,22 +228,14 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			}
 			break;
 
-		case ACT_DBG_HVPS_ON:
-			{
-				if (CONTROL_State == DS_None)
-				{
-					LL_DRCU_HVPS(1);
-				}
-			}
+		case ACT_DBG_PS_MECH_SWITCH_ON:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnMechRelay(TRUE);
 			break;
 
-		case ACT_DBG_HVPS_OFF:
-			{
-				if (CONTROL_State == DS_None)
-				{
-					LL_DRCU_HVPS(0);
-				}
-			}
+		case ACT_DBG_PS_MECH_SWITCH_OFF:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnMechRelay(FALSE);
 			break;
 
 		case ACT_DBG_R0:
@@ -273,6 +267,16 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 		case ACT_DBG_FAN_OFF:
 			if (CONTROL_State == DS_None)
 				LL_ExternalFAN(FALSE);
+			break;
+
+		case ACT_DBG_PS_SSR_SWITCH_ON:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnSolidStateRelay(TRUE);
+			break;
+
+		case ACT_DBG_PS_SSR_SWITCH_OFF:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnSolidStateRelay(FALSE);
 			break;
 
 		default:

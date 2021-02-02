@@ -65,9 +65,8 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 // Включение заряда батареи
 void LOGIC_StartBatteryCharge()
 {
-
-	//
-	LL_PowerOn(TRUE);
+	LL_PowerOnSolidStateRelay(TRUE);
+	LL_PowerOnMechRelay(TRUE);
 }
 //-------------------------------------------
 
