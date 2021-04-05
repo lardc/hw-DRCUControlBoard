@@ -127,12 +127,24 @@ void ADC_SwitchToBase()
 }
 //------------------------------------------------------------------------------
 
-void Timer3_Config()
+void Timer2_3_Config()
 {
+	TIM_Clock_En(TIM_2);
+	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
+	TIM_OnePulseMode(TIM2, true);
+
 	TIM_Clock_En(TIM_3);
-	TIM_Config(TIM3, SYSCLK, TIMER3_uS);
-	TIM_Interupt(TIM3, 0, true);
-	TIM_Start(TIM3);
+	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
+	TIM_OnePulseMode(TIM3, true);
+}
+//------------------------------------------------------------------------------
+
+void Timer7_Config()
+{
+	TIM_Clock_En(TIM_7);
+	TIM_Config(TIM7, SYSCLK, TIMER7_uS);
+	TIM_Interupt(TIM7, 0, true);
+	TIM_Start(TIM7);
 }
 //------------------------------------------------------------------------------
 

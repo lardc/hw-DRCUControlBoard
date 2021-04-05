@@ -21,5 +21,6 @@ void DAC_SwitchToBase();
 void DMA_Config();
 void WatchDog_Config();
 void InitializeController(Boolean GoodClock);
+void Timer2_3_Config();
 
 #endif //__INITCONFIG_H
