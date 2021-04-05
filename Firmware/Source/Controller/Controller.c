@@ -17,6 +17,7 @@
 #include "Logic.h"
 #include "Measurement.h"
 #include "math.h"
+#include "Delay.h"
 
 // Types
 //
@@ -58,6 +59,7 @@ void CONTROL_RegistersReset();
 void CONTROL_SaveResultToEndpoints(ProcessResult Result);
 void CONTROL_SaveResultToRegisters(ProcessResult Result);
 uint16_t CONTROL_HandleWarningCondition(ProcessResult Result);
+void delay(uint32_t Delay);
 
 // Functions
 //
@@ -84,7 +86,7 @@ void CONTROL_Init()
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
 	// —брос значений
 	DEVPROFILE_ResetControlSection();
-	CONTROL_ResetToDefaults(TRUE);
+	//CONTROL_ResetToDefaults(TRUE);
 }
 //------------------------------------------------------------------------------
 
@@ -106,167 +108,31 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 	switch (ActionID)
 	{
-		case ACT_CLR_FAULT:
+		case 10:
 			{
-				if (CONTROL_State == DS_Fault)
-					CONTROL_ResetToDefaults(TRUE);
+				TIM_Stop(TIM3);
+
+				GPIO_Bit_Set(GPIOB, Pin_15);
+				delay(DataTable[80]);
+				GPIO_Bit_Rst(GPIOB, Pin_15);
+
+				DELAY_US(3000);
+
+				GPIO_Bit_Set(GPIOB, Pin_13);
+				delay(DataTable[80]);
+				GPIO_Bit_Rst(GPIOB, Pin_13);
+
+
+				TIM_Start(TIM3);
 			}
 			break;
 
-		case ACT_CLR_WARNING:
-			DataTable[REG_WARNING] = 0;
+		case 11:
+			GPIO_Bit_Rst(GPIOB, Pin_14);
 			break;
 
-		case ACT_ENABLE_POWER:
-			{
-				if (CONTROL_State == DS_None)
-				{
-					LOGIC_StartBatteryCharge();
-					CONTROL_TimeCounterDelay = CONTROL_TimeCounter + BAT_CHARGE_TIMEOUT;
-					CONTROL_SetDeviceState(DS_BatteryCharge);
-					SUB_State = SS_Charge;
-				}
-				else if (CONTROL_State != DS_Ready)
-					*pUserError = ERR_OPERATION_BLOCKED;
-			}
-			break;
-
-		case ACT_DISABLE_POWER:
-			{
-				if (CONTROL_State != DS_Disabled)
-					CONTROL_ResetToDefaults(TRUE);
-			}
-			break;
-
-		case ACT_SW_PULSE:
-			{
-				if (CONTROL_State == DS_Ready)
-				{
-					CONTROL_RegistersReset();
-					//
-					CONTROL_PowerRegulator = FALSE;
-					CONTROL_PulsesRemain = 1;
-					//
-					LOGIC_PrepareForPulse((float)DataTable[REG_SET_PRE_PULSE_CURRENT],
-										  (float)DataTable[REG_SET_PULSE_CURRENT] * 2);
-					CONTROL_TimeCounterDelay = CONTROL_TimeCounter + TIME_DEMGNTZ;
-					CONTROL_SetDeviceState(DS_InProcess);
-					SUB_State = SS_PulsePrepStep1;
-				}
-				else
-					*pUserError = ERR_OPERATION_BLOCKED;
-			}
-			break;
-
-		case ACT_DBG_PULSE_PS_SW:
-			if (CONTROL_State == DS_None)
-			{
-				LL_PowerOnSolidStateRelay(TRUE);
-				LL_PowerOnMechRelay(TRUE);
-				Delay_mS(1000);
-				LL_PowerOnSolidStateRelay(FALSE);
-				LL_PowerOnMechRelay(FALSE);
-			}
-			break;
-
-		case ACT_DBG_PULSE_EXT_LED:
-			if (CONTROL_State == DS_None)
-			{
-				LL_ExternalLED(TRUE);
-				Delay_mS(1000);
-				LL_ExternalLED(FALSE);
-			}
-			break;
-
-		case ACT_DBG_PULSE_FAN:
-			if (CONTROL_State == DS_None)
-			{
-				LL_ExternalFAN(TRUE);
-				Delay_mS(1000);
-				LL_ExternalFAN(FALSE);
-			}
-			break;
-
-		case ACT_DBG_PULSE_DC_RDY:
-			if (CONTROL_State == DS_None)
-			{
-				LL_External_DC_RDY(TRUE);
-				Delay_mS(1000);
-				LL_External_DC_RDY(FALSE);
-			}
-			break;
-
-		case ACT_DBG_FALL_RATE_SET:
-			if (CONTROL_State == DS_None)
-			{
-				DAC_SetValueCh1(DAC1, DataTable[REG_DBG_DAC_DATA]);
-				DAC_ForceSWTrigCh1(DAC1);
-			}
-			break;
-
-		case ACT_DBG_RISE_RATE_SET:
-			if (CONTROL_State == DS_None)
-			{
-				DAC_SetValueCh2(DAC1, DataTable[REG_DBG_DAC_DATA]);
-				DAC_ForceSWTrigCh2(DAC1);
-			}
-			break;
-
-		case ACT_DBG_I_SET:
-			if (CONTROL_State == DS_None)
-			{
-				LL_DAC_Write(DataTable[REG_DBG_DAC_DATA]);
-			}
-			break;
-
-		case ACT_DBG_PL_TRIG:
-			if (CONTROL_State == DS_None)
-			{
-				LL_SW_Trig(1);
-				Delay_mS(3);
-				LL_SW_Trig(0);
-			}
-			break;
-
-		case ACT_DBG_PS_MECH_SWITCH_ON:
-			if (CONTROL_State == DS_None)
-				LL_PowerOnMechRelay(TRUE);
-			break;
-
-		case ACT_DBG_PS_MECH_SWITCH_OFF:
-			if (CONTROL_State == DS_None)
-				LL_PowerOnMechRelay(FALSE);
-			break;
-
-		case ACT_DBG_R0:
-			if (CONTROL_State == DS_None)
-			{
-				LL_R0_Set();
-			}
-			break;
-
-		case ACT_DBG_R1:
-			if (CONTROL_State == DS_None)
-			{
-				LL_R1_Set();
-			}
-			break;
-
-		case ACT_DBG_R2:
-			if (CONTROL_State == DS_None)
-			{
-				LL_R2_Set();
-			}
-			break;
-
-		case ACT_DBG_FAN_ON:
-			if (CONTROL_State == DS_None)
-				LL_ExternalFAN(TRUE);
-			break;
-
-		case ACT_DBG_FAN_OFF:
-			if (CONTROL_State == DS_None)
-				LL_ExternalFAN(FALSE);
+		case 12:
+			GPIO_Bit_Set(GPIOB, Pin_14);
 			break;
 
 		case ACT_DBG_PS_SSR_SWITCH_ON:
@@ -277,6 +143,16 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 		case ACT_DBG_PS_SSR_SWITCH_OFF:
 			if (CONTROL_State == DS_None)
 				LL_PowerOnSolidStateRelay(FALSE);
+			break;
+
+		case ACT_DBG_PS_MECH_SWITCH_ON:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnMechRelay(TRUE);
+			break;
+
+		case ACT_DBG_PS_MECH_SWITCH_OFF:
+			if (CONTROL_State == DS_None)
+				LL_PowerOnMechRelay(FALSE);
 			break;
 
 		default:
@@ -416,3 +292,8 @@ void CONTROL_WatchDogUpdate()
 		IWDG_Refresh();
 }
 //-----------------------------------------------
+
+void delay(uint32_t Delay)
+{
+	while (--Delay);
+}

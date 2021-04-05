@@ -22,13 +22,6 @@ void IO_Config()
 	// Включение тактирования портов
 	RCC_GPIO_Clk_EN(PORTA);
 	RCC_GPIO_Clk_EN(PORTB);
-	
-	// Аналоговые порты
-	GPIO_Config (GPIOA, Pin_1, Analog, NoPull, HighSpeed, NoPull);					// PA1 - вход АЦП (напряжение батареи 1)
-	GPIO_Config (GPIOA, Pin_2, Analog, NoPull, HighSpeed, NoPull);					// PA2 - вход АЦП (ток DUT)
-	GPIO_Config (GPIOA, Pin_4, Analog, NoPull, HighSpeed, NoPull);					// PA4 - выход ЦАПа (Fall Edge)
-	GPIO_Config (GPIOA, Pin_5, Analog, NoPull, HighSpeed, NoPull);					// PA5 - выход ЦАПа (Rise Edge)
-	//
 
 	// Входы
 	GPIO_Config (GPIOB, Pin_2, Input, PushPull, HighSpeed, NoPull);					// PB2 - вход внешнего триггера
@@ -36,30 +29,16 @@ void IO_Config()
 	//
 	
 	// Выходы
-	GPIO_Config (GPIOA, Pin_6, Output, PushPull, HighSpeed, NoPull);				// PA6 - программный запуск импульса (MCU TRIG)
-	GPIO_Bit_Rst(GPIOA, Pin_6);
-	GPIO_Config (GPIOA, Pin_15, Output, PushPull, HighSpeed, NoPull);				// PA15 - управление вентилятором
-	GPIO_Bit_Rst(GPIOA, Pin_15);
-	GPIO_Config (GPIOB, Pin_0, Output, PushPull, HighSpeed, NoPull);				// PB0 - DAC SYNC
-	GPIO_Bit_Set(GPIOB, Pin_0);
-	GPIO_Config (GPIOB, Pin_1, Output, PushPull, HighSpeed, NoPull);				// PB1 - DAC LDAC
-	GPIO_Bit_Set(GPIOB, Pin_1);
-	GPIO_Config (GPIOB, Pin_4, Output, PushPull, HighSpeed, NoPull);				// PB4 - управление индикатором
-	GPIO_Bit_Rst(GPIOB, Pin_4);
-	GPIO_Config (GPIOB, Pin_8, Output, PushPull, HighSpeed, NoPull);				// PB8 - управление БП1
-	GPIO_Bit_Rst(GPIOB, Pin_8);
-	GPIO_Config (GPIOB, Pin_9, Output, PushPull, HighSpeed, NoPull);				// PB9 - управление БП2
-	GPIO_Bit_Rst(GPIOB, Pin_9);
-	GPIO_Config (GPIOB, Pin_10, Output, PushPull, HighSpeed, NoPull);				// PB10 - сигнал готовности тока
-	GPIO_Bit_Rst(GPIOB, Pin_10);
-	GPIO_Config (GPIOB, Pin_12, Output, PushPull, HighSpeed, NoPull);				// PB12 - LED
-	GPIO_Bit_Rst(GPIOB, Pin_12);
 	GPIO_Config (GPIOB, Pin_13, Output, PushPull, HighSpeed, NoPull);				// PB13 - диапазон скорости 0
 	GPIO_Bit_Rst(GPIOB, Pin_13);
 	GPIO_Config (GPIOB, Pin_14, Output, PushPull, HighSpeed, NoPull);				// PB14 - диапазон скорости 1
 	GPIO_Bit_Rst(GPIOB, Pin_14);
 	GPIO_Config (GPIOB, Pin_15, Output, PushPull, HighSpeed, NoPull);				// PB15 - диапазон скорости 2
 	GPIO_Bit_Rst(GPIOB, Pin_15);
+	GPIO_Config (GPIOB, Pin_8, Output, PushPull, HighSpeed, NoPull);				// PB8
+	GPIO_Bit_Rst(GPIOB, Pin_8);
+	GPIO_Config (GPIOB, Pin_9, Output, PushPull, HighSpeed, NoPull);				// PB9
+	GPIO_Bit_Rst(GPIOB, Pin_9);
 	//
 	
 	// Альтернативные функции
@@ -71,10 +50,9 @@ void IO_Config()
 	GPIO_AltFn  (GPIOA, Pin_9,  AltFn_7);
 	GPIO_Config (GPIOA, Pin_10, AltFn, PushPull, HighSpeed, NoPull);				// PA10(USART1 RX)
 	GPIO_AltFn  (GPIOA, Pin_10, AltFn_7);
-	GPIO_Config (GPIOB, Pin_3, AltFn, PushPull, HighSpeed, NoPull);					// PB3(SPI1_SCK)
-	GPIO_AltFn  (GPIOB, Pin_3, AltFn_5);
-	GPIO_Config (GPIOA, Pin_7, AltFn, PushPull, HighSpeed, NoPull);			    	// PA7(SPI1_MOSI)
-	GPIO_AltFn  (GPIOA, Pin_7, AltFn_5);
+
+	EXTI_Config(EXTI_PB, EXTI_2, BOTH_TRIG, 0);
+	EXTI_EnableInterrupt(EXTI2_TSC_IRQn, 0, true);
 }
 //------------------------------------------------------------------------------
 

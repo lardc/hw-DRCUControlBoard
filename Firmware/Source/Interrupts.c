@@ -6,9 +6,30 @@
 #include "Controller.h"
 #include "Logic.h"
 #include "Global.h"
+#include "DataTable.h"
+
+void Delay(uint32_t Delay);
 
 // Functions
 //
+void EXTI2_TSC_IRQHandler()
+{
+	if(GPIO_Read_Bit(GPIOB, Pin_2))
+	{
+		GPIO_Bit_Set(GPIOB, Pin_15);
+		Delay(DataTable[80]);
+		GPIO_Bit_Rst(GPIOB, Pin_15);
+	}
+	else
+	{
+		GPIO_Bit_Set(GPIOB, Pin_13);
+		Delay(DataTable[80]);
+		GPIO_Bit_Rst(GPIOB, Pin_13);
+	}
+
+	EXTI_FlagReset(EXTI_4);
+}
+
 void DMA1_Channel3_IRQHandler()
 {
 	if (DMA_IsTransferComplete(DMA1, DMA_ISR_TCIF3))
@@ -58,3 +79,8 @@ void TIM3_IRQHandler()
 	}
 }
 //-----------------------------------------
+
+void Delay(uint32_t Delay)
+{
+	while (--Delay);
+}

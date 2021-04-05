@@ -25,25 +25,25 @@ int main()
 	UART_Config();
 
 	// SPI config
-	SPI_Config();
+	//SPI_Config();
 
 	// Настройка ЦАПа
-	DAC_Config();
+	//DAC_Config();
 
 	// Настройка Timer3 общего назначения
 	Timer3_Config();
 
 	// Настройка Timer6 тактирования ЦАП и АЦП
-	Timer6_Config();
+	//Timer6_Config();
 
 	// Начальная настройка АЦП
-	ADC_Config();
+	//ADC_Config();
 
 	// Настройка DMA для ЦАП и АЦП
-	DMA_Config();
+	//DMA_Config();
 
 	// Настройка сторожевого таймера
-	//WatchDog_Config();
+	WatchDog_Config();
 
 	// Инициализация логики контроллера
 	InitializeController(false);
