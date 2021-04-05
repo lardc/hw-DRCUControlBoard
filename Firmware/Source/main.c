@@ -43,7 +43,7 @@ int main()
 	DMA_Config();
 
 	// Настройка сторожевого таймера
-	//WatchDog_Config();
+	WatchDog_Config();
 
 	// Инициализация логики контроллера
 	InitializeController(false);

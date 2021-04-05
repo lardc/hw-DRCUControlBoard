@@ -30,9 +30,9 @@
 
 // High-speed sampling
 #define DMA_ADC_DUT_I_CHANNEL			DMA1_Channel1	// Канал DMA для АЦП тока
-//
-#define ADC1_VOLTAGE_CHANNEL			2				// АЦП1 номер канала напряжения
-#define ADC2_CURRENT_CHANNEL			3				// АЦП2 номер канала тока
+#define ADC1_CURRENT_CHANNEL			3				// АЦП1 номер канала тока
+#define ADC1_BAT_VOLTAGE_CHANNEL		2				// АЦП1 канал измерения напряжения на батарее
+#define ADC1_INT_PS_VOLTAGE_CHANNEL		1				// АЦП1 канал измерения напряжени на внутреннем БП
 // ----------------------------------------------
 
 #endif // __SYSCONFIG_H

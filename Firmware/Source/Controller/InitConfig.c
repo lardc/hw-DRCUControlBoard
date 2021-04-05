@@ -3,6 +3,7 @@
 //
 // Includes
 #include "Logic.h"
+#include "BCCIxParams.h"
 
 // Forward functions
 //
@@ -22,59 +23,47 @@ void IO_Config()
 	// Включение тактирования портов
 	RCC_GPIO_Clk_EN(PORTA);
 	RCC_GPIO_Clk_EN(PORTB);
+	RCC_GPIO_Clk_EN(PORTC);
 	
 	// Аналоговые порты
-	GPIO_Config (GPIOA, Pin_1, Analog, NoPull, HighSpeed, NoPull);					// PA1 - вход АЦП (напряжение батареи 1)
-	GPIO_Config (GPIOA, Pin_2, Analog, NoPull, HighSpeed, NoPull);					// PA2 - вход АЦП (ток DUT)
-	GPIO_Config (GPIOA, Pin_4, Analog, NoPull, HighSpeed, NoPull);					// PA4 - выход ЦАПа (Fall Edge)
-	GPIO_Config (GPIOA, Pin_5, Analog, NoPull, HighSpeed, NoPull);					// PA5 - выход ЦАПа (Rise Edge)
+	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
+	GPIO_InitAnalog(GPIO_MEASURE_BAT);
+	GPIO_InitAnalog(GPIO_MEASURE_CURRENT);
+	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
 	// Входы
-	GPIO_Config (GPIOB, Pin_2, Input, PushPull, HighSpeed, NoPull);					// PB2 - вход внешнего триггера
-	GPIO_Bit_Rst(GPIOB, Pin_2);
+	GPIO_InitInput(GPIO_SYNC, NoPull);
+	GPIO_InitInput(GPIO_PROTECTION, NoPull);
 	//
 	
 	// Выходы
-	GPIO_Config (GPIOA, Pin_6, Output, PushPull, HighSpeed, NoPull);				// PA6 - программный запуск импульса (MCU TRIG)
-	GPIO_Bit_Rst(GPIOA, Pin_6);
-	GPIO_Config (GPIOA, Pin_15, Output, PushPull, HighSpeed, NoPull);				// PA15 - управление вентилятором
-	GPIO_Bit_Rst(GPIOA, Pin_15);
-	GPIO_Config (GPIOB, Pin_0, Output, PushPull, HighSpeed, NoPull);				// PB0 - DAC SYNC
-	GPIO_Bit_Set(GPIOB, Pin_0);
-	GPIO_Config (GPIOB, Pin_1, Output, PushPull, HighSpeed, NoPull);				// PB1 - DAC LDAC
-	GPIO_Bit_Set(GPIOB, Pin_1);
-	GPIO_Config (GPIOB, Pin_4, Output, PushPull, HighSpeed, NoPull);				// PB4 - управление индикатором
-	GPIO_Bit_Rst(GPIOB, Pin_4);
-	GPIO_Config (GPIOB, Pin_8, Output, PushPull, HighSpeed, NoPull);				// PB8 - управление БП1
-	GPIO_Bit_Rst(GPIOB, Pin_8);
-	GPIO_Config (GPIOB, Pin_9, Output, PushPull, HighSpeed, NoPull);				// PB9 - управление БП2
-	GPIO_Bit_Rst(GPIOB, Pin_9);
-	GPIO_Config (GPIOB, Pin_10, Output, PushPull, HighSpeed, NoPull);				// PB10 - сигнал готовности тока
-	GPIO_Bit_Rst(GPIOB, Pin_10);
-	GPIO_Config (GPIOB, Pin_12, Output, PushPull, HighSpeed, NoPull);				// PB12 - LED
-	GPIO_Bit_Rst(GPIOB, Pin_12);
-	GPIO_Config (GPIOB, Pin_13, Output, PushPull, HighSpeed, NoPull);				// PB13 - диапазон скорости 0
-	GPIO_Bit_Rst(GPIOB, Pin_13);
-	GPIO_Config (GPIOB, Pin_14, Output, PushPull, HighSpeed, NoPull);				// PB14 - диапазон скорости 1
-	GPIO_Bit_Rst(GPIOB, Pin_14);
-	GPIO_Config (GPIOB, Pin_15, Output, PushPull, HighSpeed, NoPull);				// PB15 - диапазон скорости 2
-	GPIO_Bit_Rst(GPIOB, Pin_15);
+	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
+	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
+	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
+	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
+	GPIO_InitPushPullOutput(GPIO_FAN);
+	GPIO_InitPushPullOutput(GPIO_LAMP);
+	GPIO_InitPushPullOutput(GPIO_CURRENT_READY);
+	GPIO_InitPushPullOutput(GPIO_LED);
+	GPIO_InitPushPullOutput(GPIO_INT_PS);
+	GPIO_InitPushPullOutput(GPIO_INT_PS_DISCHARGE);
+	GPIO_InitPushPullOutput(GPIO_SPI_RCK);
+	GPIO_InitPushPullOutput(GPIO_SYNC_OUT);
 	//
 	
+	// Выходы с OpenDrain
+	GPIO_InitOpenDrainOutput(GPIO_PROTECTION_RST, NoPull);
+
 	// Альтернативные функции
-	GPIO_Config (GPIOA, Pin_11, AltFn, PushPull, HighSpeed, NoPull);				// PA11(CAN RX)
-	GPIO_AltFn  (GPIOA, Pin_11, AltFn_9);
-	GPIO_Config (GPIOA, Pin_12, AltFn, PushPull, HighSpeed, NoPull);				// PA12(CAN TX)
-	GPIO_AltFn  (GPIOA, Pin_12, AltFn_9);
-	GPIO_Config (GPIOA, Pin_9,  AltFn, PushPull, HighSpeed, NoPull);				// PA9(USART1 TX)
-	GPIO_AltFn  (GPIOA, Pin_9,  AltFn_7);
-	GPIO_Config (GPIOA, Pin_10, AltFn, PushPull, HighSpeed, NoPull);				// PA10(USART1 RX)
-	GPIO_AltFn  (GPIOA, Pin_10, AltFn_7);
-	GPIO_Config (GPIOB, Pin_3, AltFn, PushPull, HighSpeed, NoPull);					// PB3(SPI1_SCK)
-	GPIO_AltFn  (GPIOB, Pin_3, AltFn_5);
-	GPIO_Config (GPIOA, Pin_7, AltFn, PushPull, HighSpeed, NoPull);			    	// PA7(SPI1_MOSI)
-	GPIO_AltFn  (GPIOA, Pin_7, AltFn_5);
+	GPIO_InitAltFunction(GPIO_ALT_CAN_RX, AltFn_9);
+	GPIO_InitAltFunction(GPIO_ALT_CAN_TX, AltFn_9);
+	GPIO_InitAltFunction(GPIO_ALT_UART1_RX, AltFn_7);
+	GPIO_InitAltFunction(GPIO_ALT_UART1_TX, AltFn_7);
+	GPIO_InitAltFunction(GPIO_ALT_SPI1_SCK, AltFn_5);
+	GPIO_InitAltFunction(GPIO_ALT_SPI1_DATA, AltFn_5);
+	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_2);
+	GPIO_InitAltFunction(GPIO_ALT_CTRL2, AltFn_1);
 }
 //------------------------------------------------------------------------------
 
@@ -83,7 +72,7 @@ void CAN_Config()
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
 	NCAN_Init(SYSCLK, CAN_BAUDRATE, FALSE);
 	NCAN_FIFOInterrupt(TRUE);
-	NCAN_FilterInit(0, 0, 0);		// Фильтр 0 пропускает все сообщения
+	NCAN_FilterInit(0, CAN_SLAVE_FILTER_ID, CAN_SLAVE_FILTER_ID);
 }
 //------------------------------------------------------------------------------
 
@@ -96,7 +85,7 @@ void UART_Config()
 
 void SPI_Config()
 {
-	SPI_Init(SPI1, 3, false);
+	SPI_Init8b(SPI1, 3, false);
 }
 //------------------------------------------------------------------------------
 
@@ -105,11 +94,8 @@ void ADC_Config()
 	RCC_ADC_Clk_EN(ADC_12_ClkEN);
 
 	ADC_Calibration(ADC1);
-	ADC_Calibration(ADC2);
 	ADC_Enable(ADC1);
-	ADC_Enable(ADC2);
 	ADC_SoftTrigConfig(ADC1);
-	ADC_SoftTrigConfig(ADC2);
 
 	// Конфигурация и отключение DMA
 	ADC_DMAConfig(ADC1);
@@ -119,40 +105,25 @@ void ADC_Config()
 
 void ADC_SwitchToHighSpeed()
 {
-	ADC1_2_SetDualMode(true);
-
 	ADC_Calibration(ADC1);
-	ADC_Calibration(ADC2);
 	ADC_Enable(ADC1);
-	ADC_Enable(ADC2);
 	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
 
 	ADC_ChannelSeqReset(ADC1);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_VOLTAGE_CHANNEL, 1);
+	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, 1);
 	ADC_ChannelSeqLen(ADC1, 1);
 
-	ADC_ChannelSeqReset(ADC2);
-	ADC_ChannelSet_Sequence(ADC2, ADC2_CURRENT_CHANNEL, 1);
-	ADC_ChannelSeqLen(ADC2, 1);
-
 	ADC_DMAEnable(ADC1, true);
-	ADC_DMAEnable(ADC2, true);
 }
 //------------------------------------------------------------------------------
 
 void ADC_SwitchToBase()
 {
-	ADC1_2_SetDualMode(false);
-
 	ADC_Calibration(ADC1);
-	ADC_Calibration(ADC2);
 	ADC_Enable(ADC1);
-	ADC_Enable(ADC2);
 	ADC_SoftTrigConfig(ADC1);
-	ADC_SoftTrigConfig(ADC2);
 
 	ADC_DMAEnable(ADC1, false);
-	ADC_DMAEnable(ADC2, false);
 }
 //------------------------------------------------------------------------------
 
@@ -178,18 +149,10 @@ void DAC_Config()
 {
 	DAC_ClkEnable(DAC1);
 	DAC_Reset(DAC1);
-
 	DAC_EnableCh1(DAC1);
-	DAC_EnableCh2(DAC1);
-
 	DAC_BufferCh1(DAC1, false);
-	DAC_BufferCh2(DAC1, false);
-
 	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
-	DAC_TriggerConfigCh2(DAC1, TRIG2_SOFTWARE, TRIG2_ENABLE);
-
 	DAC_SetValueCh1(DAC1, 0);
-	DAC_SetValueCh2(DAC1, 0);
 }
 //------------------------------------------------------------------------------
 
