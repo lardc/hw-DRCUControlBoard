@@ -1,104 +1,93 @@
 // Header
 #include "LowLevel.h"
+#include "Delay.h"
+#include "Board.h"
 
 // Functions
 //
 // LED on board
 void LL_ToggleBoardLED()
 {
-
+	GPIO_Toggle(GPIO_LED);
 }
 //------------------------------------------------------------------------------
 
-// External LED
-void LL_ExternalLED(bool State)
+// External lamp
+void LL_ExternalLamp(bool State)
 {
-	State ? GPIO_Bit_Set(GPIOB, Pin_4) : GPIO_Bit_Rst(GPIOB, Pin_4);
+	GPIO_SetState(GPIO_LAMP, State);
 }
 //------------------------------------------------------------------------------
 
-// External FAN
-void LL_ExternalFAN(bool State)
+// FAN
+void LL_FAN(bool State)
 {
-	State ? GPIO_Bit_Set(GPIOA, Pin_15) : GPIO_Bit_Rst(GPIOA, Pin_15);
+	GPIO_SetState(GPIO_FAN, State);
 }
 //------------------------------------------------------------------------------
 
 // External DC Ready
 void LL_External_DC_RDY(bool State)
 {
-	State ? GPIO_Bit_Set(GPIOB, Pin_10) : GPIO_Bit_Rst(GPIOB, Pin_10);
+	GPIO_SetState(GPIO_CURRENT_READY, State);
 }
 //------------------------------------------------------------------------------
 
 // Software trigger
 void LL_SW_Trig(bool State)
 {
-	State ? GPIO_Bit_Set(GPIOA, Pin_6) : GPIO_Bit_Rst(GPIOA, Pin_6);
-}
-//------------------------------------------------------------------------------
-
-// Rate range 0 set
-void LL_R0_Set()
-{
-	GPIO_Bit_Set(GPIOB, Pin_13);
-	GPIO_Bit_Rst(GPIOB, Pin_14);
-	GPIO_Bit_Rst(GPIOB, Pin_15);
-}
-//------------------------------------------------------------------------------
-
-// Rate range 1 set
-void LL_R1_Set()
-{
-	GPIO_Bit_Rst(GPIOB, Pin_13);
-	GPIO_Bit_Set(GPIOB, Pin_14);
-	GPIO_Bit_Rst(GPIOB, Pin_15);
-}
-//------------------------------------------------------------------------------
-
-// Rate range 2 set
-void LL_R2_Set()
-{
-	GPIO_Bit_Rst(GPIOB, Pin_13);
-	GPIO_Bit_Rst(GPIOB, Pin_14);
-	GPIO_Bit_Set(GPIOB, Pin_15);
-}
-//------------------------------------------------------------------------------
-
-// DAC
-void LL_DAC_Write(uint16_t Data)
-{
-	Data |= 1<<14;
-
-	GPIO_Bit_Rst(GPIOB, Pin_0);
-	SPI_WriteByte(SPI1, Data);
-	asm("nop");
-	asm("nop");
-	asm("nop");
-	asm("nop");
-	asm("nop");
-	asm("nop");
-	GPIO_Bit_Set(GPIOB, Pin_0);
-
-	GPIO_Bit_Rst(GPIOB, Pin_1);
-	GPIO_Bit_Set(GPIOB, Pin_1);
+	GPIO_SetState(GPIO_SYNC_OUT, State);
 }
 //------------------------------------------------------------------------------
 
 void LL_PowerOnMechRelay(bool State)
 {
-	if(State)
-		GPIO_Bit_Set(GPIOB, Pin_8);
-	else
-		GPIO_Bit_Rst(GPIOB, Pin_8);
+	GPIO_SetState(GPIO_RELAY_MECH, State);
 }
 //------------------------------------------------------------------------------
 
 void LL_PowerOnSolidStateRelay(bool State)
 {
-	if(State)
-		GPIO_Bit_Set(GPIOB, Pin_9);
-	else
-		GPIO_Bit_Rst(GPIOB, Pin_9);
+	GPIO_SetState(GPIO_RELAY_SOLID, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_OutputCompensation(bool State)
+{
+	GPIO_SetState(GPIO_OUTPUT_COMPENS, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_OutputLock(bool State)
+{
+	GPIO_SetState(GPIO_OUTPUT_LOCK, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_IntPowerSupplyEn(bool State)
+{
+	GPIO_SetState(GPIO_INT_PS, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_OverVoltageProtectionReset(bool State)
+{
+	GPIO_SetState(GPIO_PROTECTION_RST, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_IntPowerSupplyDischarge(bool State)
+{
+	GPIO_SetState(GPIO_INT_PS_DISCHARGE, State);
+}
+//------------------------------------------------------------------------------
+
+void LL_ExtRegWriteData(Int16U Data)
+{
+	SPI_WriteByte8b(SPI1, Data);
+
+	GPIO_SetState(GPIO_SPI_RCK, true);
+	DELAY_US(100);
+	GPIO_SetState(GPIO_SPI_RCK, false);
 }
 //------------------------------------------------------------------------------

@@ -8,15 +8,17 @@
 // Functions
 //
 void LL_ToggleBoardLED();
-void LL_ExternalLED(bool State);
-void LL_ExternalFAN(bool State);
+void LL_ExternalLamp(bool State);
+void LL_FAN(bool State);
 void LL_External_DC_RDY(bool State);
-void LL_DAC_Write(uint16_t Data);
 void LL_SW_Trig(bool State);
-void LL_R0_Set();
-void LL_R1_Set();
-void LL_R2_Set();
 void LL_PowerOnMechRelay(bool State);
 void LL_PowerOnSolidStateRelay(bool State);
+void LL_OutputCompensation(bool State);
+void LL_OutputLock(bool State);
+void LL_IntPowerSupplyEn(bool State);
+void LL_OverVoltageProtectionReset(bool State);
+void LL_IntPowerSupplyDischarge(bool State);
+void LL_ExtRegWriteData(Int16U Data);
 
 #endif //__LOWLEVEL_H
