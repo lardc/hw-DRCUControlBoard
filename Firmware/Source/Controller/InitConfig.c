@@ -144,10 +144,12 @@ void INITCFG_ConfigTimer2_3()
 	TIM_Clock_En(TIM_2);
 	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
 	TIM_OnePulseMode(TIM2, true);
+	TIM_Interupt(TIM2, 0, true);
 
 	TIM_Clock_En(TIM_3);
 	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
 	TIM_OnePulseMode(TIM3, true);
+	TIM_Interupt(TIM3, 0, true);
 }
 //------------------------------------------------------------------------------
 
