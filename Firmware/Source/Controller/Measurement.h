@@ -7,6 +7,7 @@
 //
 float MEASURE_BatteryVoltage();
 float MEASURE_IntPSVoltage();
+void MEASURE_Start(bool State)
 //
 void MEASURE_ConvertCurrentArr(volatile uint16_t *InputArray, float *OutputArray, uint16_t DataLength);
 

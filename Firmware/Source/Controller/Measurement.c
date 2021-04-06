@@ -64,8 +64,8 @@ void MEASURE_ConvertCurrentArr(volatile uint16_t *InputArray, float *OutputArray
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_Start()
+void MEASURE_Start(bool State)
 {
-	TIM_Start(TIM6);
+	State ? TIM_Start(TIM6) : TIM_Stop(TIM6);
 }
 //------------------------------------------------------------------------------
