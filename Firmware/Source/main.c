@@ -13,40 +13,40 @@ int main()
 	__enable_irq();
 
 	// Настройка системной частоты тактирования
-	SysClk_Config();
+	INITCFG_ConfigSystemClock();
 
 	// Настройка портов
-	IO_Config();
+	INITCFG_ConfigIO();
 
 	// Настройка CAN
-	CAN_Config();
+	INITCFG_ConfigCAN();
 
 	// Настройка UART
-	UART_Config();
+	INITCFG_ConfigUART();
 
 	// SPI config
-	SPI_Config();
+	INITCFG_ConfigSPI();
 
 	// Настройка ЦАПа
-	DAC_Config();
+	INITCFG_ConfigDAC();
 
 	// Настройка Timer7 общего назначения
-	Timer7_Config();
+	INITCFG_ConfigTimer7();
 
-	// Настройка Timer7 в режиме одиночного запуска
-	Timer2_3_Config();
+	// Настройка Timer2,3 в режиме одиночного запуска
+	INITCFG_ConfigTimer2_3();
 
 	// Настройка Timer6 тактирования ЦАП и АЦП
-	Timer6_Config();
+	INITCFG_ConfigTimer6();
 
 	// Начальная настройка АЦП
-	ADC_Config();
+	INITCFG_ConfigADC();
 
 	// Настройка DMA для ЦАП и АЦП
-	DMA_Config();
+	INITCFG_ConfigDMA();
 
 	// Настройка сторожевого таймера
-	WatchDog_Config();
+	INITCFG_ConfigWatchDog();
 
 	// Инициализация логики контроллера
 	InitializeController(false);

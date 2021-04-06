@@ -11,14 +11,14 @@ void CONTROL_Init();
 
 // Functions
 //
-void SysClk_Config()
+void INITCFG_ConfigSystemClock()
 {
 	RCC_PLL_HSE_Config(QUARTZ_FREQUENCY, PREDIV_4, PLL_14);
 	RCC_SysCfg_Clk_EN();
 }
 //------------------------------------------------------------------------------
 
-void IO_Config()
+void INITCFG_ConfigIO()
 {
 	// Включение тактирования портов
 	RCC_GPIO_Clk_EN(PORTA);
@@ -67,7 +67,7 @@ void IO_Config()
 }
 //------------------------------------------------------------------------------
 
-void CAN_Config()
+void INITCFG_ConfigCAN()
 {
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
 	NCAN_Init(SYSCLK, CAN_BAUDRATE, FALSE);
@@ -76,20 +76,20 @@ void CAN_Config()
 }
 //------------------------------------------------------------------------------
 
-void UART_Config()
+void INITCFG_ConfigUART()
 {
 	USART_Init(USART1, SYSCLK, USART_BAUDRATE);
 	USART_Recieve_Interupt(USART1, 0, true);
 }
 //------------------------------------------------------------------------------
 
-void SPI_Config()
+void INITCFG_ConfigSPI()
 {
 	SPI_Init8b(SPI1, 3, false);
 }
 //------------------------------------------------------------------------------
 
-void ADC_Config()
+void INITCFG_ConfigADC()
 {
 	RCC_ADC_Clk_EN(ADC_12_ClkEN);
 
@@ -127,7 +127,7 @@ void ADC_SwitchToBase()
 }
 //------------------------------------------------------------------------------
 
-void Timer2_3_Config()
+void INITCFG_ConfigTimer2_3()
 {
 	TIM_Clock_En(TIM_2);
 	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
@@ -139,7 +139,7 @@ void Timer2_3_Config()
 }
 //------------------------------------------------------------------------------
 
-void Timer7_Config()
+void INITCFG_ConfigTimer7()
 {
 	TIM_Clock_En(TIM_7);
 	TIM_Config(TIM7, SYSCLK, TIMER7_uS);
@@ -148,7 +148,7 @@ void Timer7_Config()
 }
 //------------------------------------------------------------------------------
 
-void Timer6_Config()
+void INITCFG_ConfigTimer6()
 {
 	TIM_Clock_En(TIM_6);
 	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
@@ -157,7 +157,7 @@ void Timer6_Config()
 }
 //------------------------------------------------------------------------------
 
-void DAC_Config()
+void INITCFG_ConfigDAC()
 {
 	DAC_ClkEnable(DAC1);
 	DAC_Reset(DAC1);
@@ -168,21 +168,7 @@ void DAC_Config()
 }
 //------------------------------------------------------------------------------
 
-void DAC_SwitchToHighSpeed()
-{
-	DAC_DMAConfigCh1(DAC1, true, true);
-	DAC_TriggerConfigCh1(DAC1, TRIG1_TIMER6, TRIG1_ENABLE);
-}
-//------------------------------------------------------------------------------
-
-void DAC_SwitchToBase()
-{
-	DAC_DMAConfigCh1(DAC1, false, false);
-	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
-}
-//------------------------------------------------------------------------------
-
-void DMA_Config()
+void INITCFG_ConfigDMA()
 {
 	DMA_Clk_Enable(DMA1_ClkEN);
 
@@ -194,7 +180,7 @@ void DMA_Config()
 }
 //------------------------------------------------------------------------------
 
-void WatchDog_Config()
+void INITCFG_ConfigWatchDog()
 {
 	IWDG_Config();
 	IWDG_ConfigureFastUpdate();
