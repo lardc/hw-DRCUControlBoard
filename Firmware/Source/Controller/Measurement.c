@@ -63,3 +63,9 @@ void MEASURE_ConvertCurrentArr(volatile uint16_t *InputArray, float *OutputArray
 	MEASURE_ConvertADCtoValx(InputArray, OutputArray, 1, DataLength, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
 }
 //------------------------------------------------------------------------------
+
+void MEASURE_Start()
+{
+	TIM_Start(TIM6);
+}
+//------------------------------------------------------------------------------
