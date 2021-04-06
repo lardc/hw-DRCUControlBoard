@@ -67,6 +67,18 @@ void INITCFG_ConfigIO()
 }
 //------------------------------------------------------------------------------
 
+void INITCFG_ConfigExtInterrupt()
+{
+	// ¬ход PROTECTION
+	EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
+	EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+
+	// ¬ход SYNC
+	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
+	EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
+}
+//------------------------------------------------
+
 void INITCFG_ConfigCAN()
 {
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);

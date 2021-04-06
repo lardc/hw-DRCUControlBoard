@@ -20,5 +20,6 @@ void INITCFG_ConfigDMA();
 void INITCFG_ConfigWatchDog();
 void InitializeController(Boolean GoodClock);
 void INITCFG_ConfigTimer2_3();
+void INITCFG_ConfigExtInterrupt();
 
 #endif //__INITCONFIG_H
