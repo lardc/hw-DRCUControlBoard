@@ -91,3 +91,9 @@ void LL_ExtRegWriteData(Int16U Data)
 	GPIO_SetState(GPIO_SPI_RCK, false);
 }
 //------------------------------------------------------------------------------
+
+bool LL_ReadLineSync()
+{
+	return GPIO_GetState(GPIO_SYNC);
+}
+//------------------------------------------------------------------------------
