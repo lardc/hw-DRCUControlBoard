@@ -6,17 +6,34 @@
 #include "Controller.h"
 #include "Logic.h"
 #include "Global.h"
+#include "DeviceObjectDictionary.h"
 
 // Functions
 //
-void DMA1_Channel3_IRQHandler()
+void DMA1_Channel1_IRQHandler()
 {
-	if (DMA_IsTransferComplete(DMA1, DMA_ISR_TCIF3))
+	if (DMA_IsTransferComplete(DMA1, DMA_ISR_TCIF1))
 	{
-		TIM_Stop(TIM6);
-		TIM_Reset(TIM6);
+		LOGIC_SaveRAWData();
+		DMA_TransferCompleteReset(DMA1, DMA_IFCR_CTCIF1);
+	}
+}
+//-----------------------------------------
 
-		DMA_TransferCompleteReset(DMA1, DMA_IFCR_CTCIF3);
+void EXTI9_5_IRQHandler()
+{
+	if (LL_ReadLineSync())
+		LOGIC_StartPulse();
+	else
+		LOGIC_StopPulse();
+}
+//-----------------------------------------
+
+void EXTI15_10_IRQHandler()
+{
+	if (EXTI_FlagCheck(EXTI_PR_PR13))
+	{
+		CONTROL_SwitchToFault(DF_PROTECTION);
 	}
 }
 //-----------------------------------------
@@ -41,11 +58,11 @@ void USB_LP_CAN_RX0_IRQHandler()
 }
 //-----------------------------------------
 
-void TIM3_IRQHandler()
+void TIM7_IRQHandler()
 {
 	static uint16_t LED_BlinkTimeCounter = 0;
 
-	if (TIM_StatusCheck(TIM3))
+	if (TIM_StatusCheck(TIM7))
 	{
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
@@ -54,7 +71,7 @@ void TIM3_IRQHandler()
 			LED_BlinkTimeCounter = 0;
 		}
 
-		TIM_StatusClear(TIM3);
+		TIM_StatusClear(TIM7);
 	}
 }
 //-----------------------------------------
