@@ -39,6 +39,9 @@ int main()
 	// Настройка Timer2,3 в режиме одиночного запуска
 	INITCFG_ConfigTimer2_3();
 
+	// Таймер формирования импульса синхронизации
+	INITCFG_ConfigTimer16();
+
 	// Настройка Timer6 тактирования ЦАП и АЦП
 	INITCFG_ConfigTimer6();
 

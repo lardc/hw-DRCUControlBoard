@@ -3,6 +3,7 @@
 //
 // Includes
 #include "Logic.h"
+#include "Global.h"
 #include "BCCIxParams.h"
 
 // Forward functions
@@ -153,6 +154,14 @@ void INITCFG_ConfigTimer2_3()
 }
 //------------------------------------------------------------------------------
 
+void INITCFG_ConfigTimer16()
+{
+	TIM_Clock_En(TIM_16);
+	TIM_Config(TIM16, SYSCLK, TIMER16_uS);
+	TIM_OnePulseMode(TIM16, true);
+}
+//------------------------------------------------------------------------------
+
 void INITCFG_ConfigTimer7()
 {
 	TIM_Clock_En(TIM_7);
@@ -188,7 +197,7 @@ void INITCFG_ConfigDMA()
 
 	// DMA для АЦП тока на DUT
 	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
-	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (uint32_t)LOGIC_DUTCurrentRaw, (uint32_t)(&ADC1->DR), PULSE_ARR_MAX_LENGTH);
+	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (uint32_t)&LOGIC_DUTCurrentRaw[0], (uint32_t)(&ADC1->DR), PULSE_ARR_MAX_LENGTH);
 	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
 						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_DIS, DMA_READ_FROM_PERIPH);
 }
