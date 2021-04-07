@@ -7,6 +7,7 @@
 #include "Logic.h"
 #include "Global.h"
 #include "DeviceObjectDictionary.h"
+#include "Measurement.h"
 
 // Functions prototypes
 //
@@ -18,8 +19,7 @@ void DMA1_Channel1_IRQHandler()
 {
 	if (DMA_IsTransferComplete(DMA1, DMA_ISR_TCIF1))
 	{
-		LOGIC_SoftwareStopPulseProcess();
-		LOGIC_SaveRAWData();
+		LOGIC_HandleAdcSamples();
 		DMA_TransferCompleteReset(DMA1, DMA_IFCR_CTCIF1);
 	}
 }
@@ -31,7 +31,7 @@ void EXTI9_5_IRQHandler()
 	{
 		if (LL_ReadLineSync())
 		{
-			MEASURE_Start();
+			MEASURE_Start(TRUE);
 			LOGIC_StartRiseEdge();
 
 			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
@@ -62,13 +62,17 @@ void TIMx_Process(TIM_TypeDef* TIMx)
 	if (TIM_StatusCheck(TIMx))
 	{
 		if (CONTROL_SubState == SS_RiseEdge)
+		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
+			LL_OutputCompensation(TRUE);
+		}
 
 		if (CONTROL_SubState == SS_FallEdge)
 			CONTROL_StopProcess();
 
 		TIM_StatusClear(TIMx);
 		TIM_Stop(TIMx);
+		TIM_Reset(TIMx);
 	}
 }
 //-----------------------------------------
