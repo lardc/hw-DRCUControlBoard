@@ -53,7 +53,7 @@ Int16U CurrentRateCode;
 // Forward functions
 //
 void LOGIC_ClearDataArrays();
-void LOGIC_SetCompensationVoltage();
+void LOGIC_SetCompensationVoltage(Int16U Current);
 int MEASURE_SortCondition(const void *A, const void *B);
 
 // Functions
@@ -186,9 +186,10 @@ void LOGIC_Config()
 }
 //-------------------------------------------
 
-void LOGIC_SetCompensationVoltage()
+void LOGIC_SetCompensationVoltage(Int16U Current)
 {
-
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
 }
 //-------------------------------------------
 

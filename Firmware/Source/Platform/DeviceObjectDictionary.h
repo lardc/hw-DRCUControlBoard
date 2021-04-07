@@ -41,6 +41,11 @@
 #define REG_I_DUT_P0							12		// Смещение тонкой подстройки Р0
 #define REG_I_DUT_P1							13		// Коэффициент тонкой подстройки Р1
 #define REG_I_DUT_P2							14		// Коэффициент тонкой подстройки Р2
+#define REG_I_TO_DAC_OFFSET						15		// Смещение преобразования ток->ЦАП
+#define REG_I_TO_DAC_K							16		// Коэффициент преобразования ток->ЦАП
+#define REG_I_TO_DAC_P2							17		// Регистр тонкой подстройки Р2
+#define REG_I_TO_DAC_P1							18		// Регистр тонкой подстройки Р1
+#define REG_I_TO_DAC_P0							19		// Регистр тонкой подстройки Р0
 //
 #define REG_BATTERY_FULL_CHRAGE_TIMEOUT			20		// Таймаут полного заряда батареи,мс
 #define REG_BATTERY_RECHRAGE_TIMEOUT			21		// Таймаут дозаряда батареи,мс
