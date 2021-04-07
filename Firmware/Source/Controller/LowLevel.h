@@ -17,7 +17,7 @@ void LL_PowerOnSolidStateRelay(bool State);
 void LL_OutputCompensation(bool State);
 void LL_OutputLock(bool State);
 void LL_IntPowerSupplyEn(bool State);
-void LL_OverVoltageProtectionReset(bool State);
+void LL_OverVoltageProtectionReset();
 void LL_IntPowerSupplyDischarge(bool State);
 void LL_ExtRegWriteData(Int16U Data);
 bool LL_ReadLineSync();

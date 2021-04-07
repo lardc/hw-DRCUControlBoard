@@ -54,7 +54,7 @@ void LL_PowerOnSolidStateRelay(bool State)
 
 void LL_OutputCompensation(bool State)
 {
-	GPIO_SetState(GPIO_OUTPUT_COMPENS, State);
+	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
 }
 //------------------------------------------------------------------------------
 
@@ -66,13 +66,15 @@ void LL_OutputLock(bool State)
 
 void LL_IntPowerSupplyEn(bool State)
 {
-	GPIO_SetState(GPIO_INT_PS, State);
+	GPIO_SetState(GPIO_INT_PS, !State);
 }
 //------------------------------------------------------------------------------
 
-void LL_OverVoltageProtectionReset(bool State)
+void LL_OverVoltageProtectionReset()
 {
-	GPIO_SetState(GPIO_PROTECTION_RST, State);
+	GPIO_SetState(GPIO_PROTECTION_RST, FALSE);
+	DELAY_US(50);
+	GPIO_SetState(GPIO_PROTECTION_RST, TRUE);
 }
 //------------------------------------------------------------------------------
 
