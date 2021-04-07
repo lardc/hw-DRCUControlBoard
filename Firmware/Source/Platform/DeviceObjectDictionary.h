@@ -46,6 +46,26 @@
 #define REG_BATTERY_RECHRAGE_TIMEOUT			21		// Таймаут дозаряда батареи,мс
 #define REG_BAT_VOLTAGE_THRESHOLD				22		// Минимальный порог заряда батареи, В *10
 #define REG_CURRENT_BOARD_QUANTITY				23		// Количество силовых плат
+#define REG_RISE_EDGE_TIME						24		// Длительность переднего фронта при максимальной амплитуде тока
+#define REG_FALL_EDGE_TIME						25		// Длительность заднего фронта при максимальной амплитуде тока
+#define REG_CURRENT_SETPOINT_MAX				26		// Максимальное значение тока с блока
+#define REG_CONFIG_RDY_STATE_TIMEOUT			27		// Таймаут нахождения блока в состоянии ConfigReady
+#define REG_ERROR_COUNTER_MAX					28		// Максимальное значение счетчика при определении выхода тока на задание
+#define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на хадание (% * 10)
+#define REG_AFTER_PULSE_PAUSE					30		// Пауза после импульса, мс
+//
+#define REG_CTRL1_MAX_WIDTH_050					40		// Максимальная длительность импульса CTRL1 при 0.5А/мкс
+#define REG_CTRL1_MAX_WIDTH_075					41		// Максимальная длительность импульса CTRL1 при 0.75А/мкс
+#define REG_CTRL1_MAX_WIDTH_100					42		// Максимальная длительность импульса CTRL1 при 1А/мкс
+#define REG_CTRL1_MAX_WIDTH_250					43		// Максимальная длительность импульса CTRL1 при 2.5А/мкс
+#define REG_CTRL1_MAX_WIDTH_500					44		// Максимальная длительность импульса CTRL1 при 5А/мкс
+#define REG_CTRL1_MAX_WIDTH_750					45		// Максимальная длительность импульса CTRL1 при 7.5А/мкс
+#define REG_CTRL1_MAX_WIDTH_1000				46		// Максимальная длительность импульса CTRL1 при 10А/мкс
+#define REG_CTRL1_MAX_WIDTH_1500				47		// Максимальная длительность импульса CTRL1 при 15А/мкс
+#define REG_CTRL1_MAX_WIDTH_2500				48		// Максимальная длительность импульса CTRL1 при 25А/мкс
+#define REG_CTRL1_MAX_WIDTH_3000				49		// Максимальная длительность импульса CTRL1 при 30А/мкс
+#define REG_CTRL1_MAX_WIDTH_5000				50		// Максимальная длительность импульса CTRL1 при 50А/мкс
+#define REG_CTRL2_MAX_WIDTH						51		// Максимальная длительность импульса CTRL2
 // -----------------------------------------------
 
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
@@ -63,6 +83,7 @@
 #define REG_BAT_VOLTAGE							103		// Напряжение на конденсаторной батарее 1 (в В х10)
 //
 #define REG_CURRENT								111		// Измеренное значение амплитуды тока (в мА)
+#define REG_INT_PS_VOLTAGE						110
 
 
 // ENDPOINTS
@@ -74,10 +95,12 @@
 //
 #define DF_NONE									0
 #define DF_BATTERY								1		// Ошибка заряда батареи
+#define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
 
 // WARNINGS
 //
 #define WARNING_NONE							0
+#define WARNING_CURRENT_READY					1		// Ток не вышел на заданный уровень
 
 // User Errors
 // 
