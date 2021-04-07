@@ -182,6 +182,12 @@ void CONTROL_HandleIntPSTune()
 		DELAY_MS(TIME_INT_PS_ACTIVITY);
 		LL_IntPowerSupplyEn(FALSE);
 
+		LL_IntPowerSupplyDischarge(TRUE);
+
+		while(MEASURE_IntPSVoltage() > ((float)DataTable[REG_INT_PS_VOLTAGE] / 10)){}
+
+		LL_IntPowerSupplyDischarge(FALSE);
+
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
 		CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
