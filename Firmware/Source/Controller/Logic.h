@@ -17,5 +17,7 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth);
 void LOGIC_Config();
 void LOGIC_StartFallEdge();
 void LOGIC_StartRiseEdge();
+Int16U LOGIC_ExctractCurrentValue();
+void LOGIC_HandleAdcSamples();
 
 #endif //__LOGIC_H

@@ -42,16 +42,19 @@
 #define CODE_CURRENT_RATE_2500		0x3F
 #define CODE_CURRENT_RATE_3000		0x20
 #define CODE_CURRENT_RATE_5000		0x7F
+//
+#define RESULT_AVERAGE_POINTS		50					// Количество точек усредения результата измерения
 
 // Varibales
 //
-volatile uint16_t LOGIC_DUTCurrentRaw[PULSE_ARR_MAX_LENGTH];
+volatile uint16_t LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 Int16U CurrentRateCode;
 
 // Forward functions
 //
 void LOGIC_ClearDataArrays();
 void LOGIC_SetCompensationVoltage();
+int MEASURE_SortCondition(const void *A, const void *B);
 
 // Functions
 //
@@ -67,13 +70,16 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_OutputLock(TRUE);
 	LL_IntPowerSupplyDischarge(FALSE);
 	LL_IntPowerSupplyEn(FALSE);
-	LL_OverVoltageProtectionReset(TRUE);
+	LL_OverVoltageProtectionReset();
 	LL_OutputCompensation(FALSE);
 	LL_External_DC_RDY(FALSE);
 	LL_ExternalLamp(FALSE);
 
 	// Переключение АЦП в базовый режим
 	ADC_SwitchToBase();
+
+	// Отключение формирователя
+	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
 
@@ -98,11 +104,12 @@ void LOGIC_Config()
 {
 	Int32U MaxPulseWidth_CTRL1, PulseWidth_CTRL1, PulseWidth_CTRL2;
 
+	LOGIC_ClearDataArrays();
 
 	// Настройка аппаратной части
 	//
 	ADC_SwitchToHighSpeed();
-	LOGIC_SetCompensationVoltage();
+	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 	LL_OutputLock(FALSE);
 	LL_PowerOnSolidStateRelay(FALSE);
 
@@ -176,7 +183,6 @@ void LOGIC_Config()
 
 	LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
 	LOGIC_ConstantPulseRateConfig(PulseWidth_CTRL2);
-
 }
 //-------------------------------------------
 
@@ -210,6 +216,8 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
+	LL_OutputCompensation(FALSE);
+
 #ifdef TYPE_UNIT_DCU
 	TIM_Start(TIM3);
 #else
@@ -220,15 +228,86 @@ void LOGIC_StartFallEdge()
 
 void LOGIC_SofwarePulseStart(bool State)
 {
-	State ? TIM_Start(TIM16) : TIM_Stop(TIM16);
+	if (State)
+		TIM_Start(TIM16);
+	else
+	{
+		TIM_Stop(TIM16);
+		TIM_Reset(TIM16);
+	}
+}
+//-------------------------------------------
+
+Int16U LOGIC_ExctractCurrentValue()
+{
+	Int16U ArrayTemp[VALUES_x_SIZE];
+	float AvgData = 0;
+
+	// Копирование данных
+	for (int i = 0; i < VALUES_x_SIZE; ++i)
+		ArrayTemp[i] = CONTROL_Values_DUTCurrent[i];
+
+	// Сортировка
+	qsort(ArrayTemp, VALUES_x_SIZE, sizeof(*ArrayTemp), MEASURE_SortCondition);
+
+	// Усреднение и возврат результата
+	for (int i = VALUES_x_SIZE - RESULT_AVERAGE_POINTS; i < VALUES_x_SIZE; ++i)
+		AvgData += ArrayTemp[i];
+
+	return (Int16U)(AvgData / RESULT_AVERAGE_POINTS);
+}
+//-------------------------------------------
+
+void LOGIC_HandleAdcSamples()
+{
+	float AvgData = 0, Error;
+	static Int16U AllowedErrorCounter = 0;
+	static Int16U UnallowedErrorCounter = 0;
+
+	// Сохранение усредненного результата
+	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
+		AvgData += LOGIC_DUTCurrentRaw[i];
+
+	if (CONTROL_Values_Counter < VALUES_x_SIZE)
+	{
+		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = (Int16U)(AvgData / ADC_AVG_SAMPLES);
+		CONTROL_Values_Counter++;
+	}
+
+	// Определение выхода тока на заданный уровень
+	if(CONTROL_SubState == SS_Plate)
+	{
+		Error = AvgData / DataTable[REG_CURRENT_SETPOINT] * 1000;
+
+		if (Error <= DataTable[REG_ALLOWED_ERROR])
+			AllowedErrorCounter++;
+		else
+			UnallowedErrorCounter++;
+
+		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+			LL_External_DC_RDY(TRUE);
+		else if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+				DataTable[REG_WARNING] = WARNING_CURRENT_READY;
+	}
+	else
+	{
+		AllowedErrorCounter = 0;
+		UnallowedErrorCounter = 0;
+	}
 }
 //-------------------------------------------
 
 void LOGIC_ClearDataArrays()
 {
-	uint16_t i;
+	for (int i = 0; i < VALUES_x_SIZE; ++i)
+		CONTROL_Values_DUTCurrent[i] = 0;
 
-	for (i = 0; i < PULSE_ARR_MAX_LENGTH; ++i)
-		LOGIC_DUTCurrentRaw[i] = 0;
+	CONTROL_Values_Counter = 0;
 }
 //-------------------------------------------
+
+int MEASURE_SortCondition(const void *A, const void *B)
+{
+	return (int)(*(uint16_t *)A) - (int)(*(uint16_t *)B);
+}
+//-----------------------------------------
