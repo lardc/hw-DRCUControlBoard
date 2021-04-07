@@ -34,6 +34,7 @@ volatile Int16U CONTROL_Values_Counter = 0;
 //
 volatile Int64U CONTROL_TimeCounter = 0;
 Int64U CONTROL_BatteryChargeTimeCounter = 0;
+Int64U CONTROL_DeviceStateTimeCounter = 0;
 //
 
 // Forward functions
@@ -45,6 +46,7 @@ void CONTROL_WatchDogUpdate();
 void CONTROL_RegistersReset();
 void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
+void CONTROL_DeviceStateControl();
 
 // Functions
 //
@@ -127,10 +129,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_CLR_FAULT:
 			if (CONTROL_State == DS_Fault)
-			{
-				CONTROL_SetDeviceState(DS_None, SS_None);
-				DataTable[REG_FAULT_REASON] = DF_NONE;
-			}
+				CONTROL_ResetToDefaults(TRUE);
 			break;
 
 		case ACT_CLR_WARNING:
@@ -141,7 +140,8 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			if (CONTROL_State == DS_None)
 				return DIAG_HandleDiagnosticAction(ActionID, pUserError);
 			else
-				return FALSE;
+				*pUserError = ERR_OPERATION_BLOCKED;
+			break;
 	}
 
 	return TRUE;
@@ -156,9 +156,19 @@ void CONTROL_Idle()
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
 
+	// Control of device state
+	CONTROL_DeviceStateControl();
+
 	// Process WD and interface
 	CONTROL_WatchDogUpdate();
 	DEVPROFILE_ProcessRequests();
+}
+//-----------------------------------------------
+
+void CONTROL_DeviceStateControl()
+{
+	if((CONTROL_State == DS_ConfigReady) && (CONTROL_TimeCounter >= CONTROL_DeviceStateTimeCounter))
+		CONTROL_SetDeviceState(DS_Ready, SS_None);
 }
 //-----------------------------------------------
 
@@ -173,6 +183,8 @@ void CONTROL_HandleIntPSTune()
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
 		CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
+
+		CONTROL_DeviceStateTimeCounter = CONTROL_TimeCounter + DataTable[REG_CONFIG_RDY_STATE_TIMEOUT];
 	}
 }
 //-----------------------------------------------
@@ -183,14 +195,14 @@ void CONTROL_HandleBatteryCharge()
 
 	BatteryVoltage = MEASURE_BatteryVoltage();
 
-	if ((CONTROL_State == DS_BatteryCharge) && (CONTROL_TimeCounter < CONTROL_BatteryChargeTimeCounter))
+	if ((CONTROL_SubState == SS_PowerPrepare) && (CONTROL_TimeCounter < CONTROL_BatteryChargeTimeCounter))
 	{
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 			CONTROL_SetDeviceState(DS_Ready, SS_None);
 	}
 	else
 	{
-		if (CONTROL_State == DS_BatteryCharge)
+		if (CONTROL_SubState == SS_PowerPrepare)
 			CONTROL_SwitchToFault(DF_BATTERY);
 	}
 
