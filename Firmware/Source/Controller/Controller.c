@@ -16,12 +16,12 @@
 #include "LowLevel.h"
 #include "Logic.h"
 #include "Measurement.h"
-#include "math.h"
 #include "Diagnostic.h"
+#include "Delay.h"
 
-// Types
+// Definitions
 //
-typedef void (*FUNC_AsyncDelegate)();
+#define TIME_INT_PS_ACTIVITY			250		// мс
 
 // Variables
 //
@@ -33,21 +33,18 @@ volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
 volatile Int16U CONTROL_Values_Counter = 0;
 //
 volatile Int64U CONTROL_TimeCounter = 0;
-volatile Int64U CONTROL_TimeCounterDelay = 0;
 Int64U CONTROL_BatteryChargeTimeCounter = 0;
 //
 
 // Forward functions
 //
 static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError);
-void CONTROL_SwitchToFault(Int16U Reason);
 void CONTROL_ResetToDefaults(bool StopPowerSupply);
 void CONTROL_Idle();
 void CONTROL_WatchDogUpdate();
 void CONTROL_RegistersReset();
-void CONTROL_SaveResultToEndpoints(ProcessResult Result);
-void CONTROL_SaveResultToRegisters(ProcessResult Result);
-uint16_t CONTROL_HandleWarningCondition(ProcessResult Result);
+void CONTROL_HandleBatteryCharge();
+void CONTROL_HandleIntPSTune();
 
 // Functions
 //
@@ -92,7 +89,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			{
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
-				LOGIC_BatteryCharge();
+				LOGIC_BatteryCharge(TRUE);
 			}
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;
@@ -120,10 +117,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_SOFTWARE_START:
 			if (CONTROL_State == DS_ConfigReady)
-			{
-				CONTROL_SetDeviceState(DS_InProcess, SS_Pulse);
-				CONTROL_StartProcess();
-			}
+				LOGIC_SofwarePulseStart(TRUE);
 			else
 				if (CONTROL_State == DS_InProcess)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -154,6 +148,35 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 }
 //-----------------------------------------------
 
+void CONTROL_Idle()
+{
+	// Process battery charge
+	CONTROL_HandleBatteryCharge();
+
+	// Process internal power supply tune
+	CONTROL_HandleIntPSTune();
+
+	// Process WD and interface
+	CONTROL_WatchDogUpdate();
+	DEVPROFILE_ProcessRequests();
+}
+//-----------------------------------------------
+
+void CONTROL_HandleIntPSTune()
+{
+	if((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PulsePrepare))
+	{
+		LL_IntPowerSupplyEn(TRUE);
+		DELAY_MS(TIME_INT_PS_ACTIVITY);
+		LL_IntPowerSupplyEn(FALSE);
+
+		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
+
+		CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
+	}
+}
+//-----------------------------------------------
+
 void CONTROL_HandleBatteryCharge()
 {
 	float BatteryVoltage;
@@ -163,7 +186,7 @@ void CONTROL_HandleBatteryCharge()
 	if ((CONTROL_State == DS_BatteryCharge) && (CONTROL_TimeCounter < CONTROL_BatteryChargeTimeCounter))
 	{
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
-			CONTROL_State = DS_Ready;
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
 	}
 	else
 	{
@@ -175,10 +198,9 @@ void CONTROL_HandleBatteryCharge()
 }
 //-----------------------------------------------
 
-void CONTROL_SaveResultToEndpoints(Int16U Current)
+void CONTROL_StopProcess()
 {
-	CONTROL_Values_DUTCurrent[CONTROL_Values_DiagEPCounter] = Current;
-	CONTROL_Values_Counter++;
+	LOGIC_ResetHWToDefaults(FALSE);
 }
 //-----------------------------------------------
 
@@ -192,17 +214,6 @@ void CONTROL_RegistersReset()
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
-}
-//-----------------------------------------------
-
-void CONTROL_Idle()
-{
-	// Process battery charge
-	CONTROL_HandleBatteryCharge();
-
-	// Process WD and interface
-	CONTROL_WatchDogUpdate();
-	DEVPROFILE_ProcessRequests();
 }
 //-----------------------------------------------
 
