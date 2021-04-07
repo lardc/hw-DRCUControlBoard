@@ -35,6 +35,7 @@ volatile Int16U CONTROL_Values_Counter = 0;
 volatile Int64U CONTROL_TimeCounter = 0;
 Int64U CONTROL_BatteryChargeTimeCounter = 0;
 Int64U CONTROL_DeviceStateTimeCounter = 0;
+Int64U CONTROL_AfterPulsePause = 0;
 //
 
 // Forward functions
@@ -199,7 +200,8 @@ void CONTROL_HandleBatteryCharge()
 	if ((CONTROL_SubState == SS_PowerPrepare) && (CONTROL_TimeCounter < CONTROL_BatteryChargeTimeCounter))
 	{
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
-			CONTROL_SetDeviceState(DS_Ready, SS_None);
+			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
 	}
 	else
 	{
@@ -216,14 +218,15 @@ void CONTROL_StopProcess()
 	LOGIC_ResetHWToDefaults(FALSE);
 	CONTROL_SaveResults();
 
-	CONTROL_SetDeviceState(DS_Ready, SS_None);
+	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
+	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------
 
 void CONTROL_SaveResults()
 {
 	DataTable[REG_CURRENT] = LOGIC_ExctractCurrentValue();
-	LOGIC_SaveSamplesToEndpoints();
 }
 //-----------------------------------------------
 
