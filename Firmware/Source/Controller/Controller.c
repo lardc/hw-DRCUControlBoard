@@ -47,6 +47,7 @@ void CONTROL_RegistersReset();
 void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
+void CONTROL_SaveResults();
 
 // Functions
 //
@@ -213,6 +214,16 @@ void CONTROL_HandleBatteryCharge()
 void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(FALSE);
+	CONTROL_SaveResults();
+
+	CONTROL_SetDeviceState(DS_Ready, SS_None);
+}
+//-----------------------------------------------
+
+void CONTROL_SaveResults()
+{
+	DataTable[REG_CURRENT] = LOGIC_ExctractCurrentValue();
+	LOGIC_SaveSamplesToEndpoints();
 }
 //-----------------------------------------------
 
