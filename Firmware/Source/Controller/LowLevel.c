@@ -88,8 +88,9 @@ void LL_ExtRegWriteData(Int16U Data)
 {
 	SPI_WriteByte8b(SPI1, Data);
 
+	DELAY_US(10);
 	GPIO_SetState(GPIO_SPI_RCK, true);
-	DELAY_US(100);
+	DELAY_US(10);
 	GPIO_SetState(GPIO_SPI_RCK, false);
 }
 //------------------------------------------------------------------------------
