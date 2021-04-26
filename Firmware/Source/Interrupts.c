@@ -27,21 +27,26 @@ void DMA1_Channel1_IRQHandler()
 
 void EXTI9_5_IRQHandler()
 {
-	if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
+	if (EXTI_FlagCheck(EXTI_6))
 	{
-		if (LL_ReadLineSync())
+		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
 		{
-			MEASURE_Start(TRUE);
-			LOGIC_StartRiseEdge();
+			if (LL_ReadLineSync())
+			{
+				MEASURE_Start(TRUE);
+				LOGIC_StartRiseEdge();
 
-			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
-		}
-		else
-		{
-			LOGIC_StartFallEdge();
-			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+			}
+			else
+			{
+				LOGIC_StartFallEdge();
+				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+			}
 		}
 	}
+
+	EXTI_FlagReset(EXTI_6);
 }
 //-----------------------------------------
 
@@ -79,10 +84,12 @@ void TIMx_Process(TIM_TypeDef* TIMx)
 
 void EXTI15_10_IRQHandler()
 {
-	if (EXTI_FlagCheck(EXTI_PR_PR13))
+	if (EXTI_FlagCheck(EXTI_13))
 	{
 		CONTROL_SwitchToFault(DF_PROTECTION);
 	}
+
+	EXTI_FlagReset(EXTI_13);
 }
 //-----------------------------------------
 
