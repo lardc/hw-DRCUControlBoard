@@ -16,5 +16,6 @@ void DBGACT_InternalPowerSupplyDischarge();
 void DBGACT_ProtectionReset();
 void DBGACT_OutputLockControl();
 void DBGACT_Sync();
+void DBGACT_ExtRegWriteData();
 
 #endif //__DEBUGACTIONS_H

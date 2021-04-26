@@ -18,6 +18,7 @@
 #define ACT_DBG_PROTECTION_RESET				56		// Отладочный режим - сброс защиты по перенапряжению на управляющем выходе
 #define ACT_DBG_OUTPUT_LOCK_CONTROL				57		// Отладочный режим - управление блокировкой выхода
 #define ACT_DBG_SYNC							58		// Отладочный режим - формирование импульса синхронизации
+#define ACT_DBG_EXT_REG_WRITE_DATA				59		// Отладочный режим - запись данных во внешний регистр
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск

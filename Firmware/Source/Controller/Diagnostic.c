@@ -46,6 +46,10 @@ bool DIAG_HandleDiagnosticAction(uint16_t ActionID, uint16_t *pUserError)
 			DBGACT_Sync();
 		break;
 
+		case ACT_DBG_EXT_REG_WRITE_DATA:
+			DBGACT_ExtRegWriteData();
+			break;
+
 		default:
 			return false;
 	}

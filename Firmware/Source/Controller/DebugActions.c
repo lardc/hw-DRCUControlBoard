@@ -66,3 +66,9 @@ void DBGACT_Sync()
 	LL_SW_Trig(false);
 }
 //-----------------------------------------------
+
+void DBGACT_ExtRegWriteData()
+{
+	LL_ExtRegWriteData(DataTable[REG_DBG]);
+}
+//-----------------------------------------------
