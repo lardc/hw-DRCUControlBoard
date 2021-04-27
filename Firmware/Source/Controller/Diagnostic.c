@@ -50,6 +50,10 @@ bool DIAG_HandleDiagnosticAction(uint16_t ActionID, uint16_t *pUserError)
 			DBGACT_ExtRegWriteData();
 			break;
 
+		case ACT_DBG_GENERATE_PULSE:
+			DBGACT_GeneratePulse();
+			break;
+
 		default:
 			return false;
 	}

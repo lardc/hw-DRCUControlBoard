@@ -17,5 +17,6 @@ void DBGACT_ProtectionReset();
 void DBGACT_OutputLockControl();
 void DBGACT_Sync();
 void DBGACT_ExtRegWriteData();
+void DBGACT_GeneratePulse();
 
 #endif //__DEBUGACTIONS_H

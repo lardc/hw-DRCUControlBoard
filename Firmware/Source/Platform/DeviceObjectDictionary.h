@@ -19,6 +19,7 @@
 #define ACT_DBG_OUTPUT_LOCK_CONTROL				57		// Отладочный режим - управление блокировкой выхода
 #define ACT_DBG_SYNC							58		// Отладочный режим - формирование импульса синхронизации
 #define ACT_DBG_EXT_REG_WRITE_DATA				59		// Отладочный режим - запись данных во внешний регистр
+#define ACT_DBG_GENERATE_PULSE					60		// Отладочный режим - формирование импульса
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск

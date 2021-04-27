@@ -195,13 +195,15 @@ void LOGIC_SetCompensationVoltage(Int16U Current)
 
 void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
 {
-	TIM_Config(TIM3, SYSCLK, PulseWidth);
+	TIM_Reset(TIM3);
+	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
 //-------------------------------------------
 
 void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
 {
-	TIM_Config(TIM2, SYSCLK, PulseWidth);
+	TIM_Reset(TIM2);
+	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
 }
 //-------------------------------------------
 

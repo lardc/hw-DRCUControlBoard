@@ -11,7 +11,7 @@
 
 // Functions prototypes
 //
-void TIMx_Process(TIM_TypeDef* TIMx);
+void TIMx_Process(TIM_TypeDef* TIMx, uint32_t Event);
 
 // Functions
 //
@@ -33,8 +33,8 @@ void EXTI9_5_IRQHandler()
 		{
 			if (LL_ReadLineSync())
 			{
-				MEASURE_Start(TRUE);
 				LOGIC_StartRiseEdge();
+				MEASURE_Start(TRUE);
 
 				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 			}
@@ -42,6 +42,16 @@ void EXTI9_5_IRQHandler()
 			{
 				LOGIC_StartFallEdge();
 				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+			}
+		}
+		else
+		{
+			if ((CONTROL_State == DS_None))
+			{
+				if (LL_ReadLineSync())
+					LOGIC_StartRiseEdge();
+				else
+					LOGIC_StartFallEdge();
 			}
 		}
 	}
@@ -52,20 +62,22 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-	TIMx_Process(TIM2);
+	TIMx_Process(TIM2, TIM_SR_CC3IF);
 }
 //-----------------------------------------
 
 void TIM3_IRQHandler()
 {
-	TIMx_Process(TIM3);
+	TIMx_Process(TIM3, TIM_SR_CC4IF);
 }
 //-----------------------------------------
 
-void TIMx_Process(TIM_TypeDef* TIMx)
+void TIMx_Process(TIM_TypeDef* TIMx, uint32_t Event)
 {
-	if (TIM_StatusCheck(TIMx))
+	if (TIM_InterruptEventFlagCheck(TIMx, Event))
 	{
+		TIM_Stop(TIMx);
+
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
@@ -75,9 +87,8 @@ void TIMx_Process(TIM_TypeDef* TIMx)
 		if (CONTROL_SubState == SS_FallEdge)
 			CONTROL_StopProcess();
 
-		TIM_StatusClear(TIMx);
-		TIM_Stop(TIMx);
-		TIM_Reset(TIMx);
+
+		TIM_InterruptEventFlagClear(TIMx, Event);
 	}
 }
 //-----------------------------------------

@@ -7,6 +7,7 @@
 #include "Board.h"
 #include "DataTable.h"
 #include "Delay.h"
+#include "Logic.h"
 
 // Functions
 //
@@ -62,7 +63,7 @@ void DBGACT_OutputLockControl()
 void DBGACT_Sync()
 {
 	LL_SW_Trig(true);
-	DELAY_US(1000);
+	DELAY_US(3000);
 	LL_SW_Trig(false);
 }
 //-----------------------------------------------
@@ -70,5 +71,26 @@ void DBGACT_Sync()
 void DBGACT_ExtRegWriteData()
 {
 	LL_ExtRegWriteData(DataTable[REG_DBG]);
+}
+//-----------------------------------------------
+
+void DBGACT_GeneratePulse()
+{
+	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG]);
+	DELAY_US(500);
+
+	LL_OutputLock(false);
+	DELAY_US(1000);
+
+	LL_SW_Trig(true);
+	DELAY_US(3000);
+
+	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG]);
+	DELAY_US(1000);
+
+	LL_SW_Trig(false);
+	DELAY_US(1000);
+
+	LL_OutputLock(true);
 }
 //-----------------------------------------------
