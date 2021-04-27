@@ -34,7 +34,7 @@ void INITCFG_ConfigIO()
 	//
 
 	// ¬ходы
-	GPIO_InitInput(GPIO_SYNC, NoPull);
+	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	GPIO_InitInput(GPIO_PROTECTION, NoPull);
 	//
 	
@@ -142,15 +142,19 @@ void ADC_SwitchToBase()
 
 void INITCFG_ConfigTimer2_3()
 {
+	// Timer2
 	TIM_Clock_En(TIM_2);
 	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
 	TIM_OnePulseMode(TIM2, true);
-	TIM_Interupt(TIM2, 0, true);
+	TIMx_PWM_ConfigChannel(TIM2, TIMx_CHANNEL3);
+	TIM_InterruptEventConfig(TIM2, TIM_DIER_CC3IE, true);
 
+	// Timer2
 	TIM_Clock_En(TIM_3);
 	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
 	TIM_OnePulseMode(TIM3, true);
-	TIM_Interupt(TIM3, 0, true);
+	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
+	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
 }
 //------------------------------------------------------------------------------
 
