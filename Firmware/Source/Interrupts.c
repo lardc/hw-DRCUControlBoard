@@ -31,6 +31,8 @@ void EXTI9_5_IRQHandler()
 	{
 		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
 		{
+			LL_IntPowerSupplyEn(FALSE);
+
 			if (LL_ReadLineSync())
 			{
 				LOGIC_StartRiseEdge();
