@@ -20,6 +20,8 @@
 #define ACT_DBG_SYNC							58		// Отладочный режим - формирование импульса синхронизации
 #define ACT_DBG_EXT_REG_WRITE_DATA				59		// Отладочный режим - запись данных во внешний регистр
 #define ACT_DBG_GENERATE_PULSE					60		// Отладочный режим - формирование импульса
+#define ACT_DBG_CURRENT_READY_OUTPUT			61		// Отладочный режим - формирования сигнала CurrentReady
+#define ACT_DBG_SET_COMPENSATION				62		// Отладочный режим - установка напряжения компенсации
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск
@@ -78,7 +80,8 @@
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
 
-#define REG_DBG									150		// Отладочный регистр
+#define REG_DBG									150		// Отладочный регистр 1
+#define REG_DBG2								151		// Отладочный регистр 2
 // -----------------------------------------------
 
 #define REG_DEV_STATE							96		// Статус работы блока

@@ -54,6 +54,14 @@ bool DIAG_HandleDiagnosticAction(uint16_t ActionID, uint16_t *pUserError)
 			DBGACT_GeneratePulse();
 			break;
 
+		case ACT_DBG_CURRENT_READY_OUTPUT:
+			DBGACT_CurrentReadyOutput();
+			break;
+
+		case ACT_DBG_SET_COMPENSATION:
+			DBGACT_SetCompensationVoltage();
+			break;
+
 		default:
 			return false;
 	}

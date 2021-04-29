@@ -18,5 +18,7 @@ void DBGACT_OutputLockControl();
 void DBGACT_Sync();
 void DBGACT_ExtRegWriteData();
 void DBGACT_GeneratePulse();
+void DBGACT_CurrentReadyOutput();
+void DBGACT_SetCompensationVoltage();
 
 #endif //__DEBUGACTIONS_H
