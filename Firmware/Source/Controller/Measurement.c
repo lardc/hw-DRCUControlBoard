@@ -5,6 +5,10 @@
 #include "Board.h"
 #include "Global.h"
 
+// Definitions
+//
+#define MEASURE_FILTER_SIZE			16		// Кратно 2^x
+#define MEASURE_FILTER_MASK			(MEASURE_FILTER_SIZE - 1)
 
 // Forward functions
 //
@@ -32,7 +36,19 @@ float MEASURE_BatteryVoltage()
 
 float MEASURE_IntPSVoltage()
 {
-	return MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+	static uint16_t MeasureCounter = 0;
+	static float DataArray[MEASURE_FILTER_SIZE];
+	float DataSum = 0;
+
+	DataArray[MeasureCounter] = MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+
+	MeasureCounter++;
+	MeasureCounter &= MEASURE_FILTER_MASK;
+
+	for (int i = 0; i < MEASURE_FILTER_SIZE; i++)
+		DataSum += DataArray[i];
+
+	return (DataSum / MEASURE_FILTER_SIZE);
 }
 //------------------------------------------------------------------------------
 
