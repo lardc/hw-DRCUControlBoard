@@ -49,6 +49,7 @@
 //
 volatile uint16_t LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 Int16U CurrentRateCode;
+Int32U PulseWidth_CTRL1, PulseWidth_CTRL2;
 
 // Forward functions
 //
@@ -62,21 +63,19 @@ int MEASURE_SortCondition(const void *A, const void *B);
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
 	if (StopPowerSupply)
-		LOGIC_BatteryCharge(FALSE);
+		LOGIC_BatteryCharge(false);
 
-	LOGIC_SofwarePulseStart(FALSE);
-	MEASURE_Start(FALSE);
-
-	LL_OutputLock(TRUE);
-	LL_IntPowerSupplyDischarge(FALSE);
-	LL_IntPowerSupplyEn(FALSE);
+	//MEASURE_Start(false);
+	LL_OutputLock(true);
+	LL_IntPowerSupplyDischarge(false);
+	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
-	LL_OutputCompensation(FALSE);
-	LL_External_DC_RDY(FALSE);
-	LL_ExternalLamp(FALSE);
+	LL_OutputCompensation(false);
+	LL_External_DC_RDY(false);
+	LL_ExternalLamp(false);
 
 	// Переключение АЦП в базовый режим
-	ADC_SwitchToBase();
+	//ADC_SwitchToBase();
 
 	// Отключение формирователя
 	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
@@ -88,30 +87,29 @@ void LOGIC_BatteryCharge(bool State)
 {
 	if (State)
 	{
-		LL_PowerOnMechRelay(TRUE);
+		LL_PowerOnMechRelay(true);
 		DELAY_MS(100);
-		LL_PowerOnSolidStateRelay(TRUE);
+		LL_PowerOnSolidStateRelay(true);
 	}
 	else
 	{
-		LL_PowerOnMechRelay(TRUE);
-		LL_PowerOnSolidStateRelay(TRUE);
+		LL_PowerOnMechRelay(false);
+		LL_PowerOnSolidStateRelay(false);
 	}
 }
 //-------------------------------------------
 
 void LOGIC_Config()
 {
-	Int32U MaxPulseWidth_CTRL1, PulseWidth_CTRL1, PulseWidth_CTRL2;
+	Int32U MaxPulseWidth_CTRL1;
 
 	LOGIC_ClearDataArrays();
 
 	// Настройка аппаратной части
 	//
-	ADC_SwitchToHighSpeed();
 	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
-	LL_OutputLock(FALSE);
-	LL_PowerOnSolidStateRelay(FALSE);
+	LL_OutputLock(false);
+	LL_PowerOnSolidStateRelay(false);
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -178,11 +176,14 @@ void LOGIC_Config()
 
 	LL_ExtRegWriteData(CurrentRateCode);
 
-	PulseWidth_CTRL1 = MaxPulseWidth_CTRL1 * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_CURRENT_SETPOINT_MAX];
-	PulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH] * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_CURRENT_SETPOINT_MAX];
+	PulseWidth_CTRL1 = MaxPulseWidth_CTRL1 * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+	PulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH] * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
 
-	LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
+#ifdef TYPE_UNIT_DCU
 	LOGIC_ConstantPulseRateConfig(PulseWidth_CTRL2);
+#else
+	LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
+#endif
 }
 //-------------------------------------------
 
@@ -190,6 +191,7 @@ void LOGIC_SetCompensationVoltage(Int16U Current)
 {
 	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
 			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
+	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------
 
@@ -219,7 +221,7 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
-	LL_OutputCompensation(FALSE);
+	LL_OutputCompensation(false);
 
 #ifdef TYPE_UNIT_DCU
 	TIM_Start(TIM3);
@@ -229,15 +231,11 @@ void LOGIC_StartFallEdge()
 }
 //-------------------------------------------
 
-void LOGIC_SofwarePulseStart(bool State)
+void LOGIC_SofwarePulseStart()
 {
-	if (State)
-		TIM_Start(TIM16);
-	else
-	{
-		TIM_Stop(TIM16);
-		TIM_Reset(TIM16);
-	}
+	LL_SW_Trig(true);
+	DELAY_US(3000);
+	LL_SW_Trig(false);
 }
 //-------------------------------------------
 
@@ -288,7 +286,7 @@ void LOGIC_HandleAdcSamples()
 			UnallowedErrorCounter++;
 
 		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-			LL_External_DC_RDY(TRUE);
+			LL_External_DC_RDY(true);
 		else if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
 				DataTable[REG_WARNING] = WARNING_CURRENT_READY;
 	}
