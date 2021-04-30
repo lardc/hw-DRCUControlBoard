@@ -47,17 +47,17 @@
 #define REG_I_DUT_P2							14		// Коэффициент тонкой подстройки Р2
 #define REG_I_TO_DAC_OFFSET						15		// Смещение преобразования ток->ЦАП
 #define REG_I_TO_DAC_K							16		// Коэффициент преобразования ток->ЦАП
-#define REG_I_TO_DAC_P2							17		// Регистр тонкой подстройки Р2
+#define REG_I_TO_DAC_P0							17		// Регистр тонкой подстройки Р0
 #define REG_I_TO_DAC_P1							18		// Регистр тонкой подстройки Р1
-#define REG_I_TO_DAC_P0							19		// Регистр тонкой подстройки Р0
+#define REG_I_TO_DAC_P2							19		// Регистр тонкой подстройки Р2
 //
-#define REG_BATTERY_FULL_CHRAGE_TIMEOUT			20		// Таймаут полного заряда батареи,мс
-#define REG_BATTERY_RECHRAGE_TIMEOUT			21		// Таймаут дозаряда батареи,мс
-#define REG_BAT_VOLTAGE_THRESHOLD				22		// Минимальный порог заряда батареи, В *10
-#define REG_CURRENT_BOARD_QUANTITY				23		// Количество силовых плат
-#define REG_RISE_EDGE_TIME						24		// Длительность переднего фронта при максимальной амплитуде тока
-#define REG_FALL_EDGE_TIME						25		// Длительность заднего фронта при максимальной амплитуде тока
-#define REG_CURRENT_SETPOINT_MAX				26		// Максимальное значение тока с блока
+#define REG_INTPS_STAB_COUNTER_VALUE			20		// Макс. значение счетчика при задании напряжения внутреннего источника
+#define REG_ERR_FOR_FORCED_DISCHARGE			21		// Ошибка, при которой включается форсированный разряд внутреннего источника (% * 10)
+#define REG_INTPS_ALLOWED_ERROR					22		// Минимально допустимая ошибка задания напряжения внутреннего источника (% * 10)
+#define REG_BATTERY_FULL_CHRAGE_TIMEOUT			23		// Таймаут полного заряда батареи,мс
+#define REG_BATTERY_RECHRAGE_TIMEOUT			24		// Таймаут дозаряда батареи,мс
+#define REG_BAT_VOLTAGE_THRESHOLD				25		// Минимальный порог заряда батареи, В *10
+#define REG_MAXIMUM_UNIT_CURRENT				26		// Максимальное значение тока с блока
 #define REG_CONFIG_RDY_STATE_TIMEOUT			27		// Таймаут нахождения блока в состоянии ConfigReady
 #define REG_ERROR_COUNTER_MAX					28		// Максимальное значение счетчика при определении выхода тока на задание
 #define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на хадание (% * 10)
@@ -84,16 +84,15 @@
 #define REG_DBG2								151		// Отладочный регистр 2
 // -----------------------------------------------
 
-#define REG_DEV_STATE							96		// Статус работы блока
-#define REG_FAULT_REASON						97		// Ошибка работы блока
-#define REG_DISABLE_REASON						98		// Причина отключения блока
-#define REG_WARNING								99		// Предупреждение
-#define REG_PROBLEM								100		// Регистр Problem
+#define REG_DEV_STATE							192		// Статус работы блока
+#define REG_FAULT_REASON						193		// Ошибка работы блока
+#define REG_DISABLE_REASON						194		// Причина отключения блока
+#define REG_WARNING								195		// Предупреждение
+#define REG_PROBLEM								196		// Регистр Problem
 //
-#define REG_BAT_VOLTAGE							103		// Напряжение на конденсаторной батарее 1 (в В х10)
-//
-#define REG_CURRENT								111		// Измеренное значение амплитуды тока (в мА)
-#define REG_INT_PS_VOLTAGE						110
+#define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
+#define REG_CURRENT								201		// Измеренное значение амплитуды тока (в мА)
+#define REG_INT_PS_VOLTAGE						202
 
 
 // ENDPOINTS
