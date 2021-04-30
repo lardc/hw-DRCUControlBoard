@@ -100,7 +100,8 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			break;
 
 		case ACT_DISABLE_POWER:
-			if((CONTROL_State == DS_Ready) || ((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)))
+			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_ConfigReady) ||
+					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)))
 				CONTROL_ResetToDefaults(TRUE);
 			else if(CONTROL_State != DS_None)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -121,7 +122,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_SOFTWARE_START:
 			if (CONTROL_State == DS_ConfigReady)
-				LOGIC_SofwarePulseStart(TRUE);
+				LOGIC_SofwarePulseStart();
 			else
 				if (CONTROL_State == DS_InProcess)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -176,24 +177,44 @@ void CONTROL_DeviceStateControl()
 
 void CONTROL_HandleIntPSTune()
 {
-	if((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PulsePrepare))
+	float dV = 0;
+	static Int64U IntPsStabCounter = 0;
+
+	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady))
 	{
-		LL_IntPowerSupplyEn(TRUE);
-		DELAY_MS(TIME_INT_PS_ACTIVITY);
-		LL_IntPowerSupplyEn(FALSE);
-
-		LL_IntPowerSupplyDischarge(TRUE);
-
-		while(MEASURE_IntPSVoltage() > ((float)DataTable[REG_INT_PS_VOLTAGE] / 10)){}
-
-		LL_IntPowerSupplyDischarge(FALSE);
-
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
-		CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
+		dV = (float)(DataTable[REG_INT_PS_VOLTAGE] - DataTable[REG_DBG2]) / DataTable[REG_DBG2] * 1000;
+		if (dV < 0)
+			dV = dV * (-1);
 
-		CONTROL_DeviceStateTimeCounter = CONTROL_TimeCounter + DataTable[REG_CONFIG_RDY_STATE_TIMEOUT];
+		if ((CONTROL_SubState == SS_PulsePrepare) && (dV <= DataTable[REG_INTPS_ALLOWED_ERROR]))
+		{
+			IntPsStabCounter++;
+
+			if(IntPsStabCounter >= DataTable[REG_INTPS_STAB_COUNTER_VALUE])
+			{
+				IntPsStabCounter = 0;
+				CONTROL_DeviceStateTimeCounter = CONTROL_TimeCounter + DataTable[REG_CONFIG_RDY_STATE_TIMEOUT];
+				CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
+			}
+		}
+
+		if (DataTable[REG_INT_PS_VOLTAGE] < DataTable[REG_DBG2])
+		{
+			LL_IntPowerSupplyDischarge(false);
+			LL_IntPowerSupplyEn(true);
+		}
+		else
+		{
+			LL_IntPowerSupplyEn(false);
+
+			if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
+				LL_IntPowerSupplyDischarge(true);
+		}
 	}
+	else
+		LL_IntPowerSupplyEn(false);
 }
 //-----------------------------------------------
 
@@ -201,27 +222,30 @@ void CONTROL_HandleBatteryCharge()
 {
 	float BatteryVoltage;
 
-	BatteryVoltage = MEASURE_BatteryVoltage();
-
-	if ((CONTROL_SubState == SS_PowerPrepare) && (CONTROL_TimeCounter < CONTROL_BatteryChargeTimeCounter))
+	if (CONTROL_SubState == SS_PowerPrepare)
 	{
+		BatteryVoltage = MEASURE_BatteryVoltage() * 10;
+
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		{
 			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
 				CONTROL_SetDeviceState(DS_Ready, SS_None);
-	}
-	else
-	{
-		if (CONTROL_SubState == SS_PowerPrepare)
-			CONTROL_SwitchToFault(DF_BATTERY);
-	}
+		}
+		else
+		{
+			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
+				CONTROL_SwitchToFault(DF_BATTERY);
+		}
 
-	DataTable[REG_BAT_VOLTAGE] = (Int16U) (BatteryVoltage * 10);
+		DataTable[REG_BAT_VOLTAGE] = (Int16U) BatteryVoltage;
+	}
 }
 //-----------------------------------------------
 
 void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(FALSE);
+	LL_PowerOnSolidStateRelay(true);
 	CONTROL_SaveResults();
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
