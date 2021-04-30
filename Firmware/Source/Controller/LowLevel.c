@@ -72,9 +72,9 @@ void LL_IntPowerSupplyEn(bool State)
 
 void LL_OverVoltageProtectionReset()
 {
-	GPIO_SetState(GPIO_PROTECTION_RST, FALSE);
+	GPIO_SetState(GPIO_PROTECTION_RST, false);
 	DELAY_US(50);
-	GPIO_SetState(GPIO_PROTECTION_RST, TRUE);
+	GPIO_SetState(GPIO_PROTECTION_RST, true);
 }
 //------------------------------------------------------------------------------
 
