@@ -4,6 +4,7 @@
 #include "DataTable.h"
 #include "Board.h"
 #include "Global.h"
+#include "InitConfig.h"
 
 // Definitions
 //
@@ -12,15 +13,15 @@
 
 // Forward functions
 //
-float MEASURE_VoltageX(uint16_t ADC1Channel, uint16_t RegisterOffset, uint16_t RegisterK);
-void MEASURE_ConvertADCtoValx(volatile uint16_t *InputArray, float *OutputArray, uint16_t ArrayOffset, uint16_t DataLength,
-							  uint16_t RegisterOffset, uint16_t RegisterK, uint16_t RegisterP0, uint16_t RegisterP1, uint16_t RegisterP2);
+float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK);
+void MEASURE_ConvertADCtoValx(volatile Int16U *InputArray, float *OutputArray, Int16U ArrayOffset, Int16U DataLength,
+							  Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2);
 
 // Functions
 //
-float MEASURE_VoltageX(uint16_t ADC1Channel, uint16_t RegisterOffset, uint16_t RegisterK)
+float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK)
 {
-	float Offset = (float)((int16_t)DataTable[RegisterOffset]);
+	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 1000;
 	float result = ((float)ADC_Measure(ADC1, ADC1Channel) - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
@@ -36,7 +37,7 @@ float MEASURE_BatteryVoltage()
 
 float MEASURE_IntPSVoltage()
 {
-	static uint16_t MeasureCounter = 0;
+	static Int16U MeasureCounter = 0;
 	static float DataArray[MEASURE_FILTER_SIZE];
 	float DataSum = 0;
 
@@ -66,18 +67,18 @@ Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U Regis
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_ConvertADCtoValx(volatile uint16_t *InputArray, float *OutputArray, uint16_t ArrayOffset, uint16_t DataLength,
-							  uint16_t RegisterOffset, uint16_t RegisterK, uint16_t RegisterP0, uint16_t RegisterP1, uint16_t RegisterP2)
+void MEASURE_ConvertADCtoValx(volatile Int16U *InputArray, float *OutputArray, Int16U ArrayOffset, Int16U DataLength,
+							  Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2)
 {
-	uint16_t i;
+	Int16U i;
 	float tmp;
 
-	float Offset = (float)((int16_t)DataTable[RegisterOffset]);
+	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 1000;
 	//
-	float P0 = (float)((int16_t)DataTable[RegisterP0]);
+	float P0 = (float)((Int16S)DataTable[RegisterP0]);
 	float P1 = (float)DataTable[RegisterP1] / 1000;
-	float P2 = (float)((int16_t)DataTable[RegisterP2]) / 1e6;
+	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
 
 	for (i = 0; i < DataLength; ++i)
 	{
@@ -88,7 +89,7 @@ void MEASURE_ConvertADCtoValx(volatile uint16_t *InputArray, float *OutputArray,
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_ConvertCurrentArr(volatile uint16_t *InputArray, float *OutputArray, uint16_t DataLength)
+void MEASURE_ConvertCurrentArr(volatile Int16U *InputArray, float *OutputArray, Int16U DataLength)
 {
 	MEASURE_ConvertADCtoValx(InputArray, OutputArray, 1, DataLength, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
 }
@@ -96,6 +97,7 @@ void MEASURE_ConvertCurrentArr(volatile uint16_t *InputArray, float *OutputArray
 
 void MEASURE_Start(bool State)
 {
+	ADC_SwitchToHighSpeed();
 	State ? TIM_Start(TIM6) : TIM_Stop(TIM6);
 }
 //------------------------------------------------------------------------------
