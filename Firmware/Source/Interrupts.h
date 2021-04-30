@@ -3,8 +3,4 @@
 
 #include "stdinc.h"
 
-// Variables
-//
-
-
 #endif // __INTERRUPTS_H

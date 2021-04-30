@@ -47,7 +47,7 @@
 
 // Varibales
 //
-volatile uint16_t LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
+volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 Int16U CurrentRateCode;
 Int32U PulseWidth_CTRL1, PulseWidth_CTRL2;
 
@@ -309,6 +309,6 @@ void LOGIC_ClearDataArrays()
 
 int MEASURE_SortCondition(const void *A, const void *B)
 {
-	return (int)(*(uint16_t *)A) - (int)(*(uint16_t *)B);
+	return (int)(*(Int16U *)A) - (int)(*(Int16U *)B);
 }
 //-----------------------------------------

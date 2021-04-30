@@ -9,7 +9,7 @@ void CONTROL_Idle();
 int main()
 {
 	__disable_irq();
-	SCB->VTOR = (uint32_t)BOOT_LOADER_MAIN_PR_ADDR;
+	SCB->VTOR = (Int32U)BOOT_LOADER_MAIN_PR_ADDR;
 	__enable_irq();
 
 	// Настройка системной частоты тактирования
@@ -55,7 +55,7 @@ int main()
 	InitializeController(false);
 
 	// Фоновый цикл
-	while (TRUE)
+	while (true)
 		CONTROL_Idle();
 
 	return 0;

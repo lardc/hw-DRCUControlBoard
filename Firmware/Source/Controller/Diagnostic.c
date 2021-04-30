@@ -6,7 +6,7 @@
 #include "DeviceObjectDictionary.h"
 
 // Functions
-bool DIAG_HandleDiagnosticAction(uint16_t ActionID, uint16_t *pUserError)
+bool DIAG_HandleDiagnosticAction(Int16U ActionID, Int16U *pUserError)
 {
 	switch (ActionID)
 	{

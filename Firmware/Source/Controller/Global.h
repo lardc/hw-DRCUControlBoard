@@ -14,12 +14,12 @@
 // Global miscellaneous parameters
 #define	SCCI_TIMEOUT_TICKS				1000						// (в мс)
 // Password to unlock non-volatile area for write
-#define ENABLE_LOCKING					FALSE
+#define ENABLE_LOCKING					false
 // -----------------------------------------------
 #define EP_WRITE_COUNT					0							// Количество массивов для записи
 #define EP_COUNT						1							// Количество массивов для чтения
 #define VALUES_x_SIZE					2000						// Размер выходных массивов
-#define ENABLE_LOCKING					FALSE
+#define ENABLE_LOCKING					false
 // -----------------------------------------------
 
 // Временные параметры

@@ -83,8 +83,8 @@ void INITCFG_ConfigExtInterrupt()
 void INITCFG_ConfigCAN()
 {
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
-	NCAN_Init(SYSCLK, CAN_BAUDRATE, FALSE);
-	NCAN_FIFOInterrupt(TRUE);
+	NCAN_Init(SYSCLK, CAN_BAUDRATE, false);
+	NCAN_FIFOInterrupt(true);
 	NCAN_FilterInit(0, CAN_SLAVE_FILTER_ID, CAN_SLAVE_FILTER_ID);
 }
 //------------------------------------------------------------------------------
@@ -193,10 +193,10 @@ void INITCFG_ConfigDMA()
 
 	// DMA для АЦП тока на DUT
 	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
-	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (uint32_t)&LOGIC_DUTCurrentRaw[0], (uint32_t)(&ADC1->DR), ADC_AVG_SAMPLES);
+	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (Int32U)&LOGIC_DUTCurrentRaw[0], (Int32U)(&ADC1->DR), ADC_AVG_SAMPLES);
 	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
 						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_DIS, DMA_READ_FROM_PERIPH);
-	DMA_Interrupt(DMA_ADC_DUT_I_CHANNEL, DMA_TRANSFER_COMPLETE, 0, TRUE);
+	DMA_Interrupt(DMA_ADC_DUT_I_CHANNEL, DMA_TRANSFER_COMPLETE, 0, true);
 	DMA_ChannelEnable(DMA_ADC_DUT_I_CHANNEL, true);
 }
 //------------------------------------------------------------------------------

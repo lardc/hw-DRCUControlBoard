@@ -27,7 +27,7 @@
 //
 DeviceState CONTROL_State = DS_None;
 SubState CONTROL_SubState = SS_None;
-static Boolean CycleActive = FALSE;
+static Boolean CycleActive = false;
 //
 volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
 volatile Int16U CONTROL_Values_Counter = 0;
@@ -63,13 +63,13 @@ void CONTROL_Init()
 	// Конфигурация сервиса работы Data-table и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
 	// Инициализация data table
-	DT_Init(EPROMService, FALSE);
+	DT_Init(EPROMService, false);
 	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
 	// Сброс значений
 	DEVPROFILE_ResetControlSection();
-	CONTROL_ResetToDefaults(TRUE);
+	CONTROL_ResetToDefaults(true);
 }
 //------------------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			{
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
-				LOGIC_BatteryCharge(TRUE);
+				LOGIC_BatteryCharge(true);
 			}
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;
@@ -102,7 +102,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 		case ACT_DISABLE_POWER:
 			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_ConfigReady) ||
 					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)))
-				CONTROL_ResetToDefaults(TRUE);
+				CONTROL_ResetToDefaults(true);
 			else if(CONTROL_State != DS_None)
 					*pUserError = ERR_OPERATION_BLOCKED;
 			break;
@@ -132,7 +132,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_CLR_FAULT:
 			if (CONTROL_State == DS_Fault)
-				CONTROL_ResetToDefaults(TRUE);
+				CONTROL_ResetToDefaults(true);
 			break;
 
 		case ACT_CLR_WARNING:
@@ -147,7 +147,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			break;
 	}
 
-	return TRUE;
+	return true;
 }
 //-----------------------------------------------
 
@@ -244,7 +244,7 @@ void CONTROL_HandleBatteryCharge()
 
 void CONTROL_StopProcess()
 {
-	LOGIC_ResetHWToDefaults(FALSE);
+	LOGIC_ResetHWToDefaults(false);
 	LL_PowerOnSolidStateRelay(true);
 	CONTROL_SaveResults();
 
@@ -275,7 +275,7 @@ void CONTROL_RegistersReset()
 
 void CONTROL_SwitchToFault(Int16U Reason)
 {
-	LOGIC_ResetHWToDefaults(TRUE);
+	LOGIC_ResetHWToDefaults(true);
 	//
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
