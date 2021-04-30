@@ -158,14 +158,6 @@ void INITCFG_ConfigTimer2_3()
 }
 //------------------------------------------------------------------------------
 
-void INITCFG_ConfigTimer16()
-{
-	TIM_Clock_En(TIM_16);
-	TIM_Config(TIM16, SYSCLK, TIMER16_uS);
-	TIM_OnePulseMode(TIM16, true);
-}
-//------------------------------------------------------------------------------
-
 void INITCFG_ConfigTimer7()
 {
 	TIM_Clock_En(TIM_7);
