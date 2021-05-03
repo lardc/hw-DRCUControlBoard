@@ -11,7 +11,7 @@
 
 // Functions prototypes
 //
-void TIMx_Process(TIM_TypeDef* TIMx, uint32_t Event);
+void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
 
 // Functions
 //
@@ -31,12 +31,12 @@ void EXTI9_5_IRQHandler()
 	{
 		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
 		{
-			LL_IntPowerSupplyEn(FALSE);
+			LL_IntPowerSupplyEn(false);
 
 			if (LL_ReadLineSync())
 			{
 				LOGIC_StartRiseEdge();
-				MEASURE_Start(TRUE);
+				//MEASURE_Start(true);
 
 				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 			}
@@ -74,7 +74,7 @@ void TIM3_IRQHandler()
 }
 //-----------------------------------------
 
-void TIMx_Process(TIM_TypeDef* TIMx, uint32_t Event)
+void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 {
 	if (TIM_InterruptEventFlagCheck(TIMx, Event))
 	{
@@ -83,7 +83,13 @@ void TIMx_Process(TIM_TypeDef* TIMx, uint32_t Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-			LL_OutputCompensation(TRUE);
+			LL_OutputCompensation(true);
+
+#ifdef TYPE_UNIT_DCU
+			LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
+#else
+			LOGIC_ConstantPulseRateConfig(PulseWidth_CTRL2);
+#endif
 		}
 
 		if (CONTROL_SubState == SS_FallEdge)
