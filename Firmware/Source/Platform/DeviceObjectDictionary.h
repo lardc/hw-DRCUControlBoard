@@ -60,7 +60,7 @@
 #define REG_MAXIMUM_UNIT_CURRENT				26		// Максимальное значение тока с блока
 #define REG_CONFIG_RDY_STATE_TIMEOUT			27		// Таймаут нахождения блока в состоянии ConfigReady
 #define REG_ERROR_COUNTER_MAX					28		// Максимальное значение счетчика при определении выхода тока на задание
-#define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на хадание (% * 10)
+#define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на задание (% * 10)
 #define REG_AFTER_PULSE_PAUSE					30		// Пауза после импульса, мс
 //
 #define REG_CTRL1_MAX_WIDTH_050					40		// Максимальная длительность импульса CTRL1 при 0.5А/мкс
@@ -89,6 +89,7 @@
 #define REG_DISABLE_REASON						194		// Причина отключения блока
 #define REG_WARNING								195		// Предупреждение
 #define REG_PROBLEM								196		// Регистр Problem
+#define REG_DEV_SUBSTATE						197		// Подстатус работы блока
 //
 #define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
 #define REG_CURRENT								201		// Измеренное значение амплитуды тока (в мА)
