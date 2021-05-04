@@ -66,30 +66,30 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_2500_DEF},											// 60
 		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_3000_DEF},											// 61
 		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_5000_DEF},											// 62
-		{0, 0, 0},																				// 63
-		{0, 0, 0},																				// 64
-		{0, 0, 0},																				// 65
-		{0, 0, 0},																				// 66
-		{0, 0, 0}, 																				// 67
-		{0, 0, 0},																				// 68
-		{0, 0, 0},																				// 69
-		{0, 0, 0},																				// 70
-		{0, 0, 0},																				// 71
-		{0, 0, 0},																				// 72
-		{0, 0, 0},																				// 73
-		{0, 0, 0},																				// 74
-		{0, 0, 0},																				// 75
-		{0, 0, 0},																				// 76
-		{0, 0, 0},																				// 77
-		{0, 0, 0},																				// 78
-		{0, 0, 0},																				// 79
-		{0, 0, 0},																				// 80
-		{0, 0, 0},																				// 81
-		{0, 0, 0},																				// 82
-		{0, 0, 0},																				// 83
-		{0, 0, 0},																				// 84
-		{0, 0, 0},																				// 85
-		{0, 0, 0},																				// 86
+		{0, INT16U_MAX, CTRL1_050_OFFSET_DEF},													// 63
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_050_K_DEF},							// 64
+		{0, INT16U_MAX, CTRL1_075_OFFSET_DEF},													// 65
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_075_K_DEF},							// 66
+		{0, INT16U_MAX, CTRL1_100_OFFSET_DEF}, 													// 67
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_100_K_DEF},							// 68
+		{0, INT16U_MAX, CTRL1_250_OFFSET_DEF},													// 69
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_250_K_DEF},							// 70
+		{0, INT16U_MAX, CTRL1_500_OFFSET_DEF},													// 71
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_500_K_DEF},							// 72
+		{0, INT16U_MAX, CTRL1_750_OFFSET_DEF},													// 73
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_750_K_DEF},							// 74
+		{0, INT16U_MAX, CTRL1_1000_OFFSET_DEF},													// 75
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_1000_K_DEF},							// 76
+		{0, INT16U_MAX, CTRL1_1500_OFFSET_DEF},													// 77
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_1500_K_DEF},							// 78
+		{0, INT16U_MAX, CTRL1_2500_OFFSET_DEF},													// 79
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_2500_K_DEF},							// 80
+		{0, INT16U_MAX, CTRL1_3000_OFFSET_DEF},													// 81
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_3000_K_DEF},							// 82
+		{0, INT16U_MAX, CTRL1_5000_OFFSET_DEF},													// 83
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_5000_K_DEF},							// 84
+		{0, INT16U_MAX, CTRL2_OFFSET_DEF},														// 85
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 86
 		{0, 0, 0},																				// 87
 		{0, 0, 0},																				// 88
 		{0, 0, 0},																				// 89

@@ -44,13 +44,16 @@
 #define CODE_CURRENT_RATE_5000		0x0F
 //
 #define RESULT_AVERAGE_POINTS		50					// Количество точек усредения результата измерения
+//
+#define INTPS_VOLTAGE_MAX			1250.0f				// Максимальное напряжение внутреннего источника (В * 10)
+
+// Structs
+//
+struct __ConfigParamsStruct ConfigParams;
 
 // Varibales
 //
 volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
-Int16U CurrentRateCode;
-Int32U PulseWidth_CTRL1, PulseWidth_CTRL2;
-Int16U IntPsVoltage = 0;
 
 // Forward functions
 //
@@ -102,99 +105,126 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	Int32U MaxPulseWidth_CTRL1;
+	float CurrentTemp;
 
 	LOGIC_ClearDataArrays();
 
 	// Настройка аппаратной части
 	//
-	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
-	LL_OutputLock(false);
 	LL_PowerOnSolidStateRelay(false);
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
 		case CURRENT_RATE_050:
-			CurrentRateCode = CODE_CURRENT_RATE_050;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_050];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_050];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_050;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_050];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_050];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_050_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_050_OFFSET];
 			break;
 
 		case CURRENT_RATE_075:
-			CurrentRateCode = CODE_CURRENT_RATE_075;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_075];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_075];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_075;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_075];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_075];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_075_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_075_OFFSET];
 			break;
 
 		case CURRENT_RATE_100:
-			CurrentRateCode = CODE_CURRENT_RATE_100;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_100];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_100];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_100;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_100];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_100];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_100_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_100_OFFSET];
 			break;
 
 		case CURRENT_RATE_250:
-			CurrentRateCode = CODE_CURRENT_RATE_250;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_250];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_250];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_250;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_250];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_250];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_250_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_250_OFFSET];
 			break;
 
 		case CURRENT_RATE_500:
-			CurrentRateCode = CODE_CURRENT_RATE_500;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_500];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_500];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_500;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_500];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_500];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_500_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_500_OFFSET];
 			break;
 
 		case CURRENT_RATE_750:
-			CurrentRateCode = CODE_CURRENT_RATE_750;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_750];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_750];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_750;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_750];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_750];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_750_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_750_OFFSET];
 			break;
 
 		case CURRENT_RATE_1000:
-			CurrentRateCode = CODE_CURRENT_RATE_1000;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1000];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1000];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_1000;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1000];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1000];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_1000_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_1000_OFFSET];
 			break;
 
 		case CURRENT_RATE_1500:
-			CurrentRateCode = CODE_CURRENT_RATE_1500;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1500];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1500];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_1500;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1500];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1500];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_1500_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_1500_OFFSET];
 			break;
 
 		case CURRENT_RATE_2500:
-			CurrentRateCode = CODE_CURRENT_RATE_2500;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_2500];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_2500];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_2500;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_2500];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_2500];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_2500_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_2500_OFFSET];
 			break;
 
 		case CURRENT_RATE_3000:
-			CurrentRateCode = CODE_CURRENT_RATE_3000;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_3000];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_3000];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_3000;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_3000];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_3000];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_3000_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_3000_OFFSET];
 			break;
 
 		case CURRENT_RATE_5000:
-			CurrentRateCode = CODE_CURRENT_RATE_5000;
-			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_5000];
-			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_5000];
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_5000;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_5000];
+			ConfigParams.IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_5000];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_5000_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_5000_OFFSET];
 			break;
 
 		default:
-			CurrentRateCode = CODE_CURRENT_RATE_OFF;
-			MaxPulseWidth_CTRL1 = 0;
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_OFF;
+			ConfigParams.IntPsVoltage = 0;
 			break;
 	}
 
-	LL_ExtRegWriteData(CurrentRateCode);
+	LL_ExtRegWriteData(ConfigParams.CurrentRateCode);
 
-	PulseWidth_CTRL1 = MaxPulseWidth_CTRL1 * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
-	PulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH] * (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
+	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
+	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	ConfigParams.PulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+
+	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL1_K + ConfigParams.PulseWidth_CTRL1_Offset;
+	ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1 * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT];
 
 #ifdef TYPE_UNIT_DCU
-	LOGIC_ConstantPulseRateConfig(PulseWidth_CTRL2);
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
+	//LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 #else
-	LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
+	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
+	//LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT] * K);
 #endif
 }
 //-------------------------------------------

@@ -3,12 +3,25 @@
 
 #include "stdinc.h"
 
+// Structs
+//
+struct __ConfigParamsStruct
+{
+	Int16U CurrentRateCode;
+	Int16U IntPsVoltage;
+	Int16U PulseWidth_CTRL1;
+	Int16U PulseWidth_CTRL2;
+	Int32U MaxPulseWidth_CTRL1;
+	float PulseWidth_CTRL1_K;
+	float PulseWidth_CTRL1_Offset;
+	float PulseWidth_CTRL2_K;
+	Int16S PulseWidth_CTRL2_Offset;
+};
+extern struct __ConfigParamsStruct ConfigParams;
+
 // Variables
 //
 extern volatile Int16U LOGIC_DUTCurrentRaw[];
-extern Int32U PulseWidth_CTRL1;
-extern Int32U PulseWidth_CTRL2;
-extern Int16U IntPsVoltage;
 
 //Functions
 //

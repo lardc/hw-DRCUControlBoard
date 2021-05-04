@@ -32,6 +32,7 @@ void EXTI9_5_IRQHandler()
 		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
 		{
 			LL_IntPowerSupplyEn(false);
+			LL_OutputLock(false);
 
 			if (LL_ReadLineSync())
 			{
@@ -86,9 +87,9 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 			LL_OutputCompensation(true);
 
 #ifdef TYPE_UNIT_DCU
-			LOGIC_VariablePulseRateConfig(PulseWidth_CTRL1);
+			LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1);
 #else
-			LOGIC_ConstantPulseRateConfig(PulseWidth_CTRL2);
+			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 #endif
 		}
 
