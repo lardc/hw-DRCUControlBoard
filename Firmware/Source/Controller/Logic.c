@@ -50,6 +50,7 @@
 volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 Int16U CurrentRateCode;
 Int32U PulseWidth_CTRL1, PulseWidth_CTRL2;
+Int16U IntPsVoltage = 0;
 
 // Forward functions
 //
@@ -116,56 +117,67 @@ void LOGIC_Config()
 		case CURRENT_RATE_050:
 			CurrentRateCode = CODE_CURRENT_RATE_050;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_050];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_050];
 			break;
 
 		case CURRENT_RATE_075:
 			CurrentRateCode = CODE_CURRENT_RATE_075;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_075];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_075];
 			break;
 
 		case CURRENT_RATE_100:
 			CurrentRateCode = CODE_CURRENT_RATE_100;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_100];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_100];
 			break;
 
 		case CURRENT_RATE_250:
 			CurrentRateCode = CODE_CURRENT_RATE_250;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_250];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_250];
 			break;
 
 		case CURRENT_RATE_500:
 			CurrentRateCode = CODE_CURRENT_RATE_500;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_500];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_500];
 			break;
 
 		case CURRENT_RATE_750:
 			CurrentRateCode = CODE_CURRENT_RATE_750;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_750];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_750];
 			break;
 
 		case CURRENT_RATE_1000:
 			CurrentRateCode = CODE_CURRENT_RATE_1000;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1000];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1000];
 			break;
 
 		case CURRENT_RATE_1500:
 			CurrentRateCode = CODE_CURRENT_RATE_1500;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1500];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_1500];
 			break;
 
 		case CURRENT_RATE_2500:
 			CurrentRateCode = CODE_CURRENT_RATE_2500;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_2500];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_2500];
 			break;
 
 		case CURRENT_RATE_3000:
 			CurrentRateCode = CODE_CURRENT_RATE_3000;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_3000];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_3000];
 			break;
 
 		case CURRENT_RATE_5000:
 			CurrentRateCode = CODE_CURRENT_RATE_5000;
 			MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_5000];
+			IntPsVoltage = DataTable[REG_INTPS_VOLTAGE_5000];
 			break;
 
 		default:

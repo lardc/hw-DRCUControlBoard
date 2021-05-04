@@ -184,7 +184,7 @@ void CONTROL_HandleIntPSTune()
 	{
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
-		dV = (float)(DataTable[REG_INT_PS_VOLTAGE] - DataTable[REG_DBG2]) / DataTable[REG_DBG2] * 1000;
+		dV = (float)(DataTable[REG_INT_PS_VOLTAGE] - IntPsVoltage) / IntPsVoltage * 1000;
 		if (dV < 0)
 			dV = dV * (-1);
 
@@ -200,7 +200,7 @@ void CONTROL_HandleIntPSTune()
 			}
 		}
 
-		if (DataTable[REG_INT_PS_VOLTAGE] < DataTable[REG_DBG2])
+		if (DataTable[REG_INT_PS_VOLTAGE] < IntPsVoltage)
 		{
 			LL_IntPowerSupplyDischarge(false);
 			LL_IntPowerSupplyEn(true);

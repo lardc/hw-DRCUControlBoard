@@ -8,6 +8,7 @@
 extern volatile Int16U LOGIC_DUTCurrentRaw[];
 extern Int32U PulseWidth_CTRL1;
 extern Int32U PulseWidth_CTRL2;
+extern Int16U IntPsVoltage;
 
 //Functions
 //

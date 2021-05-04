@@ -71,9 +71,9 @@
 //
 #define INTPS_ALLOWED_ERR_MIN			1			// % * 10
 #define INTPS_ALLOWED_ERR_MAX			1000		// % * 10
-#define INTPS_ALLOWED_ERR_DEF			30			// % * 10
+#define INTPS_ALLOWED_ERR_DEF			10			// % * 10
 //
-#define CTRL1_MAX_WIDTH_050_MAX			30000
+#define CTRL1_MAX_WIDTH_050_MAX			65000
 #define CTRL1_MAX_WIDTH_050_DEF			1000
 #define CTRL1_MAX_WIDTH_075_MAX			30000
 #define CTRL1_MAX_WIDTH_075_DEF			1000
@@ -102,6 +102,19 @@
 //
 #define INTPS_STAB_COUNTER_MAX			100
 #define INTPS_STAB_COUNTER_DEF			30
+//
+#define INTPS_VOLTAGE_MAX				1250		// Â * 10
+#define INTPS_VOLTAGE_050_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_075_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_100_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_250_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_500_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_750_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_1000_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_1500_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_2500_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_3000_DEF			1250		// Â * 10
+#define INTPS_VOLTAGE_5000_DEF			1250		// Â * 10
 
 
 // Types

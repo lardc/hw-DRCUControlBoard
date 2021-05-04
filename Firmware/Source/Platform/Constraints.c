@@ -55,17 +55,17 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, CTRL1_MAX_WIDTH_3000_MAX, CTRL1_MAX_WIDTH_3000_DEF},								// 49
 		{0, CTRL1_MAX_WIDTH_5000_MAX, CTRL1_MAX_WIDTH_5000_DEF},								// 50
 		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 51
-		{0, 0, 0},																				// 52
-		{0, 0, 0},																				// 53
-		{0, 0, 0},																				// 54
-		{0, 0, 0},																				// 55
-		{0, 0, 0},																				// 56
-		{0, 0, 0},																				// 57
-		{0, 0, 0},																				// 58
-		{0, 0, 0},																				// 59
-		{0, 0, 0},																				// 60
-		{0, 0, 0},																				// 61
-		{0, 0, 0},																				// 62
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_050_DEF},											// 52
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_075_DEF},											// 53
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_100_DEF},											// 54
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_250_DEF},											// 55
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_500_DEF},											// 56
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_750_DEF},											// 57
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1000_DEF},											// 58
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1500_DEF},											// 59
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_2500_DEF},											// 60
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_3000_DEF},											// 61
+		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_5000_DEF},											// 62
 		{0, 0, 0},																				// 63
 		{0, 0, 0},																				// 64
 		{0, 0, 0},																				// 65
