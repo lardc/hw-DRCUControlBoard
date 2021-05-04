@@ -105,7 +105,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp;
+	float CurrentTemp, K;
 
 	LOGIC_ClearDataArrays();
 
@@ -219,8 +219,11 @@ void LOGIC_Config()
 	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL1_K + ConfigParams.PulseWidth_CTRL1_Offset;
 	ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1 * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT];
 
+	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
+
 #ifdef TYPE_UNIT_DCU
-	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2 * K);
 	//LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 #else
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
