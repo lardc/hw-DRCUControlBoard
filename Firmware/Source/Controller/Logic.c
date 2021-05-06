@@ -224,10 +224,10 @@ void LOGIC_Config()
 
 #ifdef TYPE_UNIT_DCU
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2 * K);
-	//LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
+	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 #else
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
-	//LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT] * K);
+	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 #endif
 }
 //-------------------------------------------
@@ -266,10 +266,9 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
-	LL_OutputCompensation(false);
-
 #ifdef TYPE_UNIT_DCU
 	TIM_Start(TIM3);
+	LL_OutputCompensation(false);
 #else
 	TIM_Start(TIM2);
 #endif
