@@ -30,7 +30,7 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
 	{
-		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_State == DS_InProcess))
+		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_SubState == SS_RiseEdge) || (CONTROL_SubState == SS_Plate))
 		{
 			LL_IntPowerSupplyEn(false);
 			LL_OutputLock(false);

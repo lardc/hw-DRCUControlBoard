@@ -43,9 +43,12 @@
 #define CODE_CURRENT_RATE_3000		0x3F
 #define CODE_CURRENT_RATE_5000		0x0F
 //
-#define RESULT_AVERAGE_POINTS		50					// Количество точек усредения результата измерения
+#define ARRAY_SORTING_PART_LENGHT	4					// Часть массива для сортировки
+#define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
 //
 #define INTPS_VOLTAGE_MAX			1250.0f				// Максимальное напряжение внутреннего источника (В * 10)
+//
+
 
 // Structs
 //
@@ -57,7 +60,6 @@ volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 
 // Forward functions
 //
-void LOGIC_ClearDataArrays();
 void LOGIC_SetCompensationVoltage(Int16U Current);
 int MEASURE_SortCondition(const void *A, const void *B);
 
@@ -107,7 +109,8 @@ void LOGIC_Config()
 {
 	float CurrentTemp, K;
 
-	LOGIC_ClearDataArrays();
+	DEVPROFILE_ResetScopes(0);
+	DEVPROFILE_ResetEPReadState();
 
 	// Настройка аппаратной части
 	//
@@ -286,16 +289,19 @@ Int16U LOGIC_ExctractCurrentValue()
 {
 	Int16U ArrayTemp[VALUES_x_SIZE];
 	float AvgData = 0;
+	Int16U SortStartIndex = 0;
+	Int16U SortSize = 0;
 
-	// Копирование данных
-	for (int i = 0; i < VALUES_x_SIZE; ++i)
+	for (int i = 0; i < CONTROL_Values_Counter; ++i)
 		ArrayTemp[i] = CONTROL_Values_DUTCurrent[i];
 
 	// Сортировка
-	qsort(ArrayTemp, VALUES_x_SIZE, sizeof(*ArrayTemp), MEASURE_SortCondition);
+	SortSize = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
+	SortStartIndex = CONTROL_Values_Counter - SortSize;
+	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
 
 	// Усреднение и возврат результата
-	for (int i = VALUES_x_SIZE - RESULT_AVERAGE_POINTS; i < VALUES_x_SIZE; ++i)
+	for (int i = CONTROL_Values_Counter - RESULT_AVERAGE_POINTS; i < CONTROL_Values_Counter; ++i)
 		AvgData += ArrayTemp[i];
 
 	return (Int16U)(AvgData / RESULT_AVERAGE_POINTS);
@@ -307,21 +313,24 @@ void LOGIC_HandleAdcSamples()
 	float AvgData = 0, Error;
 	static Int16U AllowedErrorCounter = 0;
 	static Int16U UnallowedErrorCounter = 0;
+	float Current;
 
 	// Сохранение усредненного результата
 	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
 		AvgData += LOGIC_DUTCurrentRaw[i];
 
+	Current = MEASURE_ConvertCurrent(AvgData / ADC_AVG_SAMPLES);
+
 	if (CONTROL_Values_Counter < VALUES_x_SIZE)
 	{
-		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = (Int16U)(AvgData / ADC_AVG_SAMPLES);
+		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
 		CONTROL_Values_Counter++;
 	}
 
 	// Определение выхода тока на заданный уровень
 	if(CONTROL_SubState == SS_Plate)
 	{
-		Error = AvgData / DataTable[REG_CURRENT_SETPOINT] * 1000;
+		Error = Current / DataTable[REG_CURRENT_SETPOINT] * 1000;
 
 		if (Error <= DataTable[REG_ALLOWED_ERROR])
 			AllowedErrorCounter++;
@@ -338,15 +347,6 @@ void LOGIC_HandleAdcSamples()
 		AllowedErrorCounter = 0;
 		UnallowedErrorCounter = 0;
 	}
-}
-//-------------------------------------------
-
-void LOGIC_ClearDataArrays()
-{
-	for (int i = 0; i < VALUES_x_SIZE; ++i)
-		CONTROL_Values_DUTCurrent[i] = 0;
-
-	CONTROL_Values_Counter = 0;
 }
 //-------------------------------------------
 

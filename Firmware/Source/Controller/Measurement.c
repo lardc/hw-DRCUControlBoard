@@ -13,8 +13,7 @@
 // Forward functions
 //
 float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK);
-void MEASURE_ConvertADCtoValx(volatile Int16U *InputArray, float *OutputArray, Int16U ArrayOffset, Int16U DataLength,
-							  Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2);
+float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2);
 
 // Functions
 //
@@ -66,11 +65,10 @@ Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U Regis
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_ConvertADCtoValx(volatile Int16U *InputArray, float *OutputArray, Int16U ArrayOffset, Int16U DataLength,
-							  Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2)
+float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK,
+		Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2)
 {
-	Int16U i;
-	float tmp;
+	float Result;
 
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 1000;
@@ -79,18 +77,16 @@ void MEASURE_ConvertADCtoValx(volatile Int16U *InputArray, float *OutputArray, I
 	float P1 = (float)DataTable[RegisterP1] / 1000;
 	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
 
-	for (i = 0; i < DataLength; ++i)
-	{
-		tmp = ((float)InputArray[i] - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
-		tmp = tmp * tmp * P2 + tmp * P1 + P0;
-		OutputArray[i * 2 + ArrayOffset] = (tmp > 0) ? tmp : 0;
-	}
+	Result = ((float)ADCValue - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
+	Result = Result * Result * P2 + Result * P1 + P0;
+
+	return Result;
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_ConvertCurrentArr(volatile Int16U *InputArray, float *OutputArray, Int16U DataLength)
+float MEASURE_ConvertCurrent(Int16U ADCValue)
 {
-	MEASURE_ConvertADCtoValx(InputArray, OutputArray, 1, DataLength, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
+	return MEASURE_ConvertADCtoValx(ADCValue, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
 }
 //------------------------------------------------------------------------------
 
