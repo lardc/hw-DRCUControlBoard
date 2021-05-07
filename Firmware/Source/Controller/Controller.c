@@ -18,6 +18,8 @@
 #include "Measurement.h"
 #include "Diagnostic.h"
 #include "Delay.h"
+#include "stdlib.h"
+#include "InitConfig.h"
 
 // Definitions
 //
@@ -184,9 +186,7 @@ void CONTROL_HandleIntPSTune()
 	{
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
-		dV = (float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000;
-		if (dV < 0)
-			dV = dV * (-1);
+		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
 		if ((CONTROL_SubState == SS_PulsePrepare) && (dV <= DataTable[REG_INTPS_ALLOWED_ERROR]))
 		{
