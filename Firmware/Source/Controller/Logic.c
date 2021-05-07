@@ -69,7 +69,7 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
-	//MEASURE_Start(false);
+	MEASURE_HighSpeedStart(false);
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
@@ -79,7 +79,7 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_ExternalLamp(false);
 
 	// Переключение АЦП в базовый режим
-	//ADC_SwitchToBase();
+	ADC_SwitchToBase();
 
 	// Отключение формирователя
 	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
@@ -267,6 +267,7 @@ void LOGIC_StartRiseEdge()
 void LOGIC_StartFallEdge()
 {
 #ifdef TYPE_UNIT_DCU
+	TIM_Stop(TIM16);
 	TIM_Start(TIM3);
 	LL_OutputCompensation(false);
 #else
@@ -277,9 +278,7 @@ void LOGIC_StartFallEdge()
 
 void LOGIC_SofwarePulseStart()
 {
-	LL_SW_Trig(true);
-	DELAY_US(3000);
-	LL_SW_Trig(false);
+	LL_SW_Trig();
 }
 //-------------------------------------------
 

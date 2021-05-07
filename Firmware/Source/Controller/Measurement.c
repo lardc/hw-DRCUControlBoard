@@ -4,7 +4,6 @@
 #include "DataTable.h"
 #include "Board.h"
 #include "Global.h"
-#include "InitConfig.h"
 
 // Definitions
 //
@@ -95,9 +94,17 @@ void MEASURE_ConvertCurrentArr(volatile Int16U *InputArray, float *OutputArray, 
 }
 //------------------------------------------------------------------------------
 
-void MEASURE_Start(bool State)
+void MEASURE_HighSpeedStart(bool State)
 {
-	ADC_SwitchToHighSpeed();
-	State ? TIM_Start(TIM6) : TIM_Stop(TIM6);
+	if (State)
+	{
+		ADC_SamplingStart(ADC1);
+		TIM_Start(TIM6);
+	}
+	else
+	{
+		ADC_SamplingStop(ADC1);
+		TIM_Stop(TIM6);
+	}
 }
 //------------------------------------------------------------------------------

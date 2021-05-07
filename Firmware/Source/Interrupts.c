@@ -8,6 +8,7 @@
 #include "Global.h"
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
+#include "InitConfig.h"
 
 // Functions prototypes
 //
@@ -37,7 +38,8 @@ void EXTI9_5_IRQHandler()
 			if (LL_ReadLineSync())
 			{
 				LOGIC_StartRiseEdge();
-				//MEASURE_Start(true);
+				ADC_SwitchToHighSpeed();
+				MEASURE_HighSpeedStart(true);
 
 				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 			}
@@ -54,7 +56,10 @@ void EXTI9_5_IRQHandler()
 				if (LL_ReadLineSync())
 					LOGIC_StartRiseEdge();
 				else
+				{
+					TIM_Stop(TIM16);
 					LOGIC_StartFallEdge();
+				}
 			}
 		}
 	}
