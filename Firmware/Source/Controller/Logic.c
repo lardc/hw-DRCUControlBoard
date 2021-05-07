@@ -330,17 +330,17 @@ void LOGIC_HandleAdcSamples()
 	// Определение выхода тока на заданный уровень
 	if(CONTROL_SubState == SS_Plate)
 	{
-		Error = Current / DataTable[REG_CURRENT_SETPOINT] * 1000;
+		Error = abs(100 - Current / DataTable[REG_CURRENT_SETPOINT] * 100);
 
-		if (Error <= DataTable[REG_ALLOWED_ERROR])
+		if (Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10))
 			AllowedErrorCounter++;
 		else
 			UnallowedErrorCounter++;
 
 		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
 			LL_External_DC_RDY(true);
-		else if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-				DataTable[REG_WARNING] = WARNING_CURRENT_READY;
+		else if (UnallowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+				DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
 	}
 	else
 	{

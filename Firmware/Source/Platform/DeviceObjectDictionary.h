@@ -147,7 +147,7 @@
 // WARNINGS
 //
 #define WARNING_NONE							0
-#define WARNING_CURRENT_READY					1		// Ток не вышел на заданный уровень
+#define WARNING_CURRENT_NOT_READY				1		// Ток не вышел на заданный уровень
 
 // User Errors
 // 
