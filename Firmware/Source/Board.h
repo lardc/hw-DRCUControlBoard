@@ -26,7 +26,6 @@ GPIO_PortPinSettingMacro GPIO_LAMP				= {GPIOB, Pin_14};
 GPIO_PortPinSettingMacro GPIO_CURRENT_READY		= {GPIOB, Pin_11};
 GPIO_PortPinSettingMacro GPIO_LED				= {GPIOB, Pin_12};
 GPIO_PortPinSettingMacro GPIO_INT_PS			= {GPIOB, Pin_9};
-GPIO_PortPinSettingMacro GPIO_SYNC_OUT			= {GPIOA, Pin_6};
 GPIO_PortPinSettingMacro GPIO_PROTECTION_RST	= {GPIOB, Pin_7};
 GPIO_PortPinSettingMacro GPIO_INT_PS_DISCHARGE	= {GPIOB, Pin_8};
 GPIO_PortPinSettingMacro GPIO_SPI_RCK			= {GPIOA, Pin_15};
@@ -50,5 +49,6 @@ GPIO_PortPinSettingMacro GPIO_ALT_SPI1_SCK		= {GPIOB, Pin_3};
 GPIO_PortPinSettingMacro GPIO_ALT_SPI1_DATA		= {GPIOB, Pin_5};
 GPIO_PortPinSettingMacro GPIO_ALT_CTRL1			= {GPIOB, Pin_1};
 GPIO_PortPinSettingMacro GPIO_ALT_CTRL2			= {GPIOB, Pin_10};
+GPIO_PortPinSettingMacro GPIO_ALT_MCU_SYNC		= {GPIOA, Pin_6};
 
 #endif // __BOARD_H

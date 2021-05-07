@@ -50,7 +50,6 @@ void INITCFG_ConfigIO()
 	GPIO_InitPushPullOutput(GPIO_INT_PS);
 	GPIO_InitPushPullOutput(GPIO_INT_PS_DISCHARGE);
 	GPIO_InitPushPullOutput(GPIO_SPI_RCK);
-	GPIO_InitPushPullOutput(GPIO_SYNC_OUT);
 	//
 	
 	// Выходы с OpenDrain
@@ -65,6 +64,7 @@ void INITCFG_ConfigIO()
 	GPIO_InitAltFunction(GPIO_ALT_SPI1_DATA, AltFn_5);
 	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_2);
 	GPIO_InitAltFunction(GPIO_ALT_CTRL2, AltFn_1);
+	GPIO_InitAltFunction(GPIO_ALT_MCU_SYNC, AltFn_1);
 }
 //------------------------------------------------------------------------------
 
@@ -121,21 +121,19 @@ void ADC_SwitchToHighSpeed()
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
 	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
-
 	ADC_ChannelSeqReset(ADC1);
 	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, 1);
 	ADC_ChannelSeqLen(ADC1, 1);
-
 	ADC_DMAEnable(ADC1, true);
 }
 //------------------------------------------------------------------------------
 
 void ADC_SwitchToBase()
 {
+	ADC_Disable(ADC1);
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
 	ADC_SoftTrigConfig(ADC1);
-
 	ADC_DMAEnable(ADC1, false);
 }
 //------------------------------------------------------------------------------
@@ -155,6 +153,15 @@ void INITCFG_ConfigTimer2_3()
 	TIM_OnePulseMode(TIM3, true);
 	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
 	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
+}
+//------------------------------------------------------------------------------
+
+void INITCFG_ConfigTimer16()
+{
+	TIM_Clock_En(TIM_16);
+	TIM_Config(TIM16, SYSCLK, TIMER16_uS);
+	TIM_OnePulseMode(TIM16, true);
+	TIMx_PWM_ConfigChannel(TIM16, TIMx_CHANNEL1);
 }
 //------------------------------------------------------------------------------
 
@@ -195,9 +202,12 @@ void INITCFG_ConfigDMA()
 	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
 	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (Int32U)&LOGIC_DUTCurrentRaw[0], (Int32U)(&ADC1->DR), ADC_AVG_SAMPLES);
 	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
-						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_DIS, DMA_READ_FROM_PERIPH);
+						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_EN, DMA_READ_FROM_PERIPH);
 	DMA_Interrupt(DMA_ADC_DUT_I_CHANNEL, DMA_TRANSFER_COMPLETE, 0, true);
 	DMA_ChannelEnable(DMA_ADC_DUT_I_CHANNEL, true);
+
+	ADC_SamplingStart(ADC1);
+	TIM_Start(TIM6);
 }
 //------------------------------------------------------------------------------
 

@@ -62,9 +62,7 @@ void DBGACT_OutputLockControl()
 
 void DBGACT_Sync()
 {
-	LL_SW_Trig(true);
-	DELAY_US(3000);
-	LL_SW_Trig(false);
+	LL_SW_Trig();
 }
 //-----------------------------------------------
 

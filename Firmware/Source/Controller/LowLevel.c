@@ -34,9 +34,11 @@ void LL_External_DC_RDY(bool State)
 //------------------------------------------------------------------------------
 
 // Software trigger
-void LL_SW_Trig(bool State)
+void LL_SW_Trig()
 {
-	GPIO_SetState(GPIO_SYNC_OUT, State);
+	TIM_Reset(TIM16);
+	TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, 35000);
+	TIM_Start(TIM16);
 }
 //------------------------------------------------------------------------------
 
