@@ -90,17 +90,17 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_5000_K_DEF},							// 84
 		{0, INT16U_MAX, CTRL2_OFFSET_DEF},														// 85
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 86
-		{0, 0, 0},																				// 87
-		{0, 0, 0},																				// 88
-		{0, 0, 0},																				// 89
-		{0, 0, 0},																				// 90
-		{0, 0, 0},																				// 91
-		{0, 0, 0},																				// 92
-		{0, 0, 0},																				// 93
-		{0, 0, 0},																				// 94
-		{0, 0, 0},																				// 95
-		{0, 0, 0},																				// 96
-		{0, 0, 0},																				// 97
+		{0, INT16U_MAX, 0},																		// 87
+		{0, INT16U_MAX, 0},																		// 88
+		{0, INT16U_MAX, 0},																		// 89
+		{0, INT16U_MAX, 0},																		// 90
+		{0, INT16U_MAX, 0},																		// 91
+		{0, INT16U_MAX, 0},																		// 92
+		{0, INT16U_MAX, 0},																		// 93
+		{0, INT16U_MAX, 0},																		// 94
+		{0, INT16U_MAX, 0},																		// 95
+		{0, INT16U_MAX, 0},																		// 96
+		{0, INT16U_MAX, 0},																		// 97
 		{0, 0, 0},																				// 98
 		{0, 0, 0},																				// 99
 		{0, 0, 0},																				// 100
