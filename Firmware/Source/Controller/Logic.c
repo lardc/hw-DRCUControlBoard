@@ -352,29 +352,32 @@ void CONTROL_HandleFanLogic(bool IsImpulse)
 	static uint32_t IncrementCounter = 0;
 	static uint64_t FanOnTimeout = 0;
 
-	if(DataTable[REG_FAN_CTRL])
+	if(CONTROL_State != DS_None)
 	{
-		// Увеличение счётчика в простое
-		if (!IsImpulse)
-			IncrementCounter++;
-
-		// Включение вентилятора
-		if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
+		if(DataTable[REG_FAN_CTRL])
 		{
-			IncrementCounter = 0;
-			FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
-			LL_FAN(true);
+			// Увеличение счётчика в простое
+			if (!IsImpulse)
+				IncrementCounter++;
+
+			// Включение вентилятора
+			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
+			{
+				IncrementCounter = 0;
+				FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
+				LL_FAN(true);
+			}
+
+			// Отключение вентилятора
+			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
+			{
+				FanOnTimeout = 0;
+				LL_FAN(false);
+			}
 		}
-
-		// Отключение вентилятора
-		if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
-		{
-			FanOnTimeout = 0;
+		else
 			LL_FAN(false);
-		}
 	}
-	else
-		LL_FAN(false);
 }
 //-----------------------------------------------
 
@@ -382,14 +385,17 @@ void CONTROL_HandleExternalLamp(bool IsImpulse)
 {
 	static Int64U ExternalLampTimeout = 0;
 
-	if(IsImpulse)
+	if(CONTROL_State != DS_None)
 	{
-		LL_ExternalLamp(true);
-		ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
-	}
-	else
-	{
-		if(CONTROL_TimeCounter >= ExternalLampTimeout)
-			LL_ExternalLamp(false);
+		if(IsImpulse)
+		{
+			LL_ExternalLamp(true);
+			ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
+		}
+		else
+		{
+			if(CONTROL_TimeCounter >= ExternalLampTimeout)
+				LL_ExternalLamp(false);
+		}
 	}
 }
