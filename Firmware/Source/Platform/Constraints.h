@@ -57,6 +57,14 @@
 #define AFTER_PULSE_TIMEOUT_MAX			10000		// мс
 #define AFTER_PULSE_TIMEOUT_DEF			1000		// мс
 //
+#define FAN_OPERATE_PERIOD_MIN			60			// с
+#define FAN_OPERATE_PERIOD_MAX			2000		// с
+#define FAN_OPERATE_PERIOD_DEF			300			// с
+//
+#define FAN_OPERATE_TIME_MIN			10			// с
+#define FAN_OPERATE_TIME_MAX			2000		// с
+#define FAN_OPERATE_TIME_DEF			60			// с
+//
 #define ALLOWED_ERROR_MIN				0			// % * 10
 #define ALLOWED_ERROR_MAX				200			// % * 10
 #define ALLOWED_ERROR_DEF				30			// % * 10

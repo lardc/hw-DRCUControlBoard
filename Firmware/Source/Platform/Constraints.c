@@ -34,9 +34,9 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 28
 		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 29
 		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 30
-		{0, 0, 0},																				// 31
-		{0, 0, 0},																				// 32
-		{0, 0, 0},																				// 33
+		{false, true, false},																	// 31
+		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 32
+		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 33
 		{0, 0, 0},																				// 34
 		{0, 0, 0},																				// 35
 		{0, 0, 0},																				// 36

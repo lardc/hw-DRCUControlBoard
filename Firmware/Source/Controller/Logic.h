@@ -35,5 +35,7 @@ void LOGIC_StartFallEdge();
 void LOGIC_StartRiseEdge();
 Int16U LOGIC_ExctractCurrentValue();
 void LOGIC_HandleAdcSamples();
+void CONTROL_HandleFanLogic(bool IsImpulse);
+void CONTROL_HandleExternalLamp(bool IsImpulse);
 
 #endif //__LOGIC_H

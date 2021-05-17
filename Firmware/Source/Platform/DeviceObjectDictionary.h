@@ -62,6 +62,9 @@
 #define REG_ERROR_COUNTER_MAX					28		// Максимальное значение счетчика при определении выхода тока на задание
 #define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на задание (% * 10)
 #define REG_AFTER_PULSE_PAUSE					30		// Пауза после импульса, мс
+#define REG_FAN_CTRL							31		// Разрешение работы вентиляторов
+#define REG_FAN_OPERATE_PERIOD					32		// Период работы вентилятора, с
+#define REG_FAN_OPERATE_TIME					33		// Длительность работы вентилятора, с
 //
 #define REG_CTRL1_MAX_WIDTH_050					40		// Максимальная длительность импульса CTRL1 при 0.5А/мкс
 #define REG_CTRL1_MAX_WIDTH_075					41		// Максимальная длительность импульса CTRL1 при 0.75А/мкс
