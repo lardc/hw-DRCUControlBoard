@@ -229,13 +229,8 @@ void LOGIC_Config()
 	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
 	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
 
-#ifdef TYPE_UNIT_DCU
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2 * K);
 	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
-#else
-	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
-	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
-#endif
 }
 //-------------------------------------------
 
@@ -263,23 +258,15 @@ void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
 
 void LOGIC_StartRiseEdge()
 {
-#ifdef TYPE_UNIT_DCU
 	TIM_Start(TIM2);
-#else
-	TIM_Start(TIM3);
-#endif
 }
 //-------------------------------------------
 
 void LOGIC_StartFallEdge()
 {
-#ifdef TYPE_UNIT_DCU
 	TIM_Stop(TIM16);
 	TIM_Start(TIM3);
 	LL_OutputCompensation(false);
-#else
-	TIM_Start(TIM2);
-#endif
 }
 //-------------------------------------------
 
