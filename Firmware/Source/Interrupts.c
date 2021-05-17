@@ -94,11 +94,7 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
 			LL_OutputCompensation(true);
 
-#ifdef TYPE_UNIT_DCU
-			LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1);
-#else
 			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
-#endif
 		}
 
 		if (CONTROL_SubState == SS_FallEdge)
