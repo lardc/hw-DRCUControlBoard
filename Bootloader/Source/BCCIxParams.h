@@ -13,7 +13,7 @@
 
 // Конфигурация Slave
 //
-#define CAN_SLAVE_NID				11				// Node ID устройства
+#define CAN_SLAVE_NID				170				// Node ID устройства
 #define CAN_SLAVE_NID_MASK			0x0003FC00		// Маска Slave node ID
 #define CAN_SLAVE_NID_MPY			10				// Смещение адреса Slave
 
