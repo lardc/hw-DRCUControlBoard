@@ -214,7 +214,8 @@ void CONTROL_HandleIntPSTune()
 		}
 	}
 	else
-		LL_IntPowerSupplyEn(false);
+		if(CONTROL_State != DS_None)
+			LL_IntPowerSupplyEn(false);
 }
 //-----------------------------------------------
 
