@@ -74,17 +74,17 @@ void DBGACT_ExtRegWriteData()
 
 void DBGACT_GeneratePulse()
 {
-	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG]);
+	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG]);
 	DELAY_US(500);
 
 	LL_OutputLock(false);
 	DELAY_US(1000);
 
 	LL_SW_Trig(true);
-	DELAY_US(3000);
+	DELAY_US(500);
 
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG2]);
-	DELAY_US(1000);
+	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG2]);
+	DELAY_US(500);
 
 	LL_SW_Trig(false);
 	DELAY_US(1000);

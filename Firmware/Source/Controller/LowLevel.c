@@ -3,6 +3,10 @@
 #include "Delay.h"
 #include "Board.h"
 
+// Definitions
+//
+#define RCU_PULSE_SYNC_WIDTH		6000
+
 // Functions
 //
 // LED on board
@@ -37,7 +41,7 @@ void LL_External_DC_RDY(bool State)
 void LL_SW_Trig()
 {
 	TIM_Reset(TIM16);
-	TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, 35000);
+	TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, RCU_PULSE_SYNC_WIDTH);
 	TIM_Start(TIM16);
 }
 //------------------------------------------------------------------------------
