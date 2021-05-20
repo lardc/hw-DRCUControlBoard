@@ -1,4 +1,4 @@
-// -----------------------------------------
+﻿// -----------------------------------------
 // Device data table
 // ----------------------------------------
 
@@ -10,7 +10,6 @@
 #include "Global.h"
 #include "DeviceObjectDictionary.h"
 #include "DeviceProfile.h"
-
 
 // Constants
 //
@@ -38,7 +37,6 @@
  * DATA TABLE END 					------------- [300]
  */
 
-
 // Types
 //
 typedef void (*FUNC_SetDefaultValues)();
@@ -51,11 +49,9 @@ typedef struct __EPROMServiceConfig
 	FUNC_EPROM_ReadValues ReadService;
 } EPROMServiceConfig, *pERPOMServiceConfig;
 
-
 // Variables
 //
 extern volatile Int16U DataTable[DATA_TABLE_SIZE];
-
 
 // Functions
 //
@@ -69,7 +65,7 @@ void DT_SaveNVPartToEPROM();
 void DT_ResetNVPart(FUNC_SetDefaultValues SetFunc);
 // Reset volatile read-write part of data table
 void DT_ResetWRPart(FUNC_SetDefaultValues SetFunc);
-
-void DT_ResetNVPartToDefault(void);
+// Save firmware information to data table
+void DT_SaveFirmwareInfo(Int16U SlaveNID, Int16U MasterNID);
 
 #endif // __DATA_TABLE_H

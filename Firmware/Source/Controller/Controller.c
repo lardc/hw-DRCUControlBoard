@@ -20,6 +20,7 @@
 #include "Delay.h"
 #include "stdlib.h"
 #include "InitConfig.h"
+#include "BCCIxParams.h"
 
 // Definitions
 //
@@ -66,6 +67,7 @@ void CONTROL_Init()
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
 	// Инициализация data table
 	DT_Init(EPROMService, false);
+	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
 	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
