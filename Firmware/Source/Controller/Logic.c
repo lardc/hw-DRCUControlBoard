@@ -59,7 +59,6 @@ volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 
 // Forward functions
 //
-void LOGIC_SetCompensationVoltage(Int16U Current);
 int MEASURE_SortCondition(const void *A, const void *B);
 
 // Functions
@@ -75,8 +74,6 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
-	LL_OutputCompensation(false);
-	LL_External_DC_RDY(false);
 
 	// Переключение АЦП в базовый режим
 	ADC_SwitchToBase();
@@ -230,15 +227,6 @@ void LOGIC_Config()
 	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
-	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
-}
-//-------------------------------------------
-
-void LOGIC_SetCompensationVoltage(Int16U Current)
-{
-	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
-			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
-	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------
 
@@ -265,7 +253,6 @@ void LOGIC_StartRiseEdge()
 void LOGIC_StartFallEdge()
 {
 	TIM_Start(TIM2);
-	LL_OutputCompensation(false);
 }
 //-------------------------------------------
 
@@ -300,9 +287,7 @@ Int16U LOGIC_ExctractCurrentValue()
 
 void LOGIC_HandleAdcSamples()
 {
-	float AvgData = 0, Error;
-	static Int16U AllowedErrorCounter = 0;
-	static Int16U UnallowedErrorCounter = 0;
+	float AvgData = 0;
 	float Current;
 
 	// Сохранение усредненного результата
@@ -315,27 +300,6 @@ void LOGIC_HandleAdcSamples()
 	{
 		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
 		CONTROL_Values_Counter++;
-	}
-
-	// Определение выхода тока на заданный уровень
-	if(CONTROL_SubState == SS_Plate)
-	{
-		Error = abs(100 - Current / DataTable[REG_CURRENT_SETPOINT] * 100);
-
-		if (Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10))
-			AllowedErrorCounter++;
-		else
-			UnallowedErrorCounter++;
-
-		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-			LL_External_DC_RDY(true);
-		else if (UnallowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-				DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
-	}
-	else
-	{
-		AllowedErrorCounter = 0;
-		UnallowedErrorCounter = 0;
 	}
 }
 //-------------------------------------------

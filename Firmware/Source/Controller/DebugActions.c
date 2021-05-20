@@ -92,28 +92,3 @@ void DBGACT_GeneratePulse()
 	LL_OutputLock(true);
 }
 //-----------------------------------------------
-
-void DBGACT_CurrentReadyOutput()
-{
-	LL_External_DC_RDY(true);
-	DELAY_US(1000);
-	LL_External_DC_RDY(false);
-}
-//-----------------------------------------------
-
-void DBGACT_SetCompensationVoltage()
-{
-	LL_OutputLock(false);
-	LL_OutputCompensation(true);
-	DAC_SetValueCh1(DAC1, DataTable[REG_DBG]);
-	DAC_ForceSWTrigCh1(DAC1);
-
-	DELAY_US(1000);
-
-	DAC_SetValueCh1(DAC1, 0);
-	DAC_ForceSWTrigCh1(DAC1);
-
-	LL_OutputCompensation(false);
-	LL_OutputLock(true);
-}
-//-----------------------------------------------

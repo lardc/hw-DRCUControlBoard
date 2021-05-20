@@ -30,7 +30,6 @@ void INITCFG_ConfigIO()
 	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
 	GPIO_InitAnalog(GPIO_MEASURE_BAT);
 	GPIO_InitAnalog(GPIO_MEASURE_CURRENT);
-	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
 	// Входы
@@ -39,7 +38,6 @@ void INITCFG_ConfigIO()
 	//
 	
 	// Выходы
-	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
@@ -180,17 +178,6 @@ void INITCFG_ConfigTimer6()
 	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
 	TIM_DMA(TIM6, DMAEN);
 	TIM_MasterMode(TIM6, MMS_UPDATE);
-}
-//------------------------------------------------------------------------------
-
-void INITCFG_ConfigDAC()
-{
-	DAC_ClkEnable(DAC1);
-	DAC_Reset(DAC1);
-	DAC_EnableCh1(DAC1);
-	DAC_BufferCh1(DAC1, true);
-	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
-	DAC_SetValueCh1(DAC1, 0);
 }
 //------------------------------------------------------------------------------
 

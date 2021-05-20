@@ -30,13 +30,6 @@ void LL_FAN(bool State)
 }
 //------------------------------------------------------------------------------
 
-// External DC Ready
-void LL_External_DC_RDY(bool State)
-{
-	GPIO_SetState(GPIO_CURRENT_READY, State);
-}
-//------------------------------------------------------------------------------
-
 // Software trigger
 void LL_SW_Trig()
 {
@@ -55,12 +48,6 @@ void LL_PowerOnMechRelay(bool State)
 void LL_PowerOnSolidStateRelay(bool State)
 {
 	GPIO_SetState(GPIO_RELAY_SOLID, State);
-}
-//------------------------------------------------------------------------------
-
-void LL_OutputCompensation(bool State)
-{
-	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
 }
 //------------------------------------------------------------------------------
 

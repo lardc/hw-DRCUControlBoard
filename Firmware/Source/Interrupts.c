@@ -92,8 +92,6 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-			LL_OutputCompensation(true);
-
 			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 		}
 
