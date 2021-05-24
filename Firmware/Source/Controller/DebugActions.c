@@ -74,7 +74,7 @@ void DBGACT_ExtRegWriteData()
 
 void DBGACT_GeneratePulse()
 {
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG]);
+	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
 	DELAY_US(500);
 
 	LL_OutputLock(false);

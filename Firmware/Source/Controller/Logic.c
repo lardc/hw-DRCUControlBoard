@@ -102,7 +102,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp, K;
+	float CurrentTemp;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -110,6 +110,7 @@ void LOGIC_Config()
 	// Настройка аппаратной части
 	//
 	LL_PowerOnSolidStateRelay(false);
+	LL_OutputLock(false);
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -220,18 +221,19 @@ void LOGIC_Config()
 	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT];
 
-	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL1_K + ConfigParams.PulseWidth_CTRL1_Offset;
-	ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1 * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+	ConfigParams.PulseWidth_CTRL1 = (DataTable[REG_CURRENT_SETPOINT] + ConfigParams.PulseWidth_CTRL1_Offset)
+																* ConfigParams.PulseWidth_CTRL1_K;
 
-	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
-	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
-
-	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1 * K);
+	if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
+		ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
+void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 {
+	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
+
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
@@ -252,6 +254,7 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
+	TIM_Stop(TIM16);
 	TIM_Start(TIM2);
 }
 //-------------------------------------------

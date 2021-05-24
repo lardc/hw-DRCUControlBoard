@@ -14,7 +14,7 @@
 //Definitions
 //
 #define GAIN_COEFFICIENT_MIN			1
-#define GAIN_COEFFICIENT_MAX			10000
+#define GAIN_COEFFICIENT_MAX			60000
 #define GAIN_COEFFICIENT_DEF			1000
 //
 #define INTPS_ADC_TO_V_K				45

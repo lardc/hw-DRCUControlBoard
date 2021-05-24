@@ -5,7 +5,7 @@
 
 // Definitions
 //
-#define RCU_PULSE_SYNC_WIDTH		6000
+#define RCU_PULSE_SYNC_WIDTH		15000
 
 // Functions
 //

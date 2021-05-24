@@ -9,6 +9,7 @@
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
 #include "InitConfig.h"
+#include "DataTable.h"
 
 // Functions prototypes
 //
@@ -33,7 +34,6 @@ void EXTI9_5_IRQHandler()
 		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_SubState == SS_RiseEdge) || (CONTROL_SubState == SS_Plate))
 		{
 			LL_IntPowerSupplyEn(false);
-			LL_OutputLock(false);
 
 			if (LL_ReadLineSync())
 			{
@@ -45,8 +45,11 @@ void EXTI9_5_IRQHandler()
 			}
 			else
 			{
-				LOGIC_StartFallEdge();
-				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+				if(CONTROL_SubState == SS_Plate)
+				{
+					LOGIC_StartFallEdge();
+					CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+				}
 			}
 		}
 		else
@@ -57,7 +60,6 @@ void EXTI9_5_IRQHandler()
 					LOGIC_StartRiseEdge();
 				else
 				{
-					TIM_Stop(TIM16);
 					LOGIC_StartFallEdge();
 				}
 			}
