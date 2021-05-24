@@ -26,9 +26,6 @@
 #define I_DUT_ADC_TO_I_K				183
 #define I_DUT_ADC_TO_I_OFFSET			2
 //
-#define I_DUT_TO_ADC_K					6500
-#define I_DUT_TO_ADC_OFFSET				780
-//
 #define FULL_CHARGE_TIME_MIN			5000		// мс
 #define FULL_CHARGE_TIME_MAX			60000 		// мс
 #define FULL_CHARGE_TIME_DEF			30000		// мс

@@ -18,11 +18,11 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INT16U_MAX, 0},																		// 12
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 13
 		{0, INT16U_MAX, 0},																		// 14
-		{0, INT16U_MAX, I_DUT_TO_ADC_OFFSET},													// 15
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_TO_ADC_K},							// 16
-		{0, INT16U_MAX, 0},																		// 17
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 18
-		{0, INT16U_MAX, 0},																		// 19
+		{0, 0, 0},																				// 15
+		{0, 0, 0},																				// 16
+		{0, 0, 0},																				// 17
+		{0, 0, 0},																				// 18
+		{0, 0, 0},																				// 19
 		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 20
 		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 21
 		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 22
