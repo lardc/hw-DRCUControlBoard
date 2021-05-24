@@ -7,38 +7,38 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, VBAT_ADC_TO_V_K},							// 1
 		{0, INT16U_MAX, INTPS_ADC_TO_V_OFFSET},													// 2
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, INTPS_ADC_TO_V_K},							// 3
-		{0, 0, 0},																				// 4
-		{0, 0, 0},																				// 5
-		{0, 0, 0},																				// 6
-		{0, 0, 0},																				// 7
-		{0, 0, 0},																				// 8
+		{0, INT16U_MAX, I_DUT_ADC_TO_I_OFFSET},													// 4
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_ADC_TO_I_K},							// 5
+		{0, INT16U_MAX, 0},																		// 6
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 7
+		{0, INT16U_MAX, 0},																		// 8
 		{0, 0, 0},																				// 9
-		{0, INT16U_MAX, I_DUT_ADC_TO_I_OFFSET},													// 10
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_ADC_TO_I_K},							// 11
-		{0, INT16U_MAX, 0},																		// 12
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 13
-		{0, INT16U_MAX, 0},																		// 14
-		{0, 0, 0},																				// 15
-		{0, 0, 0},																				// 16
-		{0, 0, 0},																				// 17
-		{0, 0, 0},																				// 18
-		{0, 0, 0},																				// 19
-		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 20
-		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 21
-		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 22
-		{FULL_CHARGE_TIME_MIN, FULL_CHARGE_TIME_MAX, FULL_CHARGE_TIME_DEF},						// 23
-		{RECHARGE_TIMEOUT_MIN, RECHARGE_TIMEOUT_MAX, RECHARGE_TIMEOUT_DEF},						// 24
-		{V_BAT_THRESHOLD_MIN, V_BAT_THRESHOLD_MAX, V_BAT_THRESHOLD_DEF},						// 25
-		{MAXIMUM_UNIT_CURRENT_MIN, MAXIMUM_UNIT_CURRENT_MAX, MAXIMUM_UNIT_CURRENT_DEF},			// 26
-		{CONF_STATE_TIMEOUT_MIN, CONF_STATE_TIMEOUT_MAX, CONF_STATE_TIMEOUT_DEF},				// 27
-		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 28
-		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 29
-		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 30
-		{false, true, false},																	// 31
-		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 32
-		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 33
-		{0, 0, 0},																				// 34
-		{0, 0, 0},																				// 35
+		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 10
+		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 11
+		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 12
+		{FULL_CHARGE_TIME_MIN, FULL_CHARGE_TIME_MAX, FULL_CHARGE_TIME_DEF},						// 13
+		{RECHARGE_TIMEOUT_MIN, RECHARGE_TIMEOUT_MAX, RECHARGE_TIMEOUT_DEF},						// 14
+		{V_BAT_THRESHOLD_MIN, V_BAT_THRESHOLD_MAX, V_BAT_THRESHOLD_DEF},						// 15
+		{MAXIMUM_UNIT_CURRENT_MIN, MAXIMUM_UNIT_CURRENT_MAX, MAXIMUM_UNIT_CURRENT_DEF},			// 16
+		{CONF_STATE_TIMEOUT_MIN, CONF_STATE_TIMEOUT_MAX, CONF_STATE_TIMEOUT_DEF},				// 17
+		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 18
+		{false, true, false},																	// 19
+		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 20
+		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 21
+		{0, 0, 0},																				// 22
+		{0, 0, 0},																				// 23
+		{0, 0, 0},																				// 24
+		{0, INT16U_MAX, 0},																		// 25
+		{0, INT16U_MAX, 0},																		// 26
+		{0, INT16U_MAX, 0},																		// 27
+		{0, INT16U_MAX, 0},																		// 28
+		{0, INT16U_MAX, 0},																		// 29
+		{0, INT16U_MAX, 0},																		// 30
+		{0, INT16U_MAX, 0},																		// 31
+		{0, INT16U_MAX, 0},																		// 32
+		{0, INT16U_MAX, 0},																		// 33
+		{0, INT16U_MAX, 0},																		// 34
+		{0, INT16U_MAX, 0},																		// 35
 		{0, 0, 0},																				// 36
 		{0, 0, 0},																				// 37
 		{0, 0, 0},																				// 38
@@ -90,17 +90,17 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_5000_K_DEF},							// 84
 		{0, INT16U_MAX, CTRL2_OFFSET_DEF},														// 85
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 86
-		{0, INT16U_MAX, 0},																		// 87
-		{0, INT16U_MAX, 0},																		// 88
-		{0, INT16U_MAX, 0},																		// 89
-		{0, INT16U_MAX, 0},																		// 90
-		{0, INT16U_MAX, 0},																		// 91
-		{0, INT16U_MAX, 0},																		// 92
-		{0, INT16U_MAX, 0},																		// 93
-		{0, INT16U_MAX, 0},																		// 94
-		{0, INT16U_MAX, 0},																		// 95
-		{0, INT16U_MAX, 0},																		// 96
-		{0, INT16U_MAX, 0},																		// 97
+		{0, 0, 0},																				// 87
+		{0, 0, 0},																				// 88
+		{0, 0, 0},																				// 89
+		{0, 0, 0},																				// 90
+		{0, 0, 0},																				// 91
+		{0, 0, 0},																				// 92
+		{0, 0, 0},																				// 93
+		{0, 0, 0},																				// 94
+		{0, 0, 0},																				// 95
+		{0, 0, 0},																				// 96
+		{0, 0, 0},																				// 97
 		{0, 0, 0},																				// 98
 		{0, 0, 0},																				// 99
 		{0, 0, 0},																				// 100

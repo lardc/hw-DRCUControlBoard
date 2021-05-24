@@ -37,27 +37,36 @@
 #define REG_V_BAT_K								1		// Коэффициент пересчета АЦП в напряжение, мВ
 #define REG_V_INT_PS_OFFSET						2		// Смещение оцифрованных значений напряжения внутреннего источника
 #define REG_V_INT_PS_K							3		// Коэффициент пересчета АЦП в напряжение, мВ
-//
-#define REG_I_DUT_OFFSET						10		// Смещение оцифрованных значений тока
-#define REG_I_DUT_K								11		// Коэффициент пересчета АЦП в ток, А
-#define REG_I_DUT_P0							12		// Смещение тонкой подстройки Р0
-#define REG_I_DUT_P1							13		// Коэффициент тонкой подстройки Р1
-#define REG_I_DUT_P2							14		// Коэффициент тонкой подстройки Р2
-//
-#define REG_INTPS_STAB_COUNTER_VALUE			20		// Макс. значение счетчика при задании напряжения внутреннего источника
-#define REG_ERR_FOR_FORCED_DISCHARGE			21		// Ошибка, при которой включается форсированный разряд внутреннего источника (% * 10)
-#define REG_INTPS_ALLOWED_ERROR					22		// Минимально допустимая ошибка задания напряжения внутреннего источника (% * 10)
-#define REG_BATTERY_FULL_CHRAGE_TIMEOUT			23		// Таймаут полного заряда батареи,мс
-#define REG_BATTERY_RECHRAGE_TIMEOUT			24		// Таймаут дозаряда батареи,мс
-#define REG_BAT_VOLTAGE_THRESHOLD				25		// Минимальный порог заряда батареи, В *10
-#define REG_MAXIMUM_UNIT_CURRENT				26		// Максимальное значение тока с блока
-#define REG_CONFIG_RDY_STATE_TIMEOUT			27		// Таймаут нахождения блока в состоянии ConfigReady
-#define REG_ERROR_COUNTER_MAX					28		// Максимальное значение счетчика при определении выхода тока на задание
-#define REG_ALLOWED_ERROR						29		// Допустимая ошибка определения выхода тока на задание (% * 10)
-#define REG_AFTER_PULSE_PAUSE					30		// Пауза после импульса, мс
-#define REG_FAN_CTRL							31		// Разрешение работы вентиляторов
-#define REG_FAN_OPERATE_PERIOD					32		// Период работы вентилятора, с
-#define REG_FAN_OPERATE_TIME					33		// Длительность работы вентилятора, с
+#define REG_I_DUT_OFFSET						4		// Смещение оцифрованных значений тока
+#define REG_I_DUT_K								5		// Коэффициент пересчета АЦП в ток, А
+#define REG_I_DUT_P0							6		// Смещение тонкой подстройки Р0
+#define REG_I_DUT_P1							7		// Коэффициент тонкой подстройки Р1
+#define REG_I_DUT_P2							8		// Коэффициент тонкой подстройки Р2
+// 9
+#define REG_INTPS_STAB_COUNTER_VALUE			10		// Макс. значение счетчика при задании напряжения внутреннего источника
+#define REG_ERR_FOR_FORCED_DISCHARGE			11		// Ошибка, при которой включается форсированный разряд внутреннего источника (% * 10)
+#define REG_INTPS_ALLOWED_ERROR					12		// Минимально допустимая ошибка задания напряжения внутреннего источника (% * 10)
+#define REG_BATTERY_FULL_CHRAGE_TIMEOUT			13		// Таймаут полного заряда батареи,мс
+#define REG_BATTERY_RECHRAGE_TIMEOUT			14		// Таймаут дозаряда батареи,мс
+#define REG_BAT_VOLTAGE_THRESHOLD				15		// Минимальный порог заряда батареи, В *10
+#define REG_MAXIMUM_UNIT_CURRENT				16		// Максимальное значение тока с блока
+#define REG_CONFIG_RDY_STATE_TIMEOUT			17		// Таймаут нахождения блока в состоянии ConfigReady
+#define REG_AFTER_PULSE_PAUSE					18		// Пауза после импульса, мс
+#define REG_FAN_CTRL							19		// Разрешение работы вентиляторов
+#define REG_FAN_OPERATE_PERIOD					20		// Период работы вентилятора, с
+#define REG_FAN_OPERATE_TIME					21		// Длительность работы вентилятора, с
+// 22 - 24
+#define REG_I_RATE_COMPENS_050					25		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 0.50 A/us
+#define REG_I_RATE_COMPENS_075					26		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 0.75 A/us
+#define REG_I_RATE_COMPENS_100					27		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 1.00 A/us
+#define REG_I_RATE_COMPENS_250					28		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 2.50 A/us
+#define REG_I_RATE_COMPENS_500					29		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 5.00 A/us
+#define REG_I_RATE_COMPENS_750					30		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 7.50 A/us
+#define REG_I_RATE_COMPENS_1000					31		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 10.0 A/us
+#define REG_I_RATE_COMPENS_1500					32		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 15.0 A/us
+#define REG_I_RATE_COMPENS_2500					33		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 25.0 A/us
+#define REG_I_RATE_COMPENS_3000					34		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 30.0 A/us
+#define REG_I_RATE_COMPENS_5000					35		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 50.0 A/us
 //
 #define REG_CTRL1_MAX_WIDTH_050					40		// Максимальная длительность импульса CTRL1 при 0.5А/мкс
 #define REG_CTRL1_MAX_WIDTH_075					41		// Максимальная длительность импульса CTRL1 при 0.75А/мкс
@@ -109,17 +118,6 @@
 #define REG_CTRL2_OFFSET						85		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								86		// Коэффициент грубой подстройки тока
 //
-#define REG_I_RATE_COMPENS_050					87		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 0.50 A/us
-#define REG_I_RATE_COMPENS_075					88		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 0.75 A/us
-#define REG_I_RATE_COMPENS_100					89		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 1.00 A/us
-#define REG_I_RATE_COMPENS_250					90		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 2.50 A/us
-#define REG_I_RATE_COMPENS_500					91		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 5.00 A/us
-#define REG_I_RATE_COMPENS_750					92		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 7.50 A/us
-#define REG_I_RATE_COMPENS_1000					93		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 10.0 A/us
-#define REG_I_RATE_COMPENS_1500					94		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 15.0 A/us
-#define REG_I_RATE_COMPENS_2500					95		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 25.0 A/us
-#define REG_I_RATE_COMPENS_3000					96		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 30.0 A/us
-#define REG_I_RATE_COMPENS_5000					97		// Коэффициент компенсации зависимости dI/dt от амплитуды тока задания при 50.0 A/us
 
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
