@@ -16,6 +16,9 @@ struct __ConfigParamsStruct
 	float PulseWidth_CTRL1_Offset;
 	float PulseWidth_CTRL2_K;
 	Int16S PulseWidth_CTRL2_Offset;
+	float PulseWidth_CTRL1_P2;
+	float PulseWidth_CTRL1_P1;
+	Int16S PulseWidth_CTRL1_P0;
 };
 extern struct __ConfigParamsStruct ConfigParams;
 

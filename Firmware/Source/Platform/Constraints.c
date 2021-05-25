@@ -90,39 +90,39 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_5000_K_DEF},							// 84
 		{0, INT16U_MAX, CTRL2_OFFSET_DEF},														// 85
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 86
-		{0, 0, 0},																				// 87
-		{0, 0, 0},																				// 88
-		{0, 0, 0},																				// 89
-		{0, 0, 0},																				// 90
-		{0, 0, 0},																				// 91
-		{0, 0, 0},																				// 92
-		{0, 0, 0},																				// 93
-		{0, 0, 0},																				// 94
-		{0, 0, 0},																				// 95
-		{0, 0, 0},																				// 96
-		{0, 0, 0},																				// 97
-		{0, 0, 0},																				// 98
-		{0, 0, 0},																				// 99
-		{0, 0, 0},																				// 100
-		{0, 0, 0},																				// 101
-		{0, 0, 0},																				// 102
-		{0, 0, 0},																				// 103
-		{0, 0, 0},																				// 104
-		{0, 0, 0},																				// 105
-		{0, 0, 0},																				// 106
-		{0, 0, 0},																				// 107
-		{0, 0, 0},																				// 108
-		{0, 0, 0},																				// 109
-		{0, 0, 0},																				// 110
-		{0, 0, 0},																				// 111
-		{0, 0, 0},																				// 112
-		{0, 0, 0},																				// 113
-		{0, 0, 0},																				// 114
-		{0, 0, 0},																				// 115
-		{0, 0, 0},																				// 116
-		{0, 0, 0},																				// 117
-		{0, 0, 0},																				// 118
-		{0, 0, 0},																				// 119
+		{0, INT16U_MAX, 0},																		// 87
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 88
+		{0, INT16U_MAX, 0},																		// 89
+		{0, INT16U_MAX, 0},																		// 90
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 91
+		{0, INT16U_MAX, 0},																		// 92
+		{0, INT16U_MAX, 0},																		// 93
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 94
+		{0, INT16U_MAX, 0},																		// 95
+		{0, INT16U_MAX, 0},																		// 96
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 97
+		{0, INT16U_MAX, 0},																		// 98
+		{0, INT16U_MAX, 0},																		// 99
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 100
+		{0, INT16U_MAX, 0},																		// 101
+		{0, INT16U_MAX, 0},																		// 102
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 103
+		{0, INT16U_MAX, 0},																		// 104
+		{0, INT16U_MAX, 0},																		// 105
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 106
+		{0, INT16U_MAX, 0},																		// 107
+		{0, INT16U_MAX, 0},																		// 108
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 109
+		{0, INT16U_MAX, 0},																		// 110
+		{0, INT16U_MAX, 0},																		// 111
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 112
+		{0, INT16U_MAX, 0},																		// 113
+		{0, INT16U_MAX, 0},																		// 114
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 115
+		{0, INT16U_MAX, 0},																		// 116
+		{0, INT16U_MAX, 0},																		// 117
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 118
+		{0, INT16U_MAX, 0},																		// 119
 		{0, 0, 0},																				// 120
 		{0, 0, 0},																				// 121
 		{0, 0, 0},																				// 122
