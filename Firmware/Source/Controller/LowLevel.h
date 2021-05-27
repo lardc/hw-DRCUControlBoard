@@ -19,5 +19,6 @@ void LL_OverVoltageProtectionReset();
 void LL_IntPowerSupplyDischarge(bool State);
 void LL_ExtRegWriteData(Int16U Data);
 bool LL_ReadLineSync();
+void LL_FlipLineRCK();
 
 #endif //__LOWLEVEL_H

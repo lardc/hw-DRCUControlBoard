@@ -59,6 +59,7 @@ volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 // Forward functions
 //
 int MEASURE_SortCondition(const void *A, const void *B);
+void LOGIC_SetCurrentRangeRate(Int16U Code);
 
 // Functions
 //
@@ -78,6 +79,14 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	ADC_SwitchToBase();
 
 	// Отключение формирователя
+	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
+}
+//-------------------------------------------
+
+void LOGIC_SetCurrentRangeRate(Int16U Code)
+{
+	LL_ExtRegWriteData(Code);
+	LL_FlipLineRCK();
 	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
@@ -261,7 +270,7 @@ void LOGIC_Config()
 	if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN;
 
-	LL_ExtRegWriteData(ConfigParams.CurrentRateCode);
+	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
@@ -286,8 +295,6 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
 	if(PulseWidth < 0)
 		PulseWidth = 0;
-
-	DataTable[150] = PulseWidth;
 
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);

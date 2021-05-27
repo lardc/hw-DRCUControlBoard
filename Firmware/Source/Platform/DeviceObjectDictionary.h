@@ -187,11 +187,11 @@
 #define DF_NONE									0
 #define DF_BATTERY								1		// Ошибка заряда батареи
 #define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
+#define DF_SYNC									3		// Длительность импульса синхронизации превышена
 
 // WARNINGS
 //
 #define WARNING_NONE							0
-#define WARNING_CURRENT_NOT_READY				1		// Ток не вышел на заданный уровень
 
 // User Errors
 // 

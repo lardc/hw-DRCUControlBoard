@@ -69,6 +69,7 @@ void DBGACT_Sync()
 void DBGACT_ExtRegWriteData()
 {
 	LL_ExtRegWriteData(DataTable[REG_DBG]);
+	LL_FlipLineRCK();
 }
 //-----------------------------------------------
 

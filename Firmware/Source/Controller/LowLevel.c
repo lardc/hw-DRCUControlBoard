@@ -80,7 +80,11 @@ void LL_IntPowerSupplyDischarge(bool State)
 void LL_ExtRegWriteData(Int16U Data)
 {
 	SPI_WriteByte8b(SPI1, Data);
+}
+//------------------------------------------------------------------------------
 
+void LL_FlipLineRCK()
+{
 	DELAY_US(10);
 	GPIO_SetState(GPIO_SPI_RCK, true);
 	DELAY_US(10);

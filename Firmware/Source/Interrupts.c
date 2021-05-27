@@ -11,9 +11,18 @@
 #include "InitConfig.h"
 #include "DataTable.h"
 
+// Definitions
+//
+#define WIDTH_SYNC_LINE_MAX			3			// Максимальная длительность импульса синхронизации, мс
+
+// Variables
+//
+Int64U SyncLineTimeCounter = 0;
+
 // Functions prototypes
 //
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
+void INT_SyncWidthControl();
 
 // Functions
 //
@@ -42,12 +51,16 @@ void EXTI9_5_IRQHandler()
 				ADC_SwitchToHighSpeed();
 				MEASURE_HighSpeedStart(true);
 
+				SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
 				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 			}
 			else
 			{
 				if(CONTROL_SubState == SS_Plate)
 				{
+					SyncLineTimeCounter = 0;
+
 					LOGIC_StartFallEdge();
 					CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 				}
@@ -144,9 +157,6 @@ void TIM7_IRQHandler()
 
 	if (TIM_StatusCheck(TIM7))
 	{
-		CONTROL_HandleFanLogic(false);
-		CONTROL_HandleExternalLamp(false);
-
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
@@ -154,7 +164,26 @@ void TIM7_IRQHandler()
 			LED_BlinkTimeCounter = 0;
 		}
 
+		CONTROL_HandleFanLogic(false);
+		CONTROL_HandleExternalLamp(false);
+		INT_SyncWidthControl();
+
 		TIM_StatusClear(TIM7);
+	}
+}
+//-----------------------------------------
+
+void INT_SyncWidthControl()
+{
+	if(SyncLineTimeCounter && (CONTROL_TimeCounter >= SyncLineTimeCounter))
+	{
+		// Выкл. формирователя
+		LL_OutputLock(true);
+		LL_FlipLineRCK();
+
+		SyncLineTimeCounter = 0;
+
+		CONTROL_SwitchToFault(DF_SYNC);
 	}
 }
 //-----------------------------------------
