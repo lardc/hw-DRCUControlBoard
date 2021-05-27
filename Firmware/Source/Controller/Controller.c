@@ -199,7 +199,6 @@ void CONTROL_HandleIntPSTune()
 				IntPsStabCounter = 0;
 				CONTROL_DeviceStateTimeCounter = CONTROL_TimeCounter + DataTable[REG_CONFIG_RDY_STATE_TIMEOUT];
 
-				LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, DataTable[REG_INT_PS_VOLTAGE]);
 				CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
 			}
 		}

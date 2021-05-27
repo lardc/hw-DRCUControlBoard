@@ -28,44 +28,44 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, 0, 0},																				// 22
 		{0, 0, 0},																				// 23
 		{0, 0, 0},																				// 24
-		{0, INT16U_MAX, 0},																		// 25
-		{0, INT16U_MAX, 0},																		// 26
-		{0, INT16U_MAX, 0},																		// 27
-		{0, INT16U_MAX, 0},																		// 28
-		{0, INT16U_MAX, 0},																		// 29
-		{0, INT16U_MAX, 0},																		// 30
-		{0, INT16U_MAX, 0},																		// 31
-		{0, INT16U_MAX, 0},																		// 32
-		{0, INT16U_MAX, 0},																		// 33
-		{0, INT16U_MAX, 0},																		// 34
-		{0, INT16U_MAX, 0},																		// 35
-		{0, 0, 0},																				// 36
+		{0, CTRL1_MAX_WIDTH_050_MAX, CTRL1_MAX_WIDTH_050_DEF},									// 25
+		{0, CTRL1_MAX_WIDTH_075_MAX, CTRL1_MAX_WIDTH_075_DEF},									// 26
+		{0, CTRL1_MAX_WIDTH_100_MAX, CTRL1_MAX_WIDTH_100_DEF},									// 27
+		{0, CTRL1_MAX_WIDTH_250_MAX, CTRL1_MAX_WIDTH_250_DEF},									// 28
+		{0, CTRL1_MAX_WIDTH_500_MAX, CTRL1_MAX_WIDTH_500_DEF},									// 29
+		{0, CTRL1_MAX_WIDTH_750_MAX, CTRL1_MAX_WIDTH_750_DEF},									// 30
+		{0, CTRL1_MAX_WIDTH_1000_MAX, CTRL1_MAX_WIDTH_1000_DEF},								// 31
+		{0, CTRL1_MAX_WIDTH_1500_MAX, CTRL1_MAX_WIDTH_1500_DEF},								// 32
+		{0, CTRL1_MAX_WIDTH_2500_MAX, CTRL1_MAX_WIDTH_2500_DEF},								// 33
+		{0, CTRL1_MAX_WIDTH_3000_MAX, CTRL1_MAX_WIDTH_3000_DEF},								// 34
+		{0, CTRL1_MAX_WIDTH_5000_MAX, CTRL1_MAX_WIDTH_5000_DEF},								// 35
+		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 36
 		{0, 0, 0},																				// 37
 		{0, 0, 0},																				// 38
 		{0, 0, 0},																				// 39
-		{0, CTRL1_MAX_WIDTH_050_MAX, CTRL1_MAX_WIDTH_050_DEF},									// 40
-		{0, CTRL1_MAX_WIDTH_075_MAX, CTRL1_MAX_WIDTH_075_DEF},									// 41
-		{0, CTRL1_MAX_WIDTH_100_MAX, CTRL1_MAX_WIDTH_100_DEF},									// 42
-		{0, CTRL1_MAX_WIDTH_250_MAX, CTRL1_MAX_WIDTH_250_DEF},									// 43
-		{0, CTRL1_MAX_WIDTH_500_MAX, CTRL1_MAX_WIDTH_500_DEF},									// 44
-		{0, CTRL1_MAX_WIDTH_750_MAX, CTRL1_MAX_WIDTH_750_DEF},									// 45
-		{0, CTRL1_MAX_WIDTH_1000_MAX, CTRL1_MAX_WIDTH_1000_DEF},								// 46
-		{0, CTRL1_MAX_WIDTH_1500_MAX, CTRL1_MAX_WIDTH_1500_DEF},								// 47
-		{0, CTRL1_MAX_WIDTH_2500_MAX, CTRL1_MAX_WIDTH_2500_DEF},								// 48
-		{0, CTRL1_MAX_WIDTH_3000_MAX, CTRL1_MAX_WIDTH_3000_DEF},								// 49
-		{0, CTRL1_MAX_WIDTH_5000_MAX, CTRL1_MAX_WIDTH_5000_DEF},								// 50
-		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 51
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_050_DEF},											// 52
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_075_DEF},											// 53
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_100_DEF},											// 54
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_250_DEF},											// 55
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_500_DEF},											// 56
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_750_DEF},											// 57
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1000_DEF},											// 58
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1500_DEF},											// 59
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_2500_DEF},											// 60
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_3000_DEF},											// 61
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_5000_DEF},											// 62
+		{0, 0, 0},																				// 40
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 41
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 42
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 43
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 44
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 45
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 46
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 47
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 48
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 49
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 50
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 51
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 52
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 53
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 54
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 55
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 56
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 57
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 58
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 59
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 60
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 61
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 62
 		{0, INT16U_MAX, CTRL1_050_OFFSET_DEF},													// 63
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_050_K_DEF},							// 64
 		{0, INT16U_MAX, CTRL1_075_OFFSET_DEF},													// 65
@@ -136,7 +136,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START] = {
 		{CURRENT_SETPOINT_MIN, CURRENT_SETPOINT_MAX, CURRENT_SETPOINT_DEF},						// 128
 		{CURRENT_RATE_MIN, CURRENT_RATE_MAX, CURRENT_RATE_DEF},									// 129
-		{0, 0, 0},																				// 130
+		{0, INTPS_VOLTAGE_MAX, 0},																// 130
 		{0, 0, 0},																				// 131
 		{0, 0, 0},																				// 132
 		{0, 0, 0},																				// 133

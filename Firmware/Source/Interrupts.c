@@ -33,11 +33,11 @@ void EXTI9_5_IRQHandler()
 	{
 		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_SubState == SS_RiseEdge) || (CONTROL_SubState == SS_Plate))
 		{
-			LL_OutputLock(false);
-			LL_IntPowerSupplyEn(false);
-
 			if (LL_ReadLineSync())
 			{
+				LL_IntPowerSupplyEn(false);
+				LL_OutputLock(false);
+
 				LOGIC_StartRiseEdge();
 				ADC_SwitchToHighSpeed();
 				MEASURE_HighSpeedStart(true);
