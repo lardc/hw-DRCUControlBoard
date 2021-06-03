@@ -93,7 +93,9 @@ void TIM2_IRQHandler()
 
 void TIM3_IRQHandler()
 {
+	GPIO_SetState(GPIO_LED, true);
 	TIMx_Process(TIM3, TIM_SR_CC4IF);
+	GPIO_SetState(GPIO_LED, false);
 }
 //-----------------------------------------
 
