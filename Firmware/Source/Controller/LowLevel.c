@@ -31,11 +31,19 @@ void LL_FAN(bool State)
 //------------------------------------------------------------------------------
 
 // Software trigger
-void LL_SW_Trig()
+void LL_SW_Trig(bool Start)
 {
-	TIM_Reset(TIM16);
-	TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, RCU_PULSE_SYNC_WIDTH);
-	TIM_Start(TIM16);
+	if(Start)
+	{
+		TIM_Reset(TIM16);
+		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, RCU_PULSE_SYNC_WIDTH);
+		TIM_Start(TIM16);
+	}
+	else
+	{
+		TIM_Stop(TIM16);
+		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, 0);
+	}
 }
 //------------------------------------------------------------------------------
 

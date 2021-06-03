@@ -32,7 +32,7 @@ extern volatile Int16U LOGIC_DUTCurrentRaw[];
 //
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply);
 void LOGIC_BatteryCharge(bool State);
-void LOGIC_SofwarePulseStart();
+void LOGIC_SofwarePulseStart(bool Start);
 void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth);
 void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage);
 void LOGIC_Config();

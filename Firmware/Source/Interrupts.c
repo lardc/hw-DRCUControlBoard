@@ -40,47 +40,45 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
 	{
-		if ((CONTROL_State == DS_ConfigReady) || (CONTROL_SubState == SS_RiseEdge) || (CONTROL_SubState == SS_Plate))
+		// Формирование переднего фронта импульса
+		if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
+		{
+			LL_IntPowerSupplyEn(false);
+			LL_OutputLock(false);
+
+			LOGIC_StartRiseEdge();
+			ADC_SwitchToHighSpeed();
+			MEASURE_HighSpeedStart(true);
+
+			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
+			CONTROL_HandleFanLogic(true);
+			CONTROL_HandleExternalLamp(true);
+
+			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+		}
+
+		// Формирование заднего фронта импульса
+		if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+		{
+			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+
+			SyncLineTimeCounter = 0;
+
+			LOGIC_StartFallEdge();
+
+		}
+
+		// Запуск импульса в отладочном режиме
+		if ((CONTROL_State == DS_None))
 		{
 			if (LL_ReadLineSync())
-			{
-				LL_IntPowerSupplyEn(false);
-				LL_OutputLock(false);
-
 				LOGIC_StartRiseEdge();
-				ADC_SwitchToHighSpeed();
-				MEASURE_HighSpeedStart(true);
-
-				SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
-				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
-			}
 			else
 			{
-				if(CONTROL_SubState == SS_Plate)
-				{
-					SyncLineTimeCounter = 0;
-
-					LOGIC_StartFallEdge();
-					CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-				}
+				LOGIC_StartFallEdge();
 			}
 		}
-		else
-		{
-			if ((CONTROL_State == DS_None))
-			{
-				if (LL_ReadLineSync())
-					LOGIC_StartRiseEdge();
-				else
-				{
-					LOGIC_StartFallEdge();
-				}
-			}
-		}
-
-		CONTROL_HandleFanLogic(true);
-		CONTROL_HandleExternalLamp(true);
 	}
 
 	EXTI_FlagReset(EXTI_6);
@@ -113,7 +111,6 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 
 		if (CONTROL_SubState == SS_FallEdge)
 			CONTROL_StopProcess();
-
 
 		TIM_InterruptEventFlagClear(TIMx, Event);
 	}
@@ -160,7 +157,7 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			LL_ToggleBoardLED();
+			//LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 

@@ -10,7 +10,7 @@
 void LL_ToggleBoardLED();
 void LL_ExternalLamp(bool State);
 void LL_FAN(bool State);
-void LL_SW_Trig();
+void LL_SW_Trig(bool Start);
 void LL_PowerOnMechRelay(bool State);
 void LL_PowerOnSolidStateRelay(bool State);
 void LL_OutputLock(bool State);

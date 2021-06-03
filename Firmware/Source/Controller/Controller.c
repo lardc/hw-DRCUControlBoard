@@ -126,7 +126,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_SOFTWARE_START:
 			if (CONTROL_State == DS_ConfigReady)
-				LOGIC_SofwarePulseStart();
+				LOGIC_SofwarePulseStart(true);
 			else
 				if (CONTROL_State == DS_InProcess)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -228,6 +228,8 @@ void CONTROL_HandleBatteryCharge()
 
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
+		LL_PowerOnSolidStateRelay(true);
+
 		BatteryVoltage = MEASURE_BatteryVoltage() * 10;
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
@@ -248,12 +250,14 @@ void CONTROL_HandleBatteryCharge()
 
 void CONTROL_StopProcess()
 {
-	LOGIC_ResetHWToDefaults(false);
-	LL_PowerOnSolidStateRelay(true);
 	CONTROL_SaveResults();
+
+	LOGIC_ResetHWToDefaults(false);
+
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+
 	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------

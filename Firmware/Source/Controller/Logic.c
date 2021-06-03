@@ -60,12 +60,16 @@ volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 //
 int MEASURE_SortCondition(const void *A, const void *B);
 void LOGIC_SetCurrentRangeRate(Int16U Code);
+void LOGIC_CurrentSourceTurnOff();
 
 // Functions
 //
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
+	LOGIC_SofwarePulseStart(false);
+	LOGIC_CurrentSourceTurnOff();
+
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
@@ -77,8 +81,15 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 
 	// Переключение АЦП в базовый режим
 	ADC_SwitchToBase();
+}
+//-------------------------------------------
 
-	// Отключение формирователя
+void LOGIC_CurrentSourceTurnOff()
+{
+	TIM_Stop(TIM2);
+	TIM_Stop(TIM3);
+	LOGIC_ConstantPulseRateConfig(0);
+	LOGIC_VariablePulseRateConfig(0, 0);
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
@@ -316,14 +327,14 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
-	TIM_Stop(TIM16);
+	LOGIC_SofwarePulseStart(false);
 	TIM_Start(TIM2);
 }
 //-------------------------------------------
 
-void LOGIC_SofwarePulseStart()
+void LOGIC_SofwarePulseStart(bool Start)
 {
-	LL_SW_Trig();
+	LL_SW_Trig(Start);
 }
 //-------------------------------------------
 
