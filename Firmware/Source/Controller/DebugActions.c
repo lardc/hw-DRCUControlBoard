@@ -75,8 +75,11 @@ void DBGACT_ExtRegWriteData()
 
 void DBGACT_GeneratePulse()
 {
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
-	DELAY_US(500);
+	//LOGIC_VariablePulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
+	TIM_Reset(TIM8);
+	TIMx_PWM_SetValue(TIM8, TIMx_CHANNEL3, DataTable[REG_DBG]);
+	TIM_Start(TIM8);
+	/*DELAY_US(500);
 
 	LL_OutputLock(false);
 	DELAY_US(1000);
@@ -90,6 +93,6 @@ void DBGACT_GeneratePulse()
 	LL_SW_Trig(false);
 	DELAY_US(1000);
 
-	LL_OutputLock(true);
+	LL_OutputLock(true);*/
 }
 //-----------------------------------------------

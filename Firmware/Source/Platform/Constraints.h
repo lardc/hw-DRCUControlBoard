@@ -50,7 +50,7 @@
 #define CURRENT_RATE_MAX				5000		// A / us / 100
 #define CURRENT_RATE_DEF				50			// A / us / 100
 //
-#define AFTER_PULSE_TIMEOUT_MIN			1000		// мс
+#define AFTER_PULSE_TIMEOUT_MIN			0		// мс
 #define AFTER_PULSE_TIMEOUT_MAX			10000		// мс
 #define AFTER_PULSE_TIMEOUT_DEF			1000		// мс
 //
