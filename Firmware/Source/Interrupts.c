@@ -13,7 +13,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			3			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			4			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
@@ -91,18 +91,9 @@ void TIM2_IRQHandler()
 }
 //-----------------------------------------
 
-void TIM8_CC_IRQHandler()
-{
-	GPIO_SetState(GPIO_LED, true);
-	TIMx_Process(TIM8, TIM_SR_CC3IF);
-	GPIO_SetState(GPIO_LED, false);
-}
-
 void TIM3_IRQHandler()
 {
-	//GPIO_SetState(GPIO_LED, true);
-	//TIMx_Process(TIM3, TIM_SR_CC4IF);
-	//GPIO_SetState(GPIO_LED, false);
+	TIMx_Process(TIM3, TIM_SR_CC4IF);
 }
 //-----------------------------------------
 
@@ -166,7 +157,7 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			//LL_ToggleBoardLED();
+			LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 

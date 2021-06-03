@@ -60,7 +60,7 @@ void INITCFG_ConfigIO()
 	GPIO_InitAltFunction(GPIO_ALT_UART1_TX, AltFn_7);
 	GPIO_InitAltFunction(GPIO_ALT_SPI1_SCK, AltFn_5);
 	GPIO_InitAltFunction(GPIO_ALT_SPI1_DATA, AltFn_5);
-	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_4);
+	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_2);
 	GPIO_InitAltFunction(GPIO_ALT_CTRL2, AltFn_1);
 	GPIO_InitAltFunction(GPIO_ALT_MCU_SYNC, AltFn_1);
 }
@@ -144,13 +144,11 @@ void INITCFG_ConfigTimer2_3()
 	TIMx_PWM_ConfigChannel(TIM2, TIMx_CHANNEL3);
 	TIM_InterruptEventConfig(TIM2, TIM_DIER_CC3IE, true);
 
-	// Timer8
-	TIM_Clock_En(TIM_8);
-	TIM_Config(TIM8, SYSCLK, TIMER2_3_uS);
-	TIMx_PWM_ConfigChannel(TIM8, TIMx_CHANNEL3);
-	TIM8->CCER |= TIM_CCER_CC3NE;
-	TIM8->CCER |= TIM_CCER_CC3NP;
-	TIM_InterruptEventConfig(TIM8, TIM_DIER_CC3IE, true);
+	// Timer3
+	TIM_Clock_En(TIM_3);
+	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
+	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
+	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
 }
 //------------------------------------------------------------------------------
 

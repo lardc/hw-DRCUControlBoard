@@ -97,7 +97,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			{
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
-				//LOGIC_BatteryCharge(true);/////////////////////////////////////////////
+				LOGIC_BatteryCharge(true);
 			}
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;
@@ -190,8 +190,6 @@ void CONTROL_HandleIntPSTune()
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
-		dV = 0;///////////////////////////////////
-
 		if ((CONTROL_SubState == SS_PulsePrepare) && (dV <= DataTable[REG_INTPS_ALLOWED_ERROR]))
 		{
 			IntPsStabCounter++;
@@ -207,15 +205,15 @@ void CONTROL_HandleIntPSTune()
 
 		if (DataTable[REG_INT_PS_VOLTAGE] < ConfigParams.IntPsVoltage)
 		{
-			//LL_IntPowerSupplyDischarge(false);
-			//LL_IntPowerSupplyEn(true);
+			LL_IntPowerSupplyDischarge(false);
+			LL_IntPowerSupplyEn(true);
 		}
 		else
 		{
-			//LL_IntPowerSupplyEn(false);
+			LL_IntPowerSupplyEn(false);
 
-			//if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
-				//LL_IntPowerSupplyDischarge(true);
+			if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
+				LL_IntPowerSupplyDischarge(true);
 		}
 	}
 	else
@@ -233,8 +231,6 @@ void CONTROL_HandleBatteryCharge()
 		LL_PowerOnSolidStateRelay(true);
 
 		BatteryVoltage = MEASURE_BatteryVoltage() * 10;
-
-		BatteryVoltage = DataTable[REG_BAT_VOLTAGE_THRESHOLD];//////////////////////////////////
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
