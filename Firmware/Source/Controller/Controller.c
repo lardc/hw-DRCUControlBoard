@@ -271,10 +271,10 @@ void CONTROL_RegistersReset()
 
 void CONTROL_SwitchToFault(Int16U Reason)
 {
-	LOGIC_ResetHWToDefaults(true);
-	//
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
+
+	LOGIC_ResetHWToDefaults(true);
 }
 //-----------------------------------------------
 

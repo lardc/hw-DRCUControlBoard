@@ -50,10 +50,10 @@ void EXTI9_5_IRQHandler()
 			ADC_SwitchToHighSpeed();
 			MEASURE_HighSpeedStart(true);
 
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
 			CONTROL_HandleFanLogic(true);
 			CONTROL_HandleExternalLamp(true);
+
+			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
 
 			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 		}
@@ -86,9 +86,7 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-	GPIO_SetState(GPIO_LED, true);
 	TIMx_Process(TIM2, TIM_SR_CC3IF);
-	GPIO_SetState(GPIO_LED, false);
 }
 //-----------------------------------------
 
@@ -123,9 +121,8 @@ void EXTI15_10_IRQHandler()
 	if (EXTI_FlagCheck(EXTI_13))
 	{
 		CONTROL_SwitchToFault(DF_PROTECTION);
+		EXTI_FlagReset(EXTI_13);
 	}
-
-	EXTI_FlagReset(EXTI_13);
 }
 //-----------------------------------------
 
@@ -158,7 +155,7 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			//LL_ToggleBoardLED();
+			LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 
