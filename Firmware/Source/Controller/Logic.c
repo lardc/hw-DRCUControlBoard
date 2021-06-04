@@ -86,6 +86,8 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 
 void LOGIC_CurrentSourceTurnOff()
 {
+	LOGIC_ConstantPulseRateConfig(0);
+	LOGIC_VariablePulseRateConfig(0, 0);
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
