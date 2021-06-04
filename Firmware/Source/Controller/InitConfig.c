@@ -72,12 +72,12 @@ void INITCFG_ConfigExtInterrupt()
 	// ¬ход PROTECTION
 	EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
-	COM_InterruptPrioritySet(EXTI15_10_IRQn, 13);
+	//COM_InterruptPrioritySet(EXTI15_10_IRQn, 13);
 
 	// ¬ход SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
-	COM_InterruptPrioritySet(EXTI9_5_IRQn, 14);
+	//COM_InterruptPrioritySet(EXTI9_5_IRQn, 14);
 }
 //------------------------------------------------
 
@@ -146,14 +146,12 @@ void INITCFG_ConfigTimer2_3()
 	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
 	TIMx_PWM_ConfigChannel(TIM2, TIMx_CHANNEL3);
 	TIM_InterruptEventConfig(TIM2, TIM_DIER_CC3IE, true);
-	COM_InterruptPrioritySet(TIM2_IRQn, 15);
 
 	// Timer3
 	TIM_Clock_En(TIM_3);
 	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
 	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
 	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
-	COM_InterruptPrioritySet(TIM3_IRQn, 16);
 }
 //------------------------------------------------------------------------------
 
