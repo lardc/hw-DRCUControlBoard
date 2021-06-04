@@ -51,7 +51,6 @@ void CONTROL_RegistersReset();
 void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
-void CONTROL_SaveResults();
 
 // Functions
 //
@@ -250,10 +249,7 @@ void CONTROL_HandleBatteryCharge()
 
 void CONTROL_StopProcess()
 {
-	CONTROL_SaveResults();
-
 	LOGIC_ResetHWToDefaults(false);
-
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
@@ -262,16 +258,8 @@ void CONTROL_StopProcess()
 }
 //-----------------------------------------------
 
-void CONTROL_SaveResults()
-{
-	DataTable[REG_CURRENT] = LOGIC_ExctractCurrentValue();
-}
-//-----------------------------------------------
-
 void CONTROL_RegistersReset()
 {
-	DataTable[REG_CURRENT] = 0;
-
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;

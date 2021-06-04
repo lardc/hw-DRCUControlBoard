@@ -334,25 +334,6 @@ void LOGIC_SofwarePulseStart(bool Start)
 }
 //-------------------------------------------
 
-Int16U LOGIC_ExctractCurrentValue()
-{
-	Int16U ArrayTemp[VALUES_x_SIZE];
-	float AvgData = 0;
-
-	for (int i = 0; i < CONTROL_Values_Counter; ++i)
-		ArrayTemp[i] = CONTROL_Values_DUTCurrent[i];
-
-	// Сортировка
-	qsort(ArrayTemp, CONTROL_Values_Counter, sizeof(*ArrayTemp), MEASURE_SortCondition);
-
-	// Усреднение и возврат результата
-	for (int i = CONTROL_Values_Counter - RESULT_AVERAGE_POINTS; i < CONTROL_Values_Counter; ++i)
-		AvgData += ArrayTemp[i];
-
-	return (Int16U)(AvgData / RESULT_AVERAGE_POINTS);
-}
-//-------------------------------------------
-
 void LOGIC_HandleAdcSamples()
 {
 	float AvgData = 0;

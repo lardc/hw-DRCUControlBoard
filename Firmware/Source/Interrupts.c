@@ -13,7 +13,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			4			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			5			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
@@ -61,11 +61,10 @@ void EXTI9_5_IRQHandler()
 		// Формирование заднего фронта импульса
 		if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
 		{
-			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-
 			SyncLineTimeCounter = 0;
 
 			LOGIC_StartFallEdge();
+			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 
 		}
 
@@ -87,7 +86,9 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
+	GPIO_SetState(GPIO_LED, true);
 	TIMx_Process(TIM2, TIM_SR_CC3IF);
+	GPIO_SetState(GPIO_LED, false);
 }
 //-----------------------------------------
 
@@ -157,7 +158,7 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			LL_ToggleBoardLED();
+			//LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 
