@@ -273,7 +273,7 @@ void CONTROL_SwitchToFault(Int16U Reason)
 {
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
-	//
+
 	LOGIC_ResetHWToDefaults(true);
 }
 //-----------------------------------------------
