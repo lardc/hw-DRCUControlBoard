@@ -23,6 +23,7 @@ Int64U SyncLineTimeCounter = 0;
 //
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
 void INT_SyncWidthControl();
+void INT_OutputLockCheck();
 
 // Functions
 //
@@ -50,11 +51,10 @@ void EXTI9_5_IRQHandler()
 			ADC_SwitchToHighSpeed();
 			MEASURE_HighSpeedStart(true);
 
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
 			CONTROL_HandleFanLogic(true);
 			CONTROL_HandleExternalLamp(true);
 
+			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
 			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 		}
 
@@ -65,7 +65,6 @@ void EXTI9_5_IRQHandler()
 
 			LOGIC_StartFallEdge();
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-
 		}
 
 		// Запуск импульса в отладочном режиме
@@ -86,9 +85,7 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-	GPIO_SetState(GPIO_LED, true);
 	TIMx_Process(TIM2, TIM_SR_CC3IF);
-	GPIO_SetState(GPIO_LED, false);
 }
 //-----------------------------------------
 
@@ -123,9 +120,8 @@ void EXTI15_10_IRQHandler()
 	if (EXTI_FlagCheck(EXTI_13))
 	{
 		CONTROL_SwitchToFault(DF_PROTECTION);
+		EXTI_FlagReset(EXTI_13);
 	}
-
-	EXTI_FlagReset(EXTI_13);
 }
 //-----------------------------------------
 
@@ -158,13 +154,14 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			//LL_ToggleBoardLED();
+			LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
 		INT_SyncWidthControl();
+		INT_OutputLockCheck();
 
 		TIM_StatusClear(TIM7);
 	}
@@ -182,6 +179,17 @@ void INT_SyncWidthControl()
 		SyncLineTimeCounter = 0;
 
 		CONTROL_SwitchToFault(DF_SYNC);
+	}
+}
+//-----------------------------------------
+
+void INT_OutputLockCheck()
+{
+	if(!LL_ReadLineSync())
+	{
+		if((CONTROL_SubState != SS_FallEdge) && (CONTROL_SubState != SS_RiseEdge)
+																		&& (CONTROL_SubState != SS_Plate))
+			LL_OutputLock(true);
 	}
 }
 //-----------------------------------------
