@@ -133,8 +133,8 @@
 #define CTRL1_3000_K_DEF				760
 #define CTRL1_5000_OFFSET_DEF			65441
 #define CTRL1_5000_K_DEF				428
-#define CTRL2_OFFSET_DEF				75
-#define CTRL2_K_DEF						813
+#define CTRL2_OFFSET_DEF				2400
+#define CTRL2_K_DEF						25000
 //
 #define I_TO_V_INTPS_K_DEF				200
 #define I_TO_V_INTPS_OFFSET_DEF			1000

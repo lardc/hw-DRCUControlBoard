@@ -90,8 +90,8 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 
 void LOGIC_CurrentSourceTurnOff()
 {
-	LOGIC_ConstantPulseRateConfig(0);
-	LOGIC_VariablePulseRateConfig(0, 0);
+	LOGIC_ConstantPulseRateConfig(0, 0);
+	LOGIC_VariablePulseRateConfig(0);
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
@@ -115,7 +115,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp, K;
+	float CurrentTemp;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -287,10 +287,7 @@ void LOGIC_Config()
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
-	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
-	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
-
-	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2 * K);
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
 	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 }
 //-------------------------------------------
@@ -311,25 +308,20 @@ void LOGIC_SetCompensationVoltage(Int16U Current)
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
+void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 {
 	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
 	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
 
-	if(PulseWidth > ConfigParams.MaxPulseWidth_CTRL1)
-		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
-	if(PulseWidth < 0)
-		PulseWidth = 0;
-
-	TIM_Reset(TIM3);
-	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
+	TIM_Reset(TIM2);
+	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
 }
 //-------------------------------------------
 
-void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
+void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
 {
-	TIM_Reset(TIM2);
-	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
+	TIM_Reset(TIM3);
+	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
 //-------------------------------------------
 
