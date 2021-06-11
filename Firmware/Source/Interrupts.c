@@ -23,6 +23,7 @@ Int64U SyncLineTimeCounter = 0;
 //
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
 void INT_SyncWidthControl();
+void INT_OutputLockCheck();
 
 // Functions
 //
@@ -162,6 +163,7 @@ void TIM7_IRQHandler()
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
 		INT_SyncWidthControl();
+		INT_OutputLockCheck();
 
 		TIM_StatusClear(TIM7);
 	}
@@ -179,6 +181,17 @@ void INT_SyncWidthControl()
 		SyncLineTimeCounter = 0;
 
 		CONTROL_SwitchToFault(DF_SYNC);
+	}
+}
+//-----------------------------------------
+
+void INT_OutputLockCheck()
+{
+	if(!LL_ReadLineSync())
+	{
+		if((CONTROL_SubState != SS_FallEdge) && (CONTROL_SubState != SS_RiseEdge)
+																		&& (CONTROL_SubState != SS_Plate))
+			LL_OutputLock(true);
 	}
 }
 //-----------------------------------------
