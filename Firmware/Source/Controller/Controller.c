@@ -198,6 +198,7 @@ void CONTROL_HandleIntPSTune()
 			{
 				IntPsStabCounter = 0;
 				CONTROL_DeviceStateTimeCounter = CONTROL_TimeCounter + DataTable[REG_CONFIG_RDY_STATE_TIMEOUT];
+
 				CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
 			}
 		}
@@ -227,6 +228,8 @@ void CONTROL_HandleBatteryCharge()
 
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
+		LL_PowerOnSolidStateRelay(true);
+
 		BatteryVoltage = MEASURE_BatteryVoltage() * 10;
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
@@ -248,11 +251,11 @@ void CONTROL_HandleBatteryCharge()
 void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(false);
-	LL_PowerOnSolidStateRelay(true);
 	CONTROL_SaveResults();
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+
 	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------
@@ -266,7 +269,6 @@ void CONTROL_SaveResults()
 void CONTROL_RegistersReset()
 {
 	DataTable[REG_CURRENT] = 0;
-
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;
@@ -278,10 +280,10 @@ void CONTROL_RegistersReset()
 
 void CONTROL_SwitchToFault(Int16U Reason)
 {
-	LOGIC_ResetHWToDefaults(true);
-	//
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
+
+	LOGIC_ResetHWToDefaults(true);
 }
 //-----------------------------------------------
 

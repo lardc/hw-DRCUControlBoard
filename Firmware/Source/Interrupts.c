@@ -9,6 +9,7 @@
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
 #include "InitConfig.h"
+#include "DataTable.h"
 
 // Definitions
 //
@@ -105,8 +106,8 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-			LL_OutputCompensation(true);
 
+			LL_OutputCompensation(true);
 			LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
 		}
 
@@ -123,9 +124,8 @@ void EXTI15_10_IRQHandler()
 	if (EXTI_FlagCheck(EXTI_13))
 	{
 		CONTROL_SwitchToFault(DF_PROTECTION);
+		EXTI_FlagReset(EXTI_13);
 	}
-
-	EXTI_FlagReset(EXTI_13);
 }
 //-----------------------------------------
 

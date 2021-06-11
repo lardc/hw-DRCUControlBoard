@@ -7,65 +7,65 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, VBAT_ADC_TO_V_K},							// 1
 		{0, INT16U_MAX, INTPS_ADC_TO_V_OFFSET},													// 2
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, INTPS_ADC_TO_V_K},							// 3
-		{0, 0, 0},																				// 4
-		{0, 0, 0},																				// 5
-		{0, 0, 0},																				// 6
-		{0, 0, 0},																				// 7
-		{0, 0, 0},																				// 8
+		{0, INT16U_MAX, I_DUT_ADC_TO_I_OFFSET},													// 4
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_ADC_TO_I_K},							// 5
+		{0, INT16U_MAX, 0},																		// 6
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 7
+		{0, INT16U_MAX, 0},																		// 8
 		{0, 0, 0},																				// 9
-		{0, INT16U_MAX, I_DUT_ADC_TO_I_OFFSET},													// 10
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_ADC_TO_I_K},							// 11
-		{0, INT16U_MAX, 0},																		// 12
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 13
-		{0, INT16U_MAX, 0},																		// 14
-		{0, INT16U_MAX, I_DUT_TO_ADC_OFFSET},													// 15
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_TO_ADC_K},							// 16
-		{0, INT16U_MAX, 0},																		// 17
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 18
-		{0, INT16U_MAX, 0},																		// 19
-		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 20
-		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 21
-		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 22
-		{FULL_CHARGE_TIME_MIN, FULL_CHARGE_TIME_MAX, FULL_CHARGE_TIME_DEF},						// 23
-		{RECHARGE_TIMEOUT_MIN, RECHARGE_TIMEOUT_MAX, RECHARGE_TIMEOUT_DEF},						// 24
-		{V_BAT_THRESHOLD_MIN, V_BAT_THRESHOLD_MAX, V_BAT_THRESHOLD_DEF},						// 25
-		{MAXIMUM_UNIT_CURRENT_MIN, MAXIMUM_UNIT_CURRENT_MAX, MAXIMUM_UNIT_CURRENT_DEF},			// 26
-		{CONF_STATE_TIMEOUT_MIN, CONF_STATE_TIMEOUT_MAX, CONF_STATE_TIMEOUT_DEF},				// 27
-		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 28
-		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 29
-		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 30
-		{false, true, false},																	// 31
-		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 32
-		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 33
-		{0, 0, 0},																				// 34
-		{0, 0, 0},																				// 35
-		{0, 0, 0},																				// 36
+		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 10
+		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 11
+		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 12
+		{FULL_CHARGE_TIME_MIN, FULL_CHARGE_TIME_MAX, FULL_CHARGE_TIME_DEF},						// 13
+		{RECHARGE_TIMEOUT_MIN, RECHARGE_TIMEOUT_MAX, RECHARGE_TIMEOUT_DEF},						// 14
+		{V_BAT_THRESHOLD_MIN, V_BAT_THRESHOLD_MAX, V_BAT_THRESHOLD_DEF},						// 15
+		{MAXIMUM_UNIT_CURRENT_MIN, MAXIMUM_UNIT_CURRENT_MAX, MAXIMUM_UNIT_CURRENT_DEF},			// 16
+		{CONF_STATE_TIMEOUT_MIN, CONF_STATE_TIMEOUT_MAX, CONF_STATE_TIMEOUT_DEF},				// 17
+		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 18
+		{false, true, false},																	// 19
+		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 20
+		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 21
+		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 22
+		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 23
+		{0, 0, 0},																				// 24
+		{0, CTRL1_MAX_WIDTH_050_MAX, CTRL1_MAX_WIDTH_050_DEF},									// 25
+		{0, CTRL1_MAX_WIDTH_075_MAX, CTRL1_MAX_WIDTH_075_DEF},									// 26
+		{0, CTRL1_MAX_WIDTH_100_MAX, CTRL1_MAX_WIDTH_100_DEF},									// 27
+		{0, CTRL1_MAX_WIDTH_250_MAX, CTRL1_MAX_WIDTH_250_DEF},									// 28
+		{0, CTRL1_MAX_WIDTH_500_MAX, CTRL1_MAX_WIDTH_500_DEF},									// 29
+		{0, CTRL1_MAX_WIDTH_750_MAX, CTRL1_MAX_WIDTH_750_DEF},									// 30
+		{0, CTRL1_MAX_WIDTH_1000_MAX, CTRL1_MAX_WIDTH_1000_DEF},								// 31
+		{0, CTRL1_MAX_WIDTH_1500_MAX, CTRL1_MAX_WIDTH_1500_DEF},								// 32
+		{0, CTRL1_MAX_WIDTH_2500_MAX, CTRL1_MAX_WIDTH_2500_DEF},								// 33
+		{0, CTRL1_MAX_WIDTH_3000_MAX, CTRL1_MAX_WIDTH_3000_DEF},								// 34
+		{0, CTRL1_MAX_WIDTH_5000_MAX, CTRL1_MAX_WIDTH_5000_DEF},								// 35
+		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 36
 		{0, 0, 0},																				// 37
 		{0, 0, 0},																				// 38
 		{0, 0, 0},																				// 39
-		{0, CTRL1_MAX_WIDTH_050_MAX, CTRL1_MAX_WIDTH_050_DEF},									// 40
-		{0, CTRL1_MAX_WIDTH_075_MAX, CTRL1_MAX_WIDTH_075_DEF},									// 41
-		{0, CTRL1_MAX_WIDTH_100_MAX, CTRL1_MAX_WIDTH_100_DEF},									// 42
-		{0, CTRL1_MAX_WIDTH_250_MAX, CTRL1_MAX_WIDTH_250_DEF},									// 43
-		{0, CTRL1_MAX_WIDTH_500_MAX, CTRL1_MAX_WIDTH_500_DEF},									// 44
-		{0, CTRL1_MAX_WIDTH_750_MAX, CTRL1_MAX_WIDTH_750_DEF},									// 45
-		{0, CTRL1_MAX_WIDTH_1000_MAX, CTRL1_MAX_WIDTH_1000_DEF},								// 46
-		{0, CTRL1_MAX_WIDTH_1500_MAX, CTRL1_MAX_WIDTH_1500_DEF},								// 47
-		{0, CTRL1_MAX_WIDTH_2500_MAX, CTRL1_MAX_WIDTH_2500_DEF},								// 48
-		{0, CTRL1_MAX_WIDTH_3000_MAX, CTRL1_MAX_WIDTH_3000_DEF},								// 49
-		{0, CTRL1_MAX_WIDTH_5000_MAX, CTRL1_MAX_WIDTH_5000_DEF},								// 50
-		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 51
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_050_DEF},											// 52
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_075_DEF},											// 53
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_100_DEF},											// 54
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_250_DEF},											// 55
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_500_DEF},											// 56
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_750_DEF},											// 57
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1000_DEF},											// 58
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_1500_DEF},											// 59
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_2500_DEF},											// 60
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_3000_DEF},											// 61
-		{0, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_5000_DEF},											// 62
+		{0, 0, 0},																				// 40
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 41
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 42
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 43
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 44
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 45
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 46
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 47
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 48
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 49
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 50
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 51
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 52
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 53
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 54
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 55
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 56
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 57
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 58
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 59
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 60
+		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 61
+		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 62
 		{0, INT16U_MAX, CTRL1_050_OFFSET_DEF},													// 63
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL1_050_K_DEF},							// 64
 		{0, INT16U_MAX, CTRL1_075_OFFSET_DEF},													// 65
@@ -91,43 +91,43 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INT16U_MAX, CTRL2_OFFSET_DEF},														// 85
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 86
 		{0, INT16U_MAX, 0},																		// 87
-		{0, INT16U_MAX, 0},																		// 88
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 88
 		{0, INT16U_MAX, 0},																		// 89
 		{0, INT16U_MAX, 0},																		// 90
-		{0, INT16U_MAX, 0},																		// 91
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 91
 		{0, INT16U_MAX, 0},																		// 92
 		{0, INT16U_MAX, 0},																		// 93
-		{0, INT16U_MAX, 0},																		// 94
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 94
 		{0, INT16U_MAX, 0},																		// 95
 		{0, INT16U_MAX, 0},																		// 96
-		{0, INT16U_MAX, 0},																		// 97
-		{0, 0, 0},																				// 98
-		{0, 0, 0},																				// 99
-		{0, 0, 0},																				// 100
-		{0, 0, 0},																				// 101
-		{0, 0, 0},																				// 102
-		{0, 0, 0},																				// 103
-		{0, 0, 0},																				// 104
-		{0, 0, 0},																				// 105
-		{0, 0, 0},																				// 106
-		{0, 0, 0},																				// 107
-		{0, 0, 0},																				// 108
-		{0, 0, 0},																				// 109
-		{0, 0, 0},																				// 110
-		{0, 0, 0},																				// 111
-		{0, 0, 0},																				// 112
-		{0, 0, 0},																				// 113
-		{0, 0, 0},																				// 114
-		{0, 0, 0},																				// 115
-		{0, 0, 0},																				// 116
-		{0, 0, 0},																				// 117
-		{0, 0, 0},																				// 118
-		{0, 0, 0},																				// 119
-		{0, 0, 0},																				// 120
-		{0, 0, 0},																				// 121
-		{0, 0, 0},																				// 122
-		{0, 0, 0},																				// 123
-		{0, 0, 0},																				// 124
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 97
+		{0, INT16U_MAX, 0},																		// 98
+		{0, INT16U_MAX, 0},																		// 99
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 100
+		{0, INT16U_MAX, 0},																		// 101
+		{0, INT16U_MAX, 0},																		// 102
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 103
+		{0, INT16U_MAX, 0},																		// 104
+		{0, INT16U_MAX, 0},																		// 105
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 106
+		{0, INT16U_MAX, 0},																		// 107
+		{0, INT16U_MAX, 0},																		// 108
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 109
+		{0, INT16U_MAX, 0},																		// 110
+		{0, INT16U_MAX, 0},																		// 111
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 112
+		{0, INT16U_MAX, 0},																		// 113
+		{0, INT16U_MAX, 0},																		// 114
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 115
+		{0, INT16U_MAX, 0},																		// 116
+		{0, INT16U_MAX, 0},																		// 117
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 118
+		{0, INT16U_MAX, 0},																		// 119
+		{0, INT16U_MAX, I_DUT_TO_DAC_OFFSET},													// 120
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_TO_DAC_K},							// 121
+		{0, INT16U_MAX, 0},																		// 122
+		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 123
+		{0, INT16U_MAX, 0},																		// 124
 		{0, 0, 0},																				// 125
 		{0, 0, 0},																				// 126
 		{0, 0, 0}																				// 127
@@ -136,7 +136,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START] = {
 		{CURRENT_SETPOINT_MIN, CURRENT_SETPOINT_MAX, CURRENT_SETPOINT_DEF},						// 128
 		{CURRENT_RATE_MIN, CURRENT_RATE_MAX, CURRENT_RATE_DEF},									// 129
-		{0, 0, 0},																				// 130
+		{0, INTPS_VOLTAGE_MAX, 0},																// 130
 		{0, 0, 0},																				// 131
 		{0, 0, 0},																				// 132
 		{0, 0, 0},																				// 133

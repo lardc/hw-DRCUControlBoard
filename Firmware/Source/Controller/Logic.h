@@ -11,11 +11,16 @@ struct __ConfigParamsStruct
 	Int16U IntPsVoltage;
 	Int16U PulseWidth_CTRL1;
 	Int16U PulseWidth_CTRL2;
-	Int32U MaxPulseWidth_CTRL1;
+	Int16U MaxPulseWidth_CTRL1;
 	float PulseWidth_CTRL1_K;
 	float PulseWidth_CTRL1_Offset;
 	float PulseWidth_CTRL2_K;
 	Int16S PulseWidth_CTRL2_Offset;
+	float PulseWidth_CTRL1_P2;
+	float PulseWidth_CTRL1_P1;
+	Int16S PulseWidth_CTRL1_P0;
+	float IntPsVoltageK;
+	Int16S IntPsVoltageOffset;
 };
 extern struct __ConfigParamsStruct ConfigParams;
 
