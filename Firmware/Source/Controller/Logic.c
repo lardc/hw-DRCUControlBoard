@@ -115,7 +115,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp;
+	float CurrentTemp, K;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -287,7 +287,11 @@ void LOGIC_Config()
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
-	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
+	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	K = INTPS_VOLTAGE_MAX / ConfigParams.IntPsVoltage;
+
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2 * K);
+	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
 }
 //-------------------------------------------
 

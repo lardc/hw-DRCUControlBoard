@@ -64,7 +64,7 @@
 //
 #define V_BAT_THRESHOLD_MIN				0			// Â * 10
 #define V_BAT_THRESHOLD_MAX				1400		// Â * 10
-#define V_BAT_THRESHOLD_DEF				1400		// Â * 10
+#define V_BAT_THRESHOLD_DEF				900			// Â * 10
 //
 #define ERR_FOR_FORCED_DISCHRG_MIN		1			// % * 10
 #define ERR_FOR_FORCED_DISCHRG_MAX		100			// % * 10
