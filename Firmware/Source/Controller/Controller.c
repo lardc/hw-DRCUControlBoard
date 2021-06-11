@@ -126,7 +126,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_SOFTWARE_START:
 			if (CONTROL_State == DS_ConfigReady)
-				LOGIC_SofwarePulseStart();
+				LOGIC_SofwarePulseStart(true);
 			else
 				if (CONTROL_State == DS_InProcess)
 					*pUserError = ERR_OPERATION_BLOCKED;

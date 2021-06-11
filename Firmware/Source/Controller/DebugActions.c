@@ -62,13 +62,14 @@ void DBGACT_OutputLockControl()
 
 void DBGACT_Sync()
 {
-	LL_SW_Trig();
+	LL_SW_Trig(true);
 }
 //-----------------------------------------------
 
 void DBGACT_ExtRegWriteData()
 {
 	LL_ExtRegWriteData(DataTable[REG_DBG]);
+	LL_FlipLineRCK();
 }
 //-----------------------------------------------
 
@@ -83,7 +84,7 @@ void DBGACT_GeneratePulse()
 	LL_SW_Trig(true);
 	DELAY_US(3000);
 
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG2]);
+	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG2], INTPS_VOLTAGE_MAX);
 	DELAY_US(1000);
 
 	LL_SW_Trig(false);

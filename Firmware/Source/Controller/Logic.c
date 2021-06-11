@@ -61,12 +61,17 @@ volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 //
 void LOGIC_SetCompensationVoltage(Int16U Current);
 int MEASURE_SortCondition(const void *A, const void *B);
+void LOGIC_SetCurrentRangeRate(Int16U Code);
+void LOGIC_CurrentSourceTurnOff();
 
 // Functions
 //
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
+	LOGIC_SofwarePulseStart(false);
+	LOGIC_CurrentSourceTurnOff();
+
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
@@ -86,7 +91,14 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 }
 //-------------------------------------------
 
-// Включение заряда батареи
+void LOGIC_CurrentSourceTurnOff()
+{
+	LOGIC_ConstantPulseRateConfig(0);
+	LOGIC_VariablePulseRateConfig(0, 0);
+	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
+}
+//-------------------------------------------
+
 void LOGIC_BatteryCharge(bool State)
 {
 	if (State)
@@ -216,7 +228,7 @@ void LOGIC_Config()
 	if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN;
 
-	LL_ExtRegWriteData(ConfigParams.CurrentRateCode);
+	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
@@ -234,6 +246,14 @@ void LOGIC_Config()
 }
 //-------------------------------------------
 
+void LOGIC_SetCurrentRangeRate(Int16U Code)
+{
+	LL_ExtRegWriteData(Code);
+	LL_FlipLineRCK();
+	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
+}
+//-------------------------------------------
+
 void LOGIC_SetCompensationVoltage(Int16U Current)
 {
 	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
@@ -242,8 +262,16 @@ void LOGIC_SetCompensationVoltage(Int16U Current)
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
+void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 {
+	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
+
+	if(PulseWidth > ConfigParams.MaxPulseWidth_CTRL1)
+		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
+	if(PulseWidth < 0)
+		PulseWidth = 0;
+
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
@@ -264,15 +292,15 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
-	TIM_Stop(TIM16);
+	LOGIC_SofwarePulseStart(false);
 	TIM_Start(TIM3);
 	LL_OutputCompensation(false);
 }
 //-------------------------------------------
 
-void LOGIC_SofwarePulseStart()
+void LOGIC_SofwarePulseStart(bool Start)
 {
-	LL_SW_Trig();
+	LL_SW_Trig(Start);
 }
 //-------------------------------------------
 
@@ -399,3 +427,4 @@ void CONTROL_HandleExternalLamp(bool IsImpulse)
 		}
 	}
 }
+//-----------------------------------------------
