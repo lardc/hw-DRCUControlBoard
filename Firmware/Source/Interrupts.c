@@ -9,11 +9,11 @@
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
 #include "InitConfig.h"
-#include "DataTable.h"
+
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			5			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			7			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
@@ -164,8 +164,8 @@ void TIM7_IRQHandler()
 
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
-		INT_SyncWidthControl();
 		INT_OutputLockCheck();
+		INT_SyncWidthControl();
 
 		TIM_StatusClear(TIM7);
 	}
@@ -193,7 +193,10 @@ void INT_OutputLockCheck()
 	{
 		if((CONTROL_SubState != SS_FallEdge) && (CONTROL_SubState != SS_RiseEdge)
 																		&& (CONTROL_SubState != SS_Plate))
+		{
 			LL_OutputLock(true);
+			SyncLineTimeCounter = 0;
+		}
 	}
 }
 //-----------------------------------------
