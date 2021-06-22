@@ -162,8 +162,8 @@ void TIM7_IRQHandler()
 
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
-		INT_SyncWidthControl();
 		INT_OutputLockCheck();
+		INT_SyncWidthControl();
 
 		TIM_StatusClear(TIM7);
 	}
@@ -191,7 +191,10 @@ void INT_OutputLockCheck()
 	{
 		if((CONTROL_SubState != SS_FallEdge) && (CONTROL_SubState != SS_RiseEdge)
 																		&& (CONTROL_SubState != SS_Plate))
+		{
 			LL_OutputLock(true);
+			SyncLineTimeCounter = 0;
+		}
 	}
 }
 //-----------------------------------------
