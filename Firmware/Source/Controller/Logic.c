@@ -371,8 +371,7 @@ Int16U LOGIC_ExctractCurrentValue()
 void LOGIC_HandleAdcSamples()
 {
 	float AvgData = 0, Error;
-	static Int16U AllowedErrorCounter = 0;
-	static Int16U UnallowedErrorCounter = 0;
+	static Int16S AllowedErrorCounter = 0;
 	float Current;
 
 	// Сохранение усредненного результата
@@ -395,18 +394,15 @@ void LOGIC_HandleAdcSamples()
 		if (Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10))
 			AllowedErrorCounter++;
 		else
-			UnallowedErrorCounter++;
+			AllowedErrorCounter--;
 
 		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
 			LL_External_DC_RDY(true);
-		else if (UnallowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+		else if (-AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
 				DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
 	}
 	else
-	{
 		AllowedErrorCounter = 0;
-		UnallowedErrorCounter = 0;
-	}
 }
 //-------------------------------------------
 
