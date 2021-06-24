@@ -27,6 +27,7 @@ extern struct __ConfigParamsStruct ConfigParams;
 // Variables
 //
 extern volatile Int16U LOGIC_DUTCurrentRaw[];
+extern Boolean FlagIntPsForceMute;
 
 //Functions
 //

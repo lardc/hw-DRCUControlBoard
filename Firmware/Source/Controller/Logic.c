@@ -56,6 +56,7 @@ struct __ConfigParamsStruct ConfigParams;
 // Varibales
 //
 volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
+Boolean FlagIntPsForceMute = false;
 
 // Forward functions
 //
@@ -119,6 +120,8 @@ void LOGIC_Config()
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
+
+	FlagIntPsForceMute = false;
 
 	// Настройка аппаратной части
 	//
