@@ -23,6 +23,7 @@
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск
+#define ACT_INTPS_FORCE_MUTE					102		// Принудительное выключение внутреннего источника
 //
 #define ACT_SAVE_TO_ROM							200		// Сохранение пользовательских данных во FLASH процессора
 #define ACT_RESTORE_FROM_ROM					201		// Восстановление данных из FLASH
