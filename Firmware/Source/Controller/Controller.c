@@ -125,8 +125,13 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			break;
 
 		case ACT_SOFTWARE_START:
-			if (CONTROL_SubState == SS_SyncWaiting)
+			if (CONTROL_State == DS_ConfigReady)
+			{
+				LL_IntPowerSupplyEn(false);
+				CONTROL_SetDeviceState(DS_ConfigReady, SS_SyncWaiting);
+
 				LOGIC_SofwarePulseStart(true);
+			}
 			else
 				if (CONTROL_State == DS_InProcess)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -138,9 +143,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			{
 				if (CONTROL_State == DS_ConfigReady)
 				{
-					FlagIntPsForceMute = true;
 					LL_IntPowerSupplyEn(false);
-
 					CONTROL_SetDeviceState(DS_ConfigReady, SS_SyncWaiting);
 				}
 			}
@@ -186,8 +189,7 @@ void CONTROL_Idle()
 
 void CONTROL_DeviceStateControl()
 {
-	if(((CONTROL_State == DS_ConfigReady) || (CONTROL_SubState == SS_SyncWaiting))
-			&& (CONTROL_TimeCounter >= CONTROL_DeviceStateTimeCounter))
+	if((CONTROL_State == DS_ConfigReady) && (CONTROL_TimeCounter >= CONTROL_DeviceStateTimeCounter))
 		CONTROL_SetDeviceState(DS_Ready, SS_None);
 }
 //-----------------------------------------------
@@ -218,7 +220,7 @@ void CONTROL_HandleIntPSTune()
 
 		if (DataTable[REG_INT_PS_VOLTAGE] < ConfigParams.IntPsVoltage)
 		{
-			if(!FlagIntPsForceMute)
+			if(CONTROL_SubState != SS_SyncWaiting)
 				LL_IntPowerSupplyEn(true);
 			LL_IntPowerSupplyDischarge(false);
 		}
