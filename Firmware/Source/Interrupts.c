@@ -9,6 +9,7 @@
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
 #include "InitConfig.h"
+#include "Delay.h"
 
 
 // Definitions
@@ -41,32 +42,42 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
 	{
-		// Формирование переднего фронта импульса
-		if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
+		if(CONTROL_State == DS_ConfigReady)
 		{
-			LL_IntPowerSupplyEn(false);
-			LL_OutputLock(false);
+			if(LL_ReadLineSync())
+			{
+				DELAY_US(50);
 
-			LOGIC_StartRiseEdge();
-			ADC_SwitchToHighSpeed();
-			MEASURE_HighSpeedStart(true);
+				// Формирование переднего фронта импульса
+				if (LL_ReadLineSync())
+				{
+					LL_IntPowerSupplyEn(false);
+					LL_OutputLock(false);
 
-			CONTROL_HandleFanLogic(true);
-			CONTROL_HandleExternalLamp(true);
+					LOGIC_StartRiseEdge();
+					ADC_SwitchToHighSpeed();
+					MEASURE_HighSpeedStart(true);
 
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+					CONTROL_HandleFanLogic(true);
+					CONTROL_HandleExternalLamp(true);
 
-			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+					SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
+					CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+				}
+			}
 		}
-
-		// Формирование заднего фронта импульса
-		if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+		else
 		{
-			SyncLineTimeCounter = 0;
+			// Формирование заднего фронта импульса
+			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+			{
+				SyncLineTimeCounter = 0;
 
-			LOGIC_StartFallEdge();
-			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+				LOGIC_StartFallEdge();
+				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 
+			}
 		}
 
 		// Запуск импульса в отладочном режиме
