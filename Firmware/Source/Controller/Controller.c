@@ -139,16 +139,6 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 					*pUserError = ERR_DEVICE_NOT_READY;
 			break;
 
-		case ACT_INTPS_FORCE_MUTE:
-			{
-				if (CONTROL_State == DS_ConfigReady)
-				{
-					LL_IntPowerSupplyEn(false);
-					CONTROL_SetDeviceState(DS_ConfigReady, SS_SyncWaiting);
-				}
-			}
-			break;
-
 		case ACT_CLR_FAULT:
 			if (CONTROL_State == DS_Fault)
 				CONTROL_ResetToDefaults(true);
