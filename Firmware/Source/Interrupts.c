@@ -60,13 +60,12 @@ void EXTI9_5_IRQHandler()
 		}
 
 		// Формирование заднего фронта импульса
-		if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
 		{
 			SyncLineTimeCounter = 0;
 
 			LOGIC_StartFallEdge();
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-
 		}
 
 		// Запуск импульса в отладочном режиме
