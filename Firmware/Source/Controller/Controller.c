@@ -127,7 +127,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			if (CONTROL_State == DS_ConfigReady)
 			{
 				LL_IntPowerSupplyEn(false);
-				CONTROL_SetDeviceState(DS_ConfigReady, SS_SyncWaiting);
+				CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
 
 				LOGIC_SofwarePulseStart(true);
 			}
@@ -136,16 +136,6 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 					*pUserError = ERR_OPERATION_BLOCKED;
 				else
 					*pUserError = ERR_DEVICE_NOT_READY;
-			break;
-
-		case ACT_INTPS_FORCE_MUTE:
-			{
-				if (CONTROL_State == DS_ConfigReady)
-				{
-					LL_IntPowerSupplyEn(false);
-					CONTROL_SetDeviceState(DS_ConfigReady, SS_SyncWaiting);
-				}
-			}
 			break;
 
 		case ACT_CLR_FAULT:
@@ -219,8 +209,7 @@ void CONTROL_HandleIntPSTune()
 
 		if (DataTable[REG_INT_PS_VOLTAGE] < ConfigParams.IntPsVoltage)
 		{
-			if(CONTROL_SubState != SS_SyncWaiting)
-				LL_IntPowerSupplyEn(true);
+			LL_IntPowerSupplyEn(true);
 			LL_IntPowerSupplyDischarge(false);
 		}
 		else

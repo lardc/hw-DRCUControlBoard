@@ -42,7 +42,7 @@ void EXTI9_5_IRQHandler()
 	if (EXTI_FlagCheck(EXTI_6))
 	{
 		// Формирование переднего фронта импульса
-		if (LL_ReadLineSync() && (CONTROL_SubState == SS_SyncWaiting))
+		if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
 		{
 			LL_IntPowerSupplyEn(false);
 			LL_OutputLock(false);

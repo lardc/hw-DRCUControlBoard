@@ -330,6 +330,7 @@ void LOGIC_StartFallEdge()
 {
 	LOGIC_SofwarePulseStart(false);
 	TIM_Start(TIM2);
+	LOGIC_VariablePulseRateConfig(0, 0);
 }
 //-------------------------------------------
 
