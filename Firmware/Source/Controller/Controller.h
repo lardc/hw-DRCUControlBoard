@@ -21,7 +21,6 @@ typedef enum __SubState
 	SS_RiseEdge			= 3,
 	SS_Plate			= 4,
 	SS_FallEdge			= 5,
-	SS_SyncWaiting		= 6
 } SubState;
 //
 typedef enum __DeviceState
