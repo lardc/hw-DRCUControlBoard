@@ -56,6 +56,8 @@ struct __ConfigParamsStruct ConfigParams;
 // Varibales
 //
 volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
+float TestCurrent = 0;
+float TestCurrentRate = 0;
 
 // Forward functions
 //
@@ -121,8 +123,10 @@ void LOGIC_Config()
 	DEVPROFILE_ResetEPReadState();
 
 	// Настройка аппаратной части
-	//
 	LL_PowerOnSolidStateRelay(false);
+
+	// Кеширование переменных
+	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -267,7 +271,7 @@ void LOGIC_Config()
 	if(DataTable[REG_V_INTPS_SETPOINT])
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
-		ConfigParams.IntPsVoltage = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+		ConfigParams.IntPsVoltage = TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
@@ -279,16 +283,16 @@ void LOGIC_Config()
 
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	CurrentTemp = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
 	// Тонкая подстройка
-	float I = DataTable[REG_CURRENT_SETPOINT];
+	float I = TestCurrent;
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
-	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
+	LOGIC_SetCompensationVoltage(TestCurrent);
 }
 //-------------------------------------------
 
@@ -389,7 +393,7 @@ void LOGIC_HandleAdcSamples()
 	// Определение выхода тока на заданный уровень
 	if(CONTROL_SubState == SS_Plate)
 	{
-		Error = abs(100 - Current / DataTable[REG_CURRENT_SETPOINT] * 100);
+		Error = abs(100 - Current / TestCurrent * 100);
 
 		if (Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10))
 			AllowedErrorCounter++;
