@@ -118,6 +118,7 @@ void INITCFG_ConfigADC()
 
 void ADC_SwitchToHighSpeed()
 {
+	ADC_Disable(ADC1);
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
 	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
