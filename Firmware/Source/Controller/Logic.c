@@ -395,7 +395,7 @@ void LOGIC_HandleAdcSamples()
 	{
 		Error = abs(100 - Current / TestCurrent * 100);
 
-		if (Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10))
+		if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
 			AllowedErrorCounter++;
 		else
 			AllowedErrorCounter--;
