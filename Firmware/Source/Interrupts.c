@@ -17,7 +17,7 @@
 
 // Variables
 //
-Int64U SyncLineTimeCounter = 0;
+volatile Int64U SyncLineTimeCounter = 0;
 
 // Functions prototypes
 //

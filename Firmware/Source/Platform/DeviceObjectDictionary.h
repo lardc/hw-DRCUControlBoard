@@ -165,6 +165,7 @@
 #define REG_WARNING								195		// Предупреждение
 #define REG_PROBLEM								196		// Регистр Problem
 #define REG_DEV_SUBSTATE						197		// Подстатус работы блока
+#define REG_FAILED_SUBSTATE						198		// Подстатус на котором возник фолт
 //
 #define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
 #define REG_INT_PS_VOLTAGE						201

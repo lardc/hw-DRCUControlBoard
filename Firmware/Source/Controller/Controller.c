@@ -28,8 +28,8 @@
 
 // Variables
 //
-DeviceState CONTROL_State = DS_None;
-SubState CONTROL_SubState = SS_None;
+volatile DeviceState CONTROL_State = DS_None;
+volatile SubState CONTROL_SubState = SS_None;
 static Boolean CycleActive = false;
 //
 volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
@@ -268,6 +268,7 @@ void CONTROL_RegistersReset()
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;
+	DataTable[REG_FAILED_SUBSTATE] = 0;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -276,9 +277,10 @@ void CONTROL_RegistersReset()
 
 void CONTROL_SwitchToFault(Int16U Reason)
 {
-	CONTROL_SetDeviceState(DS_Fault, SS_None);
+	DataTable[REG_FAILED_SUBSTATE] = CONTROL_SubState;
 	DataTable[REG_FAULT_REASON] = Reason;
 
+	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	LOGIC_ResetHWToDefaults(true);
 }
 //-----------------------------------------------
