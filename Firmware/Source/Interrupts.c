@@ -48,24 +48,22 @@ void EXTI9_5_IRQHandler()
 			LL_OutputLock(false);
 
 			LOGIC_StartRiseEdge();
+
+			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+
 			ADC_SwitchToHighSpeed();
 			MEASURE_HighSpeedStart(true);
 
 			CONTROL_HandleFanLogic(true);
 			CONTROL_HandleExternalLamp(true);
-
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
-			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 		}
 
 		// Формирование заднего фронта импульса
 		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
 		{
-			SyncLineTimeCounter = 0;
-
-			LOGIC_StartFallEdge();
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+			SyncLineTimeCounter = 0;
+			LOGIC_StartFallEdge();
 		}
 
 		// Запуск импульса в отладочном режиме
@@ -106,6 +104,8 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
 			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
+
+			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
 		}
 
 		if (CONTROL_SubState == SS_FallEdge)
