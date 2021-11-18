@@ -10,22 +10,6 @@ bool DIAG_HandleDiagnosticAction(Int16U ActionID, Int16U *pUserError)
 {
 	switch (ActionID)
 	{
-		case ACT_DBG_FAN:
-			DBGACT_Fan();
-		break;
-
-		case ACT_DBG_LAMP:
-			DBGACT_Lamp();
-		break;
-
-		case ACT_DBG_RELAY_MECH:
-			DBGACT_RelayMech();
-		break;
-
-		case ACT_DBG_RELAY_SOLID:
-			DBGACT_RelaySolid();
-		break;
-
 		case ACT_DBG_INT_PS_CONTROL:
 			DBGACT_InternalPowerSupplyControl();
 		break;
@@ -46,20 +30,8 @@ bool DIAG_HandleDiagnosticAction(Int16U ActionID, Int16U *pUserError)
 			DBGACT_Sync();
 		break;
 
-		case ACT_DBG_EXT_REG_WRITE_DATA:
-			DBGACT_ExtRegWriteData();
-			break;
-
 		case ACT_DBG_GENERATE_PULSE:
 			DBGACT_GeneratePulse();
-			break;
-
-		case ACT_DBG_CURRENT_READY_OUTPUT:
-			DBGACT_CurrentReadyOutput();
-			break;
-
-		case ACT_DBG_SET_COMPENSATION:
-			DBGACT_SetCompensationVoltage();
 			break;
 
 		default:

@@ -13,7 +13,6 @@
 // Forward functions
 //
 float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK);
-float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2);
 
 // Functions
 //
@@ -24,12 +23,6 @@ float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U Registe
 	float result = ((float)ADC_Measure(ADC1, ADC1Channel) - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
 	return (result > 0) ? result : 0;
-}
-//------------------------------------------------------------------------------
-
-float MEASURE_BatteryVoltage()
-{
-	return MEASURE_VoltageX(ADC1_BAT_VOLTAGE_CHANNEL, REG_V_BAT_OFFSET, REG_V_BAT_K);
 }
 //------------------------------------------------------------------------------
 
@@ -48,59 +41,5 @@ float MEASURE_IntPSVoltage()
 		DataSum += DataArray[i];
 
 	return (DataSum / MEASURE_FILTER_SIZE);
-}
-//------------------------------------------------------------------------------
-
-Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0)
-{
-	float Offset = DataTable[RegisterOffset];
-	float K = (float)DataTable[RegisterK] / 1000;
-	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
-	float P1 = (float)DataTable[RegisterP1] / 1000;
-	float P0 = (float)((Int16S)DataTable[RegisterP0]);
-
-	Value = Value * Value * P2 + Value * P1 + P0;
-
-	return (Int16U)(Value * K + Offset);
-}
-//------------------------------------------------------------------------------
-
-float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK,
-		Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2)
-{
-	float Result;
-
-	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
-	float K = (float)DataTable[RegisterK] / 1000;
-	//
-	float P0 = (float)((Int16S)DataTable[RegisterP0]);
-	float P1 = (float)DataTable[RegisterP1] / 1000;
-	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
-
-	Result = ((float)ADCValue - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
-	Result = Result * Result * P2 + Result * P1 + P0;
-
-	return Result;
-}
-//------------------------------------------------------------------------------
-
-float MEASURE_ConvertCurrent(Int16U ADCValue)
-{
-	return MEASURE_ConvertADCtoValx(ADCValue, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
-}
-//------------------------------------------------------------------------------
-
-void MEASURE_HighSpeedStart(bool State)
-{
-	if (State)
-	{
-		ADC_SamplingStart(ADC1);
-		TIM_Start(TIM6);
-	}
-	else
-	{
-		ADC_SamplingStop(ADC1);
-		TIM_Stop(TIM6);
-	}
 }
 //------------------------------------------------------------------------------

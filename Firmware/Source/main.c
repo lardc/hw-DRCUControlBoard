@@ -27,12 +27,6 @@ int main()
 	// Настройка UART
 	INITCFG_ConfigUART();
 
-	// SPI config
-	INITCFG_ConfigSPI();
-
-	// Настройка ЦАПа
-	INITCFG_ConfigDAC();
-
 	// Настройка Timer7 общего назначения
 	INITCFG_ConfigTimer7();
 
@@ -42,14 +36,8 @@ int main()
 	// Настройка Timer16 для формирования импульса синхронизации
 	INITCFG_ConfigTimer16();
 
-	// Настройка Timer6 тактирования АЦП
-	INITCFG_ConfigTimer6();
-
 	// Начальная настройка АЦП
 	INITCFG_ConfigADC();
-
-	// Настройка DMA для АЦП
-	INITCFG_ConfigDMA();
 
 	// Настройка сторожевого таймера
 	INITCFG_ConfigWatchDog();

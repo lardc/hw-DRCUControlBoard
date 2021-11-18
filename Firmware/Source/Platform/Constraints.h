@@ -13,6 +13,10 @@
 
 //Definitions
 //
+#define SW_PULSE_WIDTH_MIN				100
+#define SW_PULSE_WIDTH_MAX				15000
+#define SW_PULSE_WIDTH_DEF				3500
+//
 #define GAIN_COEFFICIENT_MIN			1
 #define GAIN_COEFFICIENT_MAX			60000
 #define GAIN_COEFFICIENT_DEF			1000
@@ -39,11 +43,11 @@
 #define CONF_STATE_TIMEOUT_DEF			5000		// мс
 //
 #define MAXIMUM_UNIT_CURRENT_MIN		0			// A
-#define MAXIMUM_UNIT_CURRENT_MAX		1100		// A
+#define MAXIMUM_UNIT_CURRENT_MAX		2500		// A
 #define MAXIMUM_UNIT_CURRENT_DEF		400			// A
 //
-#define CURRENT_SETPOINT_MIN			100			// A
-#define CURRENT_SETPOINT_MAX			420			// A
+#define CURRENT_SETPOINT_MIN			0			// A
+#define CURRENT_SETPOINT_MAX			2500		// A
 #define CURRENT_SETPOINT_DEF			100			// A
 //
 #define CURRENT_RATE_MIN				50			// A / us / 100
