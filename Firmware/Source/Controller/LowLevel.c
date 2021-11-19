@@ -20,7 +20,7 @@ void LL_SW_Trig(bool Start)
 	if(Start)
 	{
 		TIM_Reset(TIM16);
-		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, DataTable[REG_SW_PULSE_WIDTH] * 10);
+		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, DataTable[REG_SW_PULSE_WIDTH]);
 		TIM_Start(TIM16);
 	}
 	else

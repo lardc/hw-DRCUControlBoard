@@ -75,15 +75,14 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 	{
 		case ACT_ENABLE_POWER:
 			if(CONTROL_State == DS_None)
-				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;
 			break;
 
 		case ACT_DISABLE_POWER:
-			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_ConfigReady) ||
-					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)))
-				CONTROL_ResetToDefaults(true);
+			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_PowerPrepare))
+				CONTROL_ResetToDefaults();
 			else if(CONTROL_State != DS_None)
 					*pUserError = ERR_OPERATION_BLOCKED;
 			break;
@@ -91,29 +90,18 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 		case ACT_CONFIG_UNIT:
 			if (CONTROL_State == DS_Ready)
 			{
-				CONTROL_SetDeviceState(DS_InProcess, SS_PulsePrepare);
 				LOGIC_Config();
+				CONTROL_SetDeviceState(DS_PowerPrepare, SS_Config);
 			}
 			else
-				if (CONTROL_State == DS_InProcess)
-					*pUserError = ERR_OPERATION_BLOCKED;
-				else
-					*pUserError = ERR_DEVICE_NOT_READY;
+				*pUserError = ERR_DEVICE_NOT_READY;
 			break;
 
 		case ACT_SOFTWARE_START:
-			if (CONTROL_State == DS_ConfigReady)
-			{
-				LL_IntPowerSupplyEn(false);
-				CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
-
+			if ((CONTROL_State == DS_Ready) && (CONTROL_SubState == SS_ConfigReady))
 				LOGIC_SofwarePulseStart(true);
-			}
 			else
-				if (CONTROL_State == DS_InProcess)
-					*pUserError = ERR_OPERATION_BLOCKED;
-				else
-					*pUserError = ERR_DEVICE_NOT_READY;
+				*pUserError = ERR_OPERATION_BLOCKED;
 			break;
 
 		case ACT_CLR_FAULT:
@@ -150,10 +138,16 @@ void CONTROL_Idle()
 
 void CONTROL_HandleIntPSTune()
 {
-	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady))
+	if ((CONTROL_State == DS_Ready) || (CONTROL_State == DS_PowerPrepare))
 	{
-		if(CONTROL_HandleIntPSVoltgeSet(ConfigParams.IntPsVoltage) && (CONTROL_SubState == SS_PulsePrepare))
-			CONTROL_SetDeviceState(DS_ConfigReady, SS_None);
+		if(CONTROL_HandleIntPSVoltgeSet(ConfigParams.IntPsVoltage))
+		{
+			if ((CONTROL_State == DS_PowerPrepare) && (CONTROL_SubState == SS_Config))
+				CONTROL_SetDeviceState(DS_Ready, SS_ConfigReady);
+
+			if ((CONTROL_State == DS_PowerPrepare) && (CONTROL_SubState == SS_None))
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
+		}
 	}
 	else
 		if(CONTROL_State == DS_None)
@@ -171,20 +165,35 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage)
 
 	DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
-	dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - Voltage) / Voltage * 1000);
+	dV = (float)(DataTable[REG_INT_PS_VOLTAGE] - Voltage) / Voltage * 1000;
 
-	if (dV <= DataTable[REG_INTPS_ALLOWED_ERROR])
+	if (abs(dV) <= DataTable[REG_INTPS_ALLOWED_ERROR])
 	{
-		IntPsStabCounter++;
-
-		if(IntPsStabCounter >= DataTable[REG_INTPS_STAB_COUNTER_VALUE])
-		{
-			IntPsStabCounter = 0;
+		if(IntPsStabCounter < DataTable[REG_INTPS_STAB_COUNTER_VALUE])
+			IntPsStabCounter++;
+		else
 			Result = TRUE;
+	}
+	else
+	{
+		IntPsStabCounter = 0;
+
+		if(dV > 0)
+		{
+			LL_IntPowerSupplyEn(false);
+
+			if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
+				LL_IntPowerSupplyDischarge(true);
+		}
+		else
+		{
+			LL_IntPowerSupplyEn(true);
+			LL_IntPowerSupplyDischarge(false);
 		}
 	}
 
-	if (DataTable[REG_INT_PS_VOLTAGE] < Voltage)
+
+	/*if (DataTable[REG_INT_PS_VOLTAGE] < Voltage)
 	{
 		LL_IntPowerSupplyEn(true);
 		LL_IntPowerSupplyDischarge(false);
@@ -195,7 +204,7 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage)
 
 		if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
 			LL_IntPowerSupplyDischarge(true);
-	}
+	}*/
 
 	return Result;
 }
@@ -204,7 +213,7 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage)
 void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(false);
-	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+	CONTROL_SetDeviceState(DS_Ready, SS_ConfigReady);
 }
 //-----------------------------------------------
 

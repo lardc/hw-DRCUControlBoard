@@ -11,6 +11,7 @@ struct __ConfigParamsStruct
 	Int16U PulseWidth_CTRL1;
 	Int16U PulseWidth_CTRL2;
 	Int16U MaxPulseWidth_CTRL1;
+	Int16U MaxPulseWidth_CTRL2;
 	float PulseWidth_CTRL1_K;
 	float PulseWidth_CTRL1_Offset;
 	float PulseWidth_CTRL2_K;

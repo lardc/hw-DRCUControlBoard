@@ -22,17 +22,15 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
 	{
-		if(CONTROL_State == DS_ConfigReady)
+		if(CONTROL_SubState == SS_ConfigReady)
 		{
 			// Формирование переднего фронта импульса
 			if (LL_ReadLineSync())
 			{
-				LL_IntPowerSupplyEn(false);
 				LL_OutputLock(false);
-
 				LOGIC_StartRiseEdge();
 
-				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+				CONTROL_SetDeviceState(DS_Ready, SS_RiseEdge);
 			}
 		}
 		else
@@ -41,7 +39,7 @@ void EXTI9_5_IRQHandler()
 			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
 			{
 				LOGIC_StartFallEdge();
-				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+				CONTROL_SetDeviceState(DS_Ready, SS_FallEdge);
 
 			}
 		}
@@ -82,7 +80,7 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
-			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
+			CONTROL_SetDeviceState(DS_Ready, SS_Plate);
 
 			LOGIC_FallEdgeConfig(ConfigParams.PulseWidth_CTRL1);
 		}

@@ -16,8 +16,8 @@
 typedef enum __SubState
 {
 	SS_None				= 0,
-	SS_PowerPrepare		= 1,
-	SS_PulsePrepare		= 2,
+	SS_Config			= 1,
+	SS_ConfigReady		= 2,
 	SS_RiseEdge			= 3,
 	SS_Plate			= 4,
 	SS_FallEdge			= 5,
@@ -28,9 +28,8 @@ typedef enum __DeviceState
 	DS_None				= 0,
 	DS_Fault			= 1,
 	DS_Disabled			= 2,
-	DS_Ready			= 3,
-	DS_ConfigReady		= 4,
-	DS_InProcess		= 5,
+	DS_PowerPrepare		= 3,
+	DS_Ready			= 4,
 } DeviceState;
 
 

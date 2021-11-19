@@ -21,17 +21,12 @@
 //
 struct __ConfigParamsStruct ConfigParams;
 
-// Forward functions
-//
-void LOGIC_CurrentSourceTurnOff();
-
 // Functions
 //
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults()
 {
 	LOGIC_SofwarePulseStart(false);
-	LOGIC_CurrentSourceTurnOff();
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
@@ -39,25 +34,29 @@ void LOGIC_ResetHWToDefaults()
 }
 //-------------------------------------------
 
-void LOGIC_CurrentSourceTurnOff()
-{
-	LOGIC_RiseEdgeConfig(0);
-	LOGIC_FallEdgeConfig(0);
-}
-//-------------------------------------------
-
 void LOGIC_Config()
 {
 	// Кеширование переменных
 	ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH];
+	ConfigParams.MaxPulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH];
 	ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_K] / 1000;
 	ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_OFFSET];
-	ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
 	//
+
+	if(DataTable[REG_V_INTPS_SETPOINT])
+		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
+	else
+		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_DEF];
+
 	ConfigParams.PulseWidth_CTRL1 = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL1_K + ConfigParams.PulseWidth_CTRL1_Offset;
+	if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
+		ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
+
 	ConfigParams.PulseWidth_CTRL2 = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	if(ConfigParams.PulseWidth_CTRL2 > ConfigParams.MaxPulseWidth_CTRL2)
+		ConfigParams.PulseWidth_CTRL2 = ConfigParams.MaxPulseWidth_CTRL2;
 
 	LOGIC_RiseEdgeConfig(ConfigParams.PulseWidth_CTRL2);
 }

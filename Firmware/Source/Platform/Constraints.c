@@ -9,7 +9,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INTPS_STAB_COUNTER_MAX, INTPS_STAB_COUNTER_DEF},									// 3
 		{ERR_FOR_FORCED_DISCHRG_MIN, ERR_FOR_FORCED_DISCHRG_MAX, ERR_FOR_FORCED_DISCHRG_DEF},	// 4
 		{INTPS_ALLOWED_ERR_MIN, INTPS_ALLOWED_ERR_MAX, INTPS_ALLOWED_ERR_DEF},					// 5
-		{0, 0, 0},																				// 6
+		{INTPS_VOLTAGE_MIN, INTPS_VOLTAGE_MAX, INTPS_VOLTAGE_DEF},								// 6
 		{0, 0, 0},																				// 7
 		{0, 0, 0},																				// 8
 		{0, 0, 0},																				// 9
