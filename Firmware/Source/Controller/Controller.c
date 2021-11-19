@@ -192,20 +192,6 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage)
 		}
 	}
 
-
-	/*if (DataTable[REG_INT_PS_VOLTAGE] < Voltage)
-	{
-		LL_IntPowerSupplyEn(true);
-		LL_IntPowerSupplyDischarge(false);
-	}
-	else
-	{
-		LL_IntPowerSupplyEn(false);
-
-		if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
-			LL_IntPowerSupplyDischarge(true);
-	}*/
-
 	return Result;
 }
 //-----------------------------------------------
