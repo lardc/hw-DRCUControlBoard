@@ -81,6 +81,7 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_Ready, SS_Plate);
+			LL_OutputCompensation(true);
 
 			LOGIC_FallEdgeConfig(ConfigParams.PulseWidth_CTRL1);
 		}

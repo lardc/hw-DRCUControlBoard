@@ -17,6 +17,7 @@
 #include "ZwSPI.h"
 
 // Определения для выходных портов
+GPIO_PortPinSettingMacro GPIO_OUTPUT_COMPENS	= {GPIOC, Pin_14};
 GPIO_PortPinSettingMacro GPIO_OUTPUT_LOCK		= {GPIOB, Pin_4};
 GPIO_PortPinSettingMacro GPIO_LED				= {GPIOB, Pin_12};
 GPIO_PortPinSettingMacro GPIO_INT_PS			= {GPIOB, Pin_9};
@@ -29,6 +30,7 @@ GPIO_PortPinSettingMacro GPIO_PROTECTION		= {GPIOC, Pin_13};
 
 // Определения для аналоговых портов
 GPIO_PortPinSettingMacro GPIO_MEASURE_INT_PS 	= {GPIOA, Pin_0};
+GPIO_PortPinSettingMacro GPIO_COMPENSATION_SET	= {GPIOA, Pin_4};
 
 // Определения для портов альтернативных функций
 GPIO_PortPinSettingMacro GPIO_ALT_CAN_RX		= {GPIOA, Pin_11};

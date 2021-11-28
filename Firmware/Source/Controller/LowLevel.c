@@ -57,6 +57,12 @@ void LL_IntPowerSupplyDischarge(bool State)
 }
 //------------------------------------------------------------------------------
 
+void LL_OutputCompensation(bool State)
+{
+	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
+}
+//------------------------------------------------------------------------------
+
 bool LL_ReadLineSync()
 {
 	return GPIO_GetState(GPIO_SYNC);

@@ -21,6 +21,8 @@
 //
 struct __ConfigParamsStruct ConfigParams;
 
+void LOGIC_SetCompensationVoltage(Int16U Current);
+
 // Functions
 //
 // —брос аппаратных линий в состо€ни€ по умолчанию
@@ -31,6 +33,7 @@ void LOGIC_ResetHWToDefaults()
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
+	LL_OutputCompensation(false);
 }
 //-------------------------------------------
 
@@ -59,6 +62,15 @@ void LOGIC_Config()
 		ConfigParams.PulseWidth_CTRL2 = ConfigParams.MaxPulseWidth_CTRL2;
 
 	LOGIC_RiseEdgeConfig(ConfigParams.PulseWidth_CTRL2);
+	LOGIC_SetCompensationVoltage(DataTable[REG_CURRENT_SETPOINT]);
+}
+//-------------------------------------------
+
+void LOGIC_SetCompensationVoltage(Int16U Current)
+{
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
+	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------
 

@@ -14,5 +14,6 @@ void LL_IntPowerSupplyEn(bool State);
 void LL_OverVoltageProtectionReset();
 void LL_IntPowerSupplyDischarge(bool State);
 bool LL_ReadLineSync();
+void LL_OutputCompensation(bool State);
 
 #endif //__LOWLEVEL_H

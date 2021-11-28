@@ -28,6 +28,7 @@ void INITCFG_ConfigIO()
 	
 	// Аналоговые порты
 	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
+	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
 	// Входы
@@ -36,6 +37,7 @@ void INITCFG_ConfigIO()
 	//
 	
 	// Выходы
+	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
 	GPIO_InitPushPullOutput(GPIO_LED);
 	GPIO_InitPushPullOutput(GPIO_INT_PS);
@@ -125,6 +127,17 @@ void INITCFG_ConfigTimer7()
 	TIM_Config(TIM7, SYSCLK, TIMER7_uS);
 	TIM_Interupt(TIM7, 0, true);
 	TIM_Start(TIM7);
+}
+//------------------------------------------------------------------------------
+
+void INITCFG_ConfigDAC()
+{
+	DAC_ClkEnable(DAC1);
+	DAC_Reset(DAC1);
+	DAC_EnableCh1(DAC1);
+	DAC_BufferCh1(DAC1, true);
+	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
+	DAC_SetValueCh1(DAC1, 0);
 }
 //------------------------------------------------------------------------------
 

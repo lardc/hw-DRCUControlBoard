@@ -26,6 +26,20 @@ float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U Registe
 }
 //------------------------------------------------------------------------------
 
+Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0)
+{
+	float Offset = DataTable[RegisterOffset];
+	float K = (float)DataTable[RegisterK] / 1000;
+	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
+	float P1 = (float)DataTable[RegisterP1] / 1000;
+	float P0 = (float)((Int16S)DataTable[RegisterP0]);
+
+	Value = Value * Value * P2 + Value * P1 + P0;
+
+	return (Int16U)(Value * K + Offset);
+}
+//------------------------------------------------------------------------------
+
 float MEASURE_IntPSVoltage()
 {
 	static Int16U MeasureCounter = 0;

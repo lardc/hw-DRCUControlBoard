@@ -44,6 +44,12 @@
 #define REG_CTRL2_OFFSET						14		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								15		// Коэффициент грубой подстройки тока
 //
+#define REG_I_TO_DAC_OFFSET						20
+#define REG_I_TO_DAC_K							21
+#define REG_I_TO_DAC_P2							22
+#define REG_I_TO_DAC_P1							23
+#define REG_I_TO_DAC_P0							24
+//
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_V_INTPS_SETPOINT					129		// Принудительная установка напряжения внутреннего источника, В * 10
 
