@@ -175,21 +175,19 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage)
 			Result = TRUE;
 	}
 	else
-	{
 		IntPsStabCounter = 0;
 
-		if(dV > 0)
-		{
-			LL_IntPowerSupplyEn(false);
+	if(dV > 0)
+	{
+		LL_IntPowerSupplyEn(false);
 
-			if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
-				LL_IntPowerSupplyDischarge(true);
-		}
-		else
-		{
-			LL_IntPowerSupplyEn(true);
-			LL_IntPowerSupplyDischarge(false);
-		}
+		if(dV >= DataTable[REG_ERR_FOR_FORCED_DISCHARGE])
+			LL_IntPowerSupplyDischarge(true);
+	}
+	else
+	{
+		LL_IntPowerSupplyEn(true);
+		LL_IntPowerSupplyDischarge(false);
 	}
 
 	return Result;
