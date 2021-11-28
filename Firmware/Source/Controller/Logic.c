@@ -57,8 +57,6 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL2 = DataTable[REG_CURRENT_SETPOINT] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	if(ConfigParams.PulseWidth_CTRL2 > ConfigParams.MaxPulseWidth_CTRL2)
 		ConfigParams.PulseWidth_CTRL2 = ConfigParams.MaxPulseWidth_CTRL2;
-
-	LOGIC_RiseEdgeConfig(ConfigParams.PulseWidth_CTRL2);
 }
 //-------------------------------------------
 

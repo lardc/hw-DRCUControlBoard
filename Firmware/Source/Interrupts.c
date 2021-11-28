@@ -27,6 +27,7 @@ void EXTI9_5_IRQHandler()
 			// Формирование переднего фронта импульса
 			if (LL_ReadLineSync())
 			{
+				LOGIC_RiseEdgeConfig(ConfigParams.PulseWidth_CTRL2);
 				LL_OutputLock(false);
 				LOGIC_StartRiseEdge();
 
