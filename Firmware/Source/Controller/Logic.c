@@ -1,4 +1,4 @@
-// Header
+п»ї// Header
 //
 #include "Logic.h"
 
@@ -18,17 +18,17 @@
 
 // Definitions
 //
-#define CURRENT_RATE_050			50					// A * 10 / мкс
-#define CURRENT_RATE_075			75					// A * 10 / мкс
-#define CURRENT_RATE_100			100					// A * 10 / мкс
-#define CURRENT_RATE_250			250					// A * 10 / мкс
-#define CURRENT_RATE_500			500					// A * 10 / мкс
-#define CURRENT_RATE_750			750					// A * 10 / мкс
-#define CURRENT_RATE_1000			1000				// A * 10 / мкс
-#define CURRENT_RATE_1500			1500				// A * 10 / мкс
-#define CURRENT_RATE_2500			2500				// A * 10 / мкс
-#define CURRENT_RATE_3000			3000				// A * 10 / мкс
-#define CURRENT_RATE_5000			5000				// A * 10 / мкс
+#define CURRENT_RATE_050			50					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_075			75					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_100			100					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_250			250					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_500			500					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_750			750					// A * 10 / РјРєСЃ
+#define CURRENT_RATE_1000			1000				// A * 10 / РјРєСЃ
+#define CURRENT_RATE_1500			1500				// A * 10 / РјРєСЃ
+#define CURRENT_RATE_2500			2500				// A * 10 / РјРєСЃ
+#define CURRENT_RATE_3000			3000				// A * 10 / РјРєСЃ
+#define CURRENT_RATE_5000			5000				// A * 10 / РјРєСЃ
 //
 #define CODE_CURRENT_RATE_OFF		0x7F
 #define CODE_CURRENT_RATE_050		0x77
@@ -43,9 +43,9 @@
 #define CODE_CURRENT_RATE_3000		0x3F
 #define CODE_CURRENT_RATE_5000		0x0F
 //
-#define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
+#define RESULT_AVERAGE_POINTS		10					// РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє СѓСЃСЂРµРґРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚Р° РёР·РјРµСЂРµРЅРёСЏ
 //
-#define EXT_LAMP_ON_STATE_TIME		500					// Время работы внешнего индикатора, мс
+#define EXT_LAMP_ON_STATE_TIME		500					// Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹ РІРЅРµС€РЅРµРіРѕ РёРЅРґРёРєР°С‚РѕСЂР°, РјСЃ
 
 
 // Structs
@@ -65,7 +65,7 @@ void LOGIC_CurrentSourceTurnOff();
 
 // Functions
 //
-// Сброс аппаратных линий в состояния по умолчанию
+// РЎР±СЂРѕСЃ Р°РїРїР°СЂР°С‚РЅС‹С… Р»РёРЅРёР№ РІ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
 	LOGIC_SofwarePulseStart(false);
@@ -80,7 +80,7 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
 
-	// Переключение АЦП в базовый режим
+	// РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РђР¦Рџ РІ Р±Р°Р·РѕРІС‹Р№ СЂРµР¶РёРј
 	ADC_SwitchToBase();
 }
 //-------------------------------------------
@@ -101,7 +101,7 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 }
 //-------------------------------------------
 
-// Включение заряда батареи
+// Р’РєР»СЋС‡РµРЅРёРµ Р·Р°СЂСЏРґР° Р±Р°С‚Р°СЂРµРё
 void LOGIC_BatteryCharge(bool State)
 {
 	if (State)
@@ -125,10 +125,10 @@ void LOGIC_Config()
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
 
-	// Настройка аппаратной части
+	// РќР°СЃС‚СЂРѕР№РєР° Р°РїРїР°СЂР°С‚РЅРѕР№ С‡Р°СЃС‚Рё
 	LL_PowerOnSolidStateRelay(false);
 
-	// Кеширование переменных
+	// РљРµС€РёСЂРѕРІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 
 	switch(DataTable[REG_CURRENT_RATE])
@@ -289,7 +289,7 @@ void LOGIC_Config()
 	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	// Тонкая подстройка
+	// РўРѕРЅРєР°СЏ РїРѕРґСЃС‚СЂРѕР№РєР°
 	float I = TestCurrent;
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
@@ -300,7 +300,7 @@ void LOGIC_Config()
 
 void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 {
-	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	// РљРѕСЌС„С„РёС†РёРµРЅС‚ РєРѕРјРїРµРЅСЃР°С†РёРё Р°РјР»РёС‚СѓРґС‹ С‚РѕРєР° РѕС‚ РЅР°РїСЂСЏР¶РµРЅРёСЏ РІРЅСѓС‚СЂРµРЅРµРіРѕ РёСЃС‚РѕС‡РЅРёРєР°
 	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
 
 	if(PulseWidth > ConfigParams.MaxPulseWidth_CTRL1)
@@ -346,7 +346,7 @@ void LOGIC_HandleAdcSamples()
 	float AvgData = 0;
 	float Current;
 
-	// Сохранение усредненного результата
+	// РЎРѕС…СЂР°РЅРµРЅРёРµ СѓСЃСЂРµРґРЅРµРЅРЅРѕРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°
 	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
 		AvgData += LOGIC_DUTCurrentRaw[i];
 
@@ -375,11 +375,11 @@ void CONTROL_HandleFanLogic(bool IsImpulse)
 	{
 		if(DataTable[REG_FAN_CTRL])
 		{
-			// Увеличение счётчика в простое
+			// РЈРІРµР»РёС‡РµРЅРёРµ СЃС‡С‘С‚С‡РёРєР° РІ РїСЂРѕСЃС‚РѕРµ
 			if (!IsImpulse)
 				IncrementCounter++;
 
-			// Включение вентилятора
+			// Р’РєР»СЋС‡РµРЅРёРµ РІРµРЅС‚РёР»СЏС‚РѕСЂР°
 			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
 			{
 				IncrementCounter = 0;
@@ -387,7 +387,7 @@ void CONTROL_HandleFanLogic(bool IsImpulse)
 				LL_FAN(true);
 			}
 
-			// Отключение вентилятора
+			// РћС‚РєР»СЋС‡РµРЅРёРµ РІРµРЅС‚РёР»СЏС‚РѕСЂР°
 			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
 			{
 				FanOnTimeout = 0;
