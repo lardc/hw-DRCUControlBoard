@@ -1,4 +1,4 @@
-// Header
+п»ї// Header
 #include "InitConfig.h"
 //
 // Includes
@@ -21,22 +21,22 @@ void INITCFG_ConfigSystemClock()
 
 void INITCFG_ConfigIO()
 {
-	// Включение тактирования портов
+	// Р’РєР»СЋС‡РµРЅРёРµ С‚Р°РєС‚РёСЂРѕРІР°РЅРёСЏ РїРѕСЂС‚РѕРІ
 	RCC_GPIO_Clk_EN(PORTA);
 	RCC_GPIO_Clk_EN(PORTB);
 	RCC_GPIO_Clk_EN(PORTC);
 	
-	// Аналоговые порты
+	// РђРЅР°Р»РѕРіРѕРІС‹Рµ РїРѕСЂС‚С‹
 	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
 	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
-	// Входы
+	// Р’С…РѕРґС‹
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	GPIO_InitInput(GPIO_PROTECTION, NoPull);
 	//
 	
-	// Выходы
+	// Р’С‹С…РѕРґС‹
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
 	GPIO_InitPushPullOutput(GPIO_LED);
@@ -44,10 +44,10 @@ void INITCFG_ConfigIO()
 	GPIO_InitPushPullOutput(GPIO_INT_PS_DISCHARGE);
 	//
 	
-	// Выходы с OpenDrain
+	// Р’С‹С…РѕРґС‹ СЃ OpenDrain
 	GPIO_InitOpenDrainOutput(GPIO_PROTECTION_RST, NoPull);
 
-	// Альтернативные функции
+	// РђР»СЊС‚РµСЂРЅР°С‚РёРІРЅС‹Рµ С„СѓРЅРєС†РёРё
 	GPIO_InitAltFunction(GPIO_ALT_CAN_RX, AltFn_9);
 	GPIO_InitAltFunction(GPIO_ALT_CAN_TX, AltFn_9);
 	GPIO_InitAltFunction(GPIO_ALT_UART1_RX, AltFn_7);
@@ -60,11 +60,11 @@ void INITCFG_ConfigIO()
 
 void INITCFG_ConfigExtInterrupt()
 {
-	// Вход PROTECTION
+	// Р’С…РѕРґ PROTECTION
 	EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
 
-	// Вход SYNC
+	// Р’С…РѕРґ SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
 }

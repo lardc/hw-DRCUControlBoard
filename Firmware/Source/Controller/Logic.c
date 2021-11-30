@@ -1,4 +1,4 @@
-// Header
+п»ї// Header
 //
 #include "Logic.h"
 
@@ -25,7 +25,7 @@ void LOGIC_SetCompensationVoltage(Int16U Current);
 
 // Functions
 //
-// Сброс аппаратных линий в состояния по умолчанию
+// РЎР±СЂРѕСЃ Р°РїРїР°СЂР°С‚РЅС‹С… Р»РёРЅРёР№ РІ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 void LOGIC_ResetHWToDefaults()
 {
 	LOGIC_SofwarePulseStart(false);
@@ -39,7 +39,7 @@ void LOGIC_ResetHWToDefaults()
 
 void LOGIC_Config()
 {
-	// Кеширование переменных
+	// РљРµС€РёСЂРѕРІР°РЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С…
 	ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH];
 	ConfigParams.MaxPulseWidth_CTRL2 = DataTable[REG_CTRL2_MAX_WIDTH];
 	ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_K] / 1000;
