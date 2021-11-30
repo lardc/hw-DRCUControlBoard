@@ -1,5 +1,5 @@
-//-----------------------------------------------
-// Основная логика
+п»ї//-----------------------------------------------
+// РћСЃРЅРѕРІРЅР°СЏ Р»РѕРіРёРєР°
 //-----------------------------------------------
 
 // Header
@@ -45,14 +45,14 @@ bool CONTROL_HandleIntPSVoltgeSet(Int16U Voltage);
 //
 void CONTROL_Init()
 {
-	// Конфигурация сервиса работы Data-table и EPROM
+	// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ СЃРµСЂРІРёСЃР° СЂР°Р±РѕС‚С‹ Data-table Рё EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
-	// Инициализация data table
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ data table
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
-	// Инициализация device profile
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
-	// Сброс значений
+	// РЎР±СЂРѕСЃ Р·РЅР°С‡РµРЅРёР№
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults();
 }

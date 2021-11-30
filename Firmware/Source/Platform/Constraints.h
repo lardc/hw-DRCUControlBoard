@@ -1,4 +1,4 @@
-// -----------------------------------------
+ï»¿// -----------------------------------------
 // Global definitions
 // ----------------------------------------
 
@@ -16,9 +16,9 @@
 #define INTPS_ADC_TO_V_K				45
 #define INTPS_ADC_TO_V_OFFSET			0
 //
-#define INTPS_VOLTAGE_MAX				1250.0f		// Â * 10
-#define INTPS_VOLTAGE_MIN				0			// Â * 10
-#define INTPS_VOLTAGE_DEF				500.0f		// Â * 10
+#define INTPS_VOLTAGE_MAX				1250.0f		// Ð’ * 10
+#define INTPS_VOLTAGE_MIN				0			// Ð’ * 10
+#define INTPS_VOLTAGE_DEF				500.0f		// Ð’ * 10
 //
 #define CURRENT_SETPOINT_MIN			0			// A
 #define CURRENT_SETPOINT_MAX			2500		// A

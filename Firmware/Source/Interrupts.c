@@ -1,4 +1,4 @@
-// Include
+п»ї// Include
 #include "Interrupts.h"
 //
 #include "LowLevel.h"
@@ -24,7 +24,7 @@ void EXTI9_5_IRQHandler()
 	{
 		if(CONTROL_SubState == SS_ConfigReady)
 		{
-			// Формирование переднего фронта импульса
+			// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїРµСЂРµРґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
 			if (LL_ReadLineSync())
 			{
 				LOGIC_RiseEdgeConfig(ConfigParams.PulseWidth_CTRL2);
@@ -36,7 +36,7 @@ void EXTI9_5_IRQHandler()
 		}
 		else
 		{
-			// Формирование заднего фронта импульса
+			// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р·Р°РґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
 			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
 			{
 				LOGIC_StartFallEdge();
@@ -45,7 +45,7 @@ void EXTI9_5_IRQHandler()
 			}
 		}
 
-		// Запуск импульса в отладочном режиме
+		// Р—Р°РїСѓСЃРє РёРјРїСѓР»СЊСЃР° РІ РѕС‚Р»Р°РґРѕС‡РЅРѕРј СЂРµР¶РёРјРµ
 		if ((CONTROL_State == DS_None))
 		{
 			if (LL_ReadLineSync())
