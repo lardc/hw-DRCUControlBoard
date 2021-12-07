@@ -13,6 +13,13 @@
 
 //Definitions
 //
+#define I_DUT_TO_DAC_K					6500
+#define I_DUT_TO_DAC_OFFSET				780
+//
+#define GAIN_COEFFICIENT_MIN			1
+#define GAIN_COEFFICIENT_MAX			60000
+#define GAIN_COEFFICIENT_DEF			1000
+//
 #define INTPS_ADC_TO_V_K				45
 #define INTPS_ADC_TO_V_OFFSET			0
 //

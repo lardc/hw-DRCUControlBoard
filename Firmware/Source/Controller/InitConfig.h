@@ -16,5 +16,6 @@ void InitializeController(Boolean GoodClock);
 void INITCFG_ConfigTimer2_3();
 void INITCFG_ConfigExtInterrupt();
 void INITCFG_ConfigTimer16();
+void INITCFG_ConfigDAC();
 
 #endif //__INITCONFIG_H

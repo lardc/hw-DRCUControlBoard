@@ -51,6 +51,12 @@ void LL_OverVoltageProtectionReset()
 }
 //------------------------------------------------------------------------------
 
+void LL_OutputCompensation(bool State)
+{
+	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
+}
+//------------------------------------------------------------------------------
+
 void LL_IntPowerSupplyDischarge(bool State)
 {
 	GPIO_SetState(GPIO_INT_PS_DISCHARGE, State);

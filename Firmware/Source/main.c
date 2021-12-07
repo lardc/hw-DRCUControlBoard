@@ -36,6 +36,9 @@ int main()
 	// Настройка Timer16 для формирования импульса синхронизации
 	INITCFG_ConfigTimer16();
 
+	// Настройка ЦАПа
+	INITCFG_ConfigDAC();
+
 	// Начальная настройка АЦП
 	INITCFG_ConfigADC();
 

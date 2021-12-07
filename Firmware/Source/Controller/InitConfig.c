@@ -28,6 +28,7 @@ void INITCFG_ConfigIO()
 	
 	// Аналоговые порты
 	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
+	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
 	// Входы
@@ -40,6 +41,7 @@ void INITCFG_ConfigIO()
 	GPIO_InitPushPullOutput(GPIO_LED);
 	GPIO_InitPushPullOutput(GPIO_INT_PS);
 	GPIO_InitPushPullOutput(GPIO_INT_PS_DISCHARGE);
+	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	//
 	
 	// Выходы с OpenDrain
@@ -53,6 +55,17 @@ void INITCFG_ConfigIO()
 	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_2);
 	GPIO_InitAltFunction(GPIO_ALT_CTRL2, AltFn_1);
 	GPIO_InitAltFunction(GPIO_ALT_MCU_SYNC, AltFn_1);
+}
+//------------------------------------------------------------------------------
+
+void INITCFG_ConfigDAC()
+{
+	DAC_ClkEnable(DAC1);
+	DAC_Reset(DAC1);
+	DAC_EnableCh1(DAC1);
+	DAC_BufferCh1(DAC1, true);
+	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
+	DAC_SetValueCh1(DAC1, 0);
 }
 //------------------------------------------------------------------------------
 
