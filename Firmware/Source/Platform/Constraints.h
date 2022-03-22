@@ -1,4 +1,4 @@
-п»ї// -----------------------------------------
+// -----------------------------------------
 // Global definitions
 // ----------------------------------------
 
@@ -26,17 +26,17 @@
 #define I_DUT_ADC_TO_I_K				183
 #define I_DUT_ADC_TO_I_OFFSET			2
 //
-#define FULL_CHARGE_TIME_MIN			5000		// РјСЃ
-#define FULL_CHARGE_TIME_MAX			60000 		// РјСЃ
-#define FULL_CHARGE_TIME_DEF			30000		// РјСЃ
+#define FULL_CHARGE_TIME_MIN			5000		// мс
+#define FULL_CHARGE_TIME_MAX			60000 		// мс
+#define FULL_CHARGE_TIME_DEF			30000		// мс
 //
-#define RECHARGE_TIMEOUT_MIN			1000		// РјСЃ
-#define RECHARGE_TIMEOUT_MAX			10000		// РјСЃ
-#define RECHARGE_TIMEOUT_DEF			5000		// РјСЃ
+#define RECHARGE_TIMEOUT_MIN			1000		// мс
+#define RECHARGE_TIMEOUT_MAX			10000		// мс
+#define RECHARGE_TIMEOUT_DEF			5000		// мс
 //
-#define CONF_STATE_TIMEOUT_MIN			3000		// РјСЃ
-#define CONF_STATE_TIMEOUT_MAX			10000		// РјСЃ
-#define CONF_STATE_TIMEOUT_DEF			5000		// РјСЃ
+#define CONF_STATE_TIMEOUT_MIN			3000		// мс
+#define CONF_STATE_TIMEOUT_MAX			10000		// мс
+#define CONF_STATE_TIMEOUT_DEF			5000		// мс
 //
 #define MAXIMUM_UNIT_CURRENT_MIN		0			// A
 #define MAXIMUM_UNIT_CURRENT_MAX		1100		// A
@@ -50,21 +50,21 @@
 #define CURRENT_RATE_MAX				5000		// A / us / 100
 #define CURRENT_RATE_DEF				50			// A / us / 100
 //
-#define AFTER_PULSE_TIMEOUT_MIN			1000		// РјСЃ
-#define AFTER_PULSE_TIMEOUT_MAX			10000		// РјСЃ
-#define AFTER_PULSE_TIMEOUT_DEF			1000		// РјСЃ
+#define AFTER_PULSE_TIMEOUT_MIN			1000		// мс
+#define AFTER_PULSE_TIMEOUT_MAX			10000		// мс
+#define AFTER_PULSE_TIMEOUT_DEF			1000		// мс
 //
-#define FAN_OPERATE_PERIOD_MIN			60			// СЃ
-#define FAN_OPERATE_PERIOD_MAX			2000		// СЃ
-#define FAN_OPERATE_PERIOD_DEF			300			// СЃ
+#define FAN_OPERATE_PERIOD_MIN			60			// с
+#define FAN_OPERATE_PERIOD_MAX			2000		// с
+#define FAN_OPERATE_PERIOD_DEF			300			// с
 //
-#define FAN_OPERATE_TIME_MIN			10			// СЃ
-#define FAN_OPERATE_TIME_MAX			2000		// СЃ
-#define FAN_OPERATE_TIME_DEF			60			// СЃ
+#define FAN_OPERATE_TIME_MIN			10			// с
+#define FAN_OPERATE_TIME_MAX			2000		// с
+#define FAN_OPERATE_TIME_DEF			60			// с
 //
-#define V_BAT_THRESHOLD_MIN				0			// Р’ * 10
-#define V_BAT_THRESHOLD_MAX				1400		// Р’ * 10
-#define V_BAT_THRESHOLD_DEF				1400		// Р’ * 10
+#define V_BAT_THRESHOLD_MIN				0			// В * 10
+#define V_BAT_THRESHOLD_MAX				1400		// В * 10
+#define V_BAT_THRESHOLD_DEF				900			// В * 10
 //
 #define ERR_FOR_FORCED_DISCHRG_MIN		1			// % * 10
 #define ERR_FOR_FORCED_DISCHRG_MAX		100			// % * 10
@@ -73,6 +73,15 @@
 #define INTPS_ALLOWED_ERR_MIN			1			// % * 10
 #define INTPS_ALLOWED_ERR_MAX			1000		// % * 10
 #define INTPS_ALLOWED_ERR_DEF			10			// % * 10
+//
+#define ALLOWED_ERROR_MIN				0			// % * 10
+#define ALLOWED_ERROR_MAX				200			// % * 10
+#define ALLOWED_ERROR_DEF				30			// % * 10
+//
+#define ERROR_COUNTER_DEF				20
+//
+#define I_DUT_TO_DAC_K					6500
+#define I_DUT_TO_DAC_OFFSET				780
 //
 #define CTRL1_MAX_WIDTH_050_MAX			57000
 #define CTRL1_MAX_WIDTH_050_DEF			26000
@@ -124,8 +133,8 @@
 #define CTRL1_3000_K_DEF				760
 #define CTRL1_5000_OFFSET_DEF			65441
 #define CTRL1_5000_K_DEF				428
-#define CTRL2_OFFSET_DEF				75
-#define CTRL2_K_DEF						813
+#define CTRL2_OFFSET_DEF				2400
+#define CTRL2_K_DEF						25000
 //
 #define I_TO_V_INTPS_K_DEF				200
 #define I_TO_V_INTPS_OFFSET_DEF			1000

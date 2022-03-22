@@ -1,4 +1,4 @@
-﻿// Header
+// Header
 #include "DebugActions.h"
 
 // Include
@@ -75,21 +75,46 @@ void DBGACT_ExtRegWriteData()
 
 void DBGACT_GeneratePulse()
 {
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
+	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
 	DELAY_US(500);
 
 	LL_OutputLock(false);
 	DELAY_US(1000);
 
 	LL_SW_Trig(true);
-	DELAY_US(500);
+	DELAY_US(3000);
 
-	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG2]);
-	DELAY_US(500);
+	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG2]);
+	DELAY_US(1000);
 
 	LL_SW_Trig(false);
 	DELAY_US(1000);
 
+	LL_OutputLock(true);
+}
+//-----------------------------------------------
+
+void DBGACT_CurrentReadyOutput()
+{
+	LL_External_DC_RDY(true);
+	DELAY_US(1000);
+	LL_External_DC_RDY(false);
+}
+//-----------------------------------------------
+
+void DBGACT_SetCompensationVoltage()
+{
+	LL_OutputLock(false);
+	LL_OutputCompensation(true);
+	DAC_SetValueCh1(DAC1, DataTable[REG_DBG]);
+	DAC_ForceSWTrigCh1(DAC1);
+
+	DELAY_US(1000);
+
+	DAC_SetValueCh1(DAC1, 0);
+	DAC_ForceSWTrigCh1(DAC1);
+
+	LL_OutputCompensation(false);
 	LL_OutputLock(true);
 }
 //-----------------------------------------------

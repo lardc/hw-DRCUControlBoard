@@ -1,4 +1,4 @@
-﻿#ifndef __LOWLEVEL_H
+#ifndef __LOWLEVEL_H
 #define __LOWLEVEL_H
 
 // Include
@@ -10,9 +10,11 @@
 void LL_ToggleBoardLED();
 void LL_ExternalLamp(bool State);
 void LL_FAN(bool State);
+void LL_External_DC_RDY(bool State);
 void LL_SW_Trig(bool Start);
 void LL_PowerOnMechRelay(bool State);
 void LL_PowerOnSolidStateRelay(bool State);
+void LL_OutputCompensation(bool State);
 void LL_OutputLock(bool State);
 void LL_IntPowerSupplyEn(bool State);
 void LL_OverVoltageProtectionReset();

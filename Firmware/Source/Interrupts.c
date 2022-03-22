@@ -1,4 +1,4 @@
-п»ї// Include
+// Include
 #include "Interrupts.h"
 //
 #include "LowLevel.h"
@@ -9,15 +9,16 @@
 #include "DeviceObjectDictionary.h"
 #include "Measurement.h"
 #include "InitConfig.h"
-#include "DataTable.h"
+#include "Delay.h"
+
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			5			// РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ РёРјРїСѓР»СЊСЃР° СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё, РјСЃ
+#define WIDTH_SYNC_LINE_MAX			7			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
-volatile Int64U SyncLineTimeCounter = 0;
+Int64U SyncLineTimeCounter = 0;
 
 // Functions prototypes
 //
@@ -41,32 +42,45 @@ void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
 	{
-		// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїРµСЂРµРґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
-		if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
+		if(CONTROL_State == DS_ConfigReady)
 		{
-			LL_IntPowerSupplyEn(false);
-			LL_OutputLock(false);
+			if(LL_ReadLineSync())
+			{
+				DELAY_US(50);
 
-			LOGIC_StartRiseEdge();
+				// Формирование переднего фронта импульса
+				if (LL_ReadLineSync())
+				{
+					LL_IntPowerSupplyEn(false);
+					LL_OutputLock(false);
 
-			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+					LOGIC_StartRiseEdge();
+					ADC_SwitchToHighSpeed();
+					MEASURE_HighSpeedStart(true);
 
-			ADC_SwitchToHighSpeed();
-			MEASURE_HighSpeedStart(true);
+					CONTROL_HandleFanLogic(true);
+					CONTROL_HandleExternalLamp(true);
 
-			CONTROL_HandleFanLogic(true);
-			CONTROL_HandleExternalLamp(true);
+					SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
+					CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+				}
+			}
+		}
+		else
+		{
+			// Формирование заднего фронта импульса
+			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+			{
+				SyncLineTimeCounter = 0;
+
+				LOGIC_StartFallEdge();
+				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+
+			}
 		}
 
-		// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р·Р°РґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
-		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
-		{
-			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-			SyncLineTimeCounter = 0;
-			LOGIC_StartFallEdge();
-		}
-
-		// Р—Р°РїСѓСЃРє РёРјРїСѓР»СЊСЃР° РІ РѕС‚Р»Р°РґРѕС‡РЅРѕРј СЂРµР¶РёРјРµ
+		// Запуск импульса в отладочном режиме
 		if ((CONTROL_State == DS_None))
 		{
 			if (LL_ReadLineSync())
@@ -103,9 +117,9 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+			LL_OutputCompensation(true);
+			LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1);
 		}
 
 		if (CONTROL_SubState == SS_FallEdge)
@@ -173,7 +187,7 @@ void INT_SyncWidthControl()
 {
 	if(SyncLineTimeCounter && (CONTROL_TimeCounter >= SyncLineTimeCounter))
 	{
-		// Р’С‹РєР». С„РѕСЂРјРёСЂРѕРІР°С‚РµР»СЏ
+		// Выкл. формирователя
 		LL_OutputLock(true);
 		LL_FlipLineRCK();
 

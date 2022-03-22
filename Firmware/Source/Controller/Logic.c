@@ -1,4 +1,4 @@
-ï»¿// Header
+// Header
 //
 #include "Logic.h"
 
@@ -18,17 +18,17 @@
 
 // Definitions
 //
-#define CURRENT_RATE_050			50					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_075			75					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_100			100					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_250			250					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_500			500					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_750			750					// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_1000			1000				// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_1500			1500				// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_2500			2500				// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_3000			3000				// A * 10 / Ð¼ÐºÑ
-#define CURRENT_RATE_5000			5000				// A * 10 / Ð¼ÐºÑ
+#define CURRENT_RATE_050			50					// A * 10 / ìêñ
+#define CURRENT_RATE_075			75					// A * 10 / ìêñ
+#define CURRENT_RATE_100			100					// A * 10 / ìêñ
+#define CURRENT_RATE_250			250					// A * 10 / ìêñ
+#define CURRENT_RATE_500			500					// A * 10 / ìêñ
+#define CURRENT_RATE_750			750					// A * 10 / ìêñ
+#define CURRENT_RATE_1000			1000				// A * 10 / ìêñ
+#define CURRENT_RATE_1500			1500				// A * 10 / ìêñ
+#define CURRENT_RATE_2500			2500				// A * 10 / ìêñ
+#define CURRENT_RATE_3000			3000				// A * 10 / ìêñ
+#define CURRENT_RATE_5000			5000				// A * 10 / ìêñ
 //
 #define CODE_CURRENT_RATE_OFF		0x7F
 #define CODE_CURRENT_RATE_050		0x77
@@ -43,9 +43,10 @@
 #define CODE_CURRENT_RATE_3000		0x3F
 #define CODE_CURRENT_RATE_5000		0x0F
 //
-#define RESULT_AVERAGE_POINTS		10					// ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ‚Ð¾Ñ‡ÐµÐº ÑƒÑÑ€ÐµÐ´ÐµÐ½Ð¸Ñ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð° Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ
+#define ARRAY_SORTING_PART_LENGHT	4					// ×àñòü ìàññèâà äëÿ ñîðòèðîâêè
+#define RESULT_AVERAGE_POINTS		10					// Êîëè÷åñòâî òî÷åê óñðåäåíèÿ ðåçóëüòàòà èçìåðåíèÿ
 //
-#define EXT_LAMP_ON_STATE_TIME		500					// Ð’Ñ€ÐµÐ¼Ñ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹ Ð²Ð½ÐµÑˆÐ½ÐµÐ³Ð¾ Ð¸Ð½Ð´Ð¸ÐºÐ°Ñ‚Ð¾Ñ€Ð°, Ð¼Ñ
+#define EXT_LAMP_ON_STATE_TIME		500					// Âðåìÿ ðàáîòû âíåøíåãî èíäèêàòîðà, ìñ
 
 
 // Structs
@@ -56,16 +57,18 @@ struct __ConfigParamsStruct ConfigParams;
 //
 volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 float TestCurrent = 0;
+float TestCurrentRate = 0;
 
 // Forward functions
 //
+void LOGIC_SetCompensationVoltage(Int16U Current);
 int MEASURE_SortCondition(const void *A, const void *B);
 void LOGIC_SetCurrentRangeRate(Int16U Code);
 void LOGIC_CurrentSourceTurnOff();
 
 // Functions
 //
-// Ð¡Ð±Ñ€Ð¾Ñ Ð°Ð¿Ð¿Ð°Ñ€Ð°Ñ‚Ð½Ñ‹Ñ… Ð»Ð¸Ð½Ð¸Ð¹ Ð² ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ
+// Ñáðîñ àïïàðàòíûõ ëèíèé â ñîñòîÿíèÿ ïî óìîë÷àíèþ
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
 	LOGIC_SofwarePulseStart(false);
@@ -79,29 +82,23 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
+	LL_OutputCompensation(false);
+	LL_External_DC_RDY(false);
 
-	// ÐŸÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ ÐÐ¦ÐŸ Ð² Ð±Ð°Ð·Ð¾Ð²Ñ‹Ð¹ Ñ€ÐµÐ¶Ð¸Ð¼
+	// Ïåðåêëþ÷åíèå ÀÖÏ â áàçîâûé ðåæèì
 	ADC_SwitchToBase();
 }
 //-------------------------------------------
 
 void LOGIC_CurrentSourceTurnOff()
 {
-	LOGIC_ConstantPulseRateConfig(0);
-	LOGIC_VariablePulseRateConfig(0, 0);
+	LOGIC_ConstantPulseRateConfig(0, 0);
+	LOGIC_VariablePulseRateConfig(0);
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
 
-void LOGIC_SetCurrentRangeRate(Int16U Code)
-{
-	LL_ExtRegWriteData(Code);
-	LL_FlipLineRCK();
-	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
-}
-//-------------------------------------------
-
-// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð·Ð°Ñ€ÑÐ´Ð° Ð±Ð°Ñ‚Ð°Ñ€ÐµÐ¸
+// Âêëþ÷åíèå çàðÿäà áàòàðåè
 void LOGIC_BatteryCharge(bool State)
 {
 	if (State)
@@ -125,10 +122,10 @@ void LOGIC_Config()
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
 
-	// ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð°Ð¿Ð¿Ð°Ñ€Ð°Ñ‚Ð½Ð¾Ð¹ Ñ‡Ð°ÑÑ‚Ð¸
+	// Íàñòðîéêà àïïàðàòíîé ÷àñòè
 	LL_PowerOnSolidStateRelay(false);
 
-	// ÐšÐµÑˆÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ…
+	// Êåøèðîâàíèå ïåðåìåííûõ
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 
 	switch(DataTable[REG_CURRENT_RATE])
@@ -289,49 +286,60 @@ void LOGIC_Config()
 	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	// Ð¢Ð¾Ð½ÐºÐ°Ñ Ð¿Ð¾Ð´ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ°
+	// Òîíêàÿ ïîäñòðîéêà
 	float I = TestCurrent;
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
-	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
+	LOGIC_SetCompensationVoltage(TestCurrent);
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
+void LOGIC_SetCurrentRangeRate(Int16U Code)
 {
-	// ÐšÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚ ÐºÐ¾Ð¼Ð¿ÐµÐ½ÑÐ°Ñ†Ð¸Ð¸ Ð°Ð¼Ð»Ð¸Ñ‚ÑƒÐ´Ñ‹ Ñ‚Ð¾ÐºÐ° Ð¾Ñ‚ Ð½Ð°Ð¿Ñ€ÑÐ¶ÐµÐ½Ð¸Ñ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½ÐµÐ³Ð¾ Ð¸ÑÑ‚Ð¾Ñ‡Ð½Ð¸ÐºÐ°
+	LL_ExtRegWriteData(Code);
+	LL_FlipLineRCK();
+	LL_ExtRegWriteData(CODE_CURRENT_RATE_OFF);
+}
+//-------------------------------------------
+
+void LOGIC_SetCompensationVoltage(Int16U Current)
+{
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
+	DAC_ForceSWTrigCh1(DAC1);
+}
+//-------------------------------------------
+
+void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
+{
+	// Êîýôôèöèåíò êîìïåíñàöèè àìëèòóäû òîêà îò íàïðÿæåíèÿ âíóòðåíåãî èñòî÷íèêà
 	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
 
-	if(PulseWidth > ConfigParams.MaxPulseWidth_CTRL1)
-		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
-	if(PulseWidth < 0)
-		PulseWidth = 0;
-
-	TIM_Reset(TIM3);
-	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
-}
-//-------------------------------------------
-
-void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
-{
 	TIM_Reset(TIM2);
 	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
 }
 //-------------------------------------------
 
+void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
+{
+	TIM_Reset(TIM3);
+	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
+}
+//-------------------------------------------
+
 void LOGIC_StartRiseEdge()
 {
-	TIM_Start(TIM3);
+	TIM_Start(TIM2);
 }
 //-------------------------------------------
 
 void LOGIC_StartFallEdge()
 {
-	TIM_Stop(TIM3);
 	LOGIC_SofwarePulseStart(false);
-	TIM_Start(TIM2);
-	LOGIC_VariablePulseRateConfig(0, 0);
+	TIM_Start(TIM3);
+	LL_OutputCompensation(false);
 }
 //-------------------------------------------
 
@@ -341,12 +349,36 @@ void LOGIC_SofwarePulseStart(bool Start)
 }
 //-------------------------------------------
 
+Int16U LOGIC_ExctractCurrentValue()
+{
+	Int16U ArrayTemp[VALUES_x_SIZE];
+	float AvgData = 0;
+	Int16U SortStartIndex = 0;
+	Int16U SortSize = 0;
+
+	for (int i = 0; i < CONTROL_Values_Counter; ++i)
+		ArrayTemp[i] = CONTROL_Values_DUTCurrent[i];
+
+	// Ñîðòèðîâêà
+	SortSize = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
+	SortStartIndex = CONTROL_Values_Counter - SortSize;
+	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
+
+	// Óñðåäíåíèå è âîçâðàò ðåçóëüòàòà
+	for (int i = CONTROL_Values_Counter - RESULT_AVERAGE_POINTS; i < CONTROL_Values_Counter; ++i)
+		AvgData += ArrayTemp[i];
+
+	return (Int16U)(AvgData / RESULT_AVERAGE_POINTS);
+}
+//-------------------------------------------
+
 void LOGIC_HandleAdcSamples()
 {
-	float AvgData = 0;
+	float AvgData = 0, Error;
+	static Int16S AllowedErrorCounter = 0;
 	float Current;
 
-	// Ð¡Ð¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ ÑƒÑÑ€ÐµÐ´Ð½ÐµÐ½Ð½Ð¾Ð³Ð¾ Ñ€ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð°
+	// Ñîõðàíåíèå óñðåäíåííîãî ðåçóëüòàòà
 	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
 		AvgData += LOGIC_DUTCurrentRaw[i];
 
@@ -357,6 +389,24 @@ void LOGIC_HandleAdcSamples()
 		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
 		CONTROL_Values_Counter++;
 	}
+
+	// Îïðåäåëåíèå âûõîäà òîêà íà çàäàííûé óðîâåíü
+	if(CONTROL_SubState == SS_Plate)
+	{
+		Error = abs(100 - Current / TestCurrent * 100);
+
+		if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
+			AllowedErrorCounter++;
+		else
+			AllowedErrorCounter--;
+
+		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+			LL_External_DC_RDY(true);
+		else if (-AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+				DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
+	}
+	else
+		AllowedErrorCounter = 0;
 }
 //-------------------------------------------
 
@@ -375,11 +425,11 @@ void CONTROL_HandleFanLogic(bool IsImpulse)
 	{
 		if(DataTable[REG_FAN_CTRL])
 		{
-			// Ð£Ð²ÐµÐ»Ð¸Ñ‡ÐµÐ½Ð¸Ðµ ÑÑ‡Ñ‘Ñ‚Ñ‡Ð¸ÐºÐ° Ð² Ð¿Ñ€Ð¾ÑÑ‚Ð¾Ðµ
+			// Óâåëè÷åíèå ñ÷¸ò÷èêà â ïðîñòîå
 			if (!IsImpulse)
 				IncrementCounter++;
 
-			// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð²ÐµÐ½Ñ‚Ð¸Ð»ÑÑ‚Ð¾Ñ€Ð°
+			// Âêëþ÷åíèå âåíòèëÿòîðà
 			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
 			{
 				IncrementCounter = 0;
@@ -387,7 +437,7 @@ void CONTROL_HandleFanLogic(bool IsImpulse)
 				LL_FAN(true);
 			}
 
-			// ÐžÑ‚ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð²ÐµÐ½Ñ‚Ð¸Ð»ÑÑ‚Ð¾Ñ€Ð°
+			// Îòêëþ÷åíèå âåíòèëÿòîðà
 			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
 			{
 				FanOnTimeout = 0;
@@ -418,3 +468,4 @@ void CONTROL_HandleExternalLamp(bool IsImpulse)
 		}
 	}
 }
+//-----------------------------------------------

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------
+// -----------------------------------------
 // Logic controller
 // ----------------------------------------
 
@@ -21,7 +21,6 @@ typedef enum __SubState
 	SS_RiseEdge			= 3,
 	SS_Plate			= 4,
 	SS_FallEdge			= 5,
-	SS_SyncWaiting		= 6
 } SubState;
 //
 typedef enum __DeviceState
@@ -31,7 +30,7 @@ typedef enum __DeviceState
 	DS_Disabled			= 2,
 	DS_Ready			= 3,
 	DS_ConfigReady		= 4,
-	DS_InProcess		= 5
+	DS_InProcess		= 5,
 } DeviceState;
 
 
@@ -42,8 +41,8 @@ extern volatile Int64U CONTROL_TimeCounter;
 extern volatile Int16U CONTROL_Values_DUTCurrent[];
 extern volatile Int16U CONTROL_Values_Counter;
 //
-extern volatile DeviceState CONTROL_State;
-extern volatile SubState CONTROL_SubState;
+extern DeviceState CONTROL_State;
+extern SubState CONTROL_SubState;
 
 
 // Functions

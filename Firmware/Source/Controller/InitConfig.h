@@ -1,4 +1,4 @@
-﻿#ifndef __INITCONFIG_H
+#ifndef __INITCONFIG_H
 #define __INITCONFIG_H
 
 #include "Board.h"
@@ -15,6 +15,7 @@ void ADC_SwitchToBase();
 void ADC_SwitchToHighSpeed();
 void INITCFG_ConfigTimer7();
 void INITCFG_ConfigTimer6();
+void INITCFG_ConfigDAC();
 void INITCFG_ConfigDMA();
 void INITCFG_ConfigWatchDog();
 void InitializeController(Boolean GoodClock);

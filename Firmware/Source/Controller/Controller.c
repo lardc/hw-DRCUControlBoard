@@ -1,5 +1,5 @@
-п»ї//-----------------------------------------------
-// РћСЃРЅРѕРІРЅР°СЏ Р»РѕРіРёРєР°
+//-----------------------------------------------
+// Основная логика
 //-----------------------------------------------
 
 // Header
@@ -24,12 +24,12 @@
 
 // Definitions
 //
-#define TIME_INT_PS_ACTIVITY			250		// РјСЃ
+#define TIME_INT_PS_ACTIVITY			250		// мс
 
 // Variables
 //
-volatile DeviceState CONTROL_State = DS_None;
-volatile SubState CONTROL_SubState = SS_None;
+DeviceState CONTROL_State = DS_None;
+SubState CONTROL_SubState = SS_None;
 static Boolean CycleActive = false;
 //
 volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
@@ -51,26 +51,27 @@ void CONTROL_RegistersReset();
 void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
+void CONTROL_SaveResults();
 
 // Functions
 //
 void CONTROL_Init()
 {
-	// РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёРё EndPoint
+	// Переменные для конфигурации EndPoint
 	Int16U EPIndexes[EP_COUNT] = { EP_DUT_I };
 	Int16U EPSized[EP_COUNT] = { VALUES_x_SIZE };
 	pInt16U EPCounters[EP_COUNT] = { (pInt16U)&CONTROL_Values_Counter };
 	pInt16U EPDatas[EP_COUNT] = { (pInt16U)CONTROL_Values_DUTCurrent };
 
-	// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ СЃРµСЂРІРёСЃР° СЂР°Р±РѕС‚С‹ Data-table Рё EPROM
+	// Конфигурация сервиса работы Data-table и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
-	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ data table
+	// Инициализация data table
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
-	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ device profile
+	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
-	// РЎР±СЂРѕСЃ Р·РЅР°С‡РµРЅРёР№
+	// Сброс значений
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults(true);
 }
@@ -188,7 +189,8 @@ void CONTROL_HandleIntPSTune()
 	float dV = 0;
 	static Int64U IntPsStabCounter = 0;
 
-	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady))
+	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady) ||
+				(CONTROL_State == DS_None && DataTable[REG_V_INTPS_SETPOINT]))
 	{
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
@@ -255,6 +257,7 @@ void CONTROL_HandleBatteryCharge()
 void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(false);
+	CONTROL_SaveResults();
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
@@ -263,12 +266,18 @@ void CONTROL_StopProcess()
 }
 //-----------------------------------------------
 
+void CONTROL_SaveResults()
+{
+	DataTable[REG_CURRENT] = LOGIC_ExctractCurrentValue();
+}
+//-----------------------------------------------
+
 void CONTROL_RegistersReset()
 {
+	DataTable[REG_CURRENT] = 0;
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;
-	DataTable[REG_FAILED_SUBSTATE] = 0;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -277,10 +286,9 @@ void CONTROL_RegistersReset()
 
 void CONTROL_SwitchToFault(Int16U Reason)
 {
-	DataTable[REG_FAILED_SUBSTATE] = CONTROL_SubState;
+	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
 
-	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	LOGIC_ResetHWToDefaults(true);
 }
 //-----------------------------------------------
