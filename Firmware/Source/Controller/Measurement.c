@@ -1,4 +1,4 @@
-п»ї// Header
+// Header
 #include "Measurement.h"
 //
 #include "DataTable.h"
@@ -7,7 +7,7 @@
 
 // Definitions
 //
-#define MEASURE_FILTER_SIZE			16		// РљСЂР°С‚РЅРѕ 2^x
+#define MEASURE_FILTER_SIZE			16		// Кратно 2^x
 #define MEASURE_FILTER_MASK			(MEASURE_FILTER_SIZE - 1)
 
 // Forward functions

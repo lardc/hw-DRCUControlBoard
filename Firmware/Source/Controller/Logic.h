@@ -1,4 +1,4 @@
-﻿#ifndef __LOGIC_H
+#ifndef __LOGIC_H
 #define __LOGIC_H
 
 #include "stdinc.h"

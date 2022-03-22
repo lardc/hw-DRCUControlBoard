@@ -1,5 +1,5 @@
-п»ї//-----------------------------------------------
-// РћСЃРЅРѕРІРЅР°СЏ Р»РѕРіРёРєР°
+//-----------------------------------------------
+// Основная логика
 //-----------------------------------------------
 
 // Header
@@ -24,7 +24,7 @@
 
 // Definitions
 //
-#define TIME_INT_PS_ACTIVITY			250		// РјСЃ
+#define TIME_INT_PS_ACTIVITY			250		// мс
 
 // Variables
 //
@@ -57,21 +57,21 @@ void CONTROL_SaveResults();
 //
 void CONTROL_Init()
 {
-	// РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РєРѕРЅС„РёРіСѓСЂР°С†РёРё EndPoint
+	// Переменные для конфигурации EndPoint
 	Int16U EPIndexes[EP_COUNT] = { EP_DUT_I };
 	Int16U EPSized[EP_COUNT] = { VALUES_x_SIZE };
 	pInt16U EPCounters[EP_COUNT] = { (pInt16U)&CONTROL_Values_Counter };
 	pInt16U EPDatas[EP_COUNT] = { (pInt16U)CONTROL_Values_DUTCurrent };
 
-	// РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ СЃРµСЂРІРёСЃР° СЂР°Р±РѕС‚С‹ Data-table Рё EPROM
+	// Конфигурация сервиса работы Data-table и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
-	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ data table
+	// Инициализация data table
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
-	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ device profile
+	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
-	// РЎР±СЂРѕСЃ Р·РЅР°С‡РµРЅРёР№
+	// Сброс значений
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults(true);
 }
@@ -189,8 +189,11 @@ void CONTROL_HandleIntPSTune()
 	float dV = 0;
 	static Int64U IntPsStabCounter = 0;
 
-	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady))
+	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady) ||
+				(CONTROL_State == DS_None && DataTable[REG_V_INTPS_SETPOINT]))
 	{
+		if(DataTable[REG_V_INTPS_SETPOINT])
+			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
