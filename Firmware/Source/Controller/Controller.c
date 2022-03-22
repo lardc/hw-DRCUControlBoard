@@ -192,6 +192,9 @@ void CONTROL_HandleIntPSTune()
 	if ((CONTROL_SubState == SS_PulsePrepare) || (CONTROL_State == DS_ConfigReady) ||
 				(CONTROL_State == DS_None && DataTable[REG_V_INTPS_SETPOINT]))
 	{
+		if(DataTable[REG_V_INTPS_SETPOINT])
+			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
+
 		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
