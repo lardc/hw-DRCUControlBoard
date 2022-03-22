@@ -1,11 +1,11 @@
-// Header
+﻿// Header
 #include "LowLevel.h"
 #include "Delay.h"
 #include "Board.h"
 
 // Definitions
 //
-#define DCU_PULSE_SYNC_WIDTH		35000
+#define RCU_PULSE_SYNC_WIDTH		15000
 
 // Functions
 //
@@ -30,20 +30,13 @@ void LL_FAN(bool State)
 }
 //------------------------------------------------------------------------------
 
-// External DC Ready
-void LL_External_DC_RDY(bool State)
-{
-	GPIO_SetState(GPIO_CURRENT_READY, State);
-}
-//------------------------------------------------------------------------------
-
 // Software trigger
 void LL_SW_Trig(bool Start)
 {
 	if(Start)
 	{
 		TIM_Reset(TIM16);
-		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, DCU_PULSE_SYNC_WIDTH);
+		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, RCU_PULSE_SYNC_WIDTH);
 		TIM_Start(TIM16);
 	}
 	else
@@ -63,12 +56,6 @@ void LL_PowerOnMechRelay(bool State)
 void LL_PowerOnSolidStateRelay(bool State)
 {
 	GPIO_SetState(GPIO_RELAY_SOLID, State);
-}
-//------------------------------------------------------------------------------
-
-void LL_OutputCompensation(bool State)
-{
-	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
 }
 //------------------------------------------------------------------------------
 

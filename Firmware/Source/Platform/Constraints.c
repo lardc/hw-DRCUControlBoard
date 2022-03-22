@@ -1,4 +1,4 @@
-// Header
+﻿// Header
 #include "Constraints.h"
 
 // Constants
@@ -25,8 +25,8 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{false, true, false},																	// 19
 		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 20
 		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 21
-		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 22
-		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 23
+		{0, 0, 0},																				// 22
+		{0, 0, 0},																				// 23
 		{0, 0, 0},																				// 24
 		{0, CTRL1_MAX_WIDTH_050_MAX, CTRL1_MAX_WIDTH_050_DEF},									// 25
 		{0, CTRL1_MAX_WIDTH_075_MAX, CTRL1_MAX_WIDTH_075_DEF},									// 26
@@ -123,11 +123,11 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INT16U_MAX, 0},																		// 117
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 118
 		{0, INT16U_MAX, 0},																		// 119
-		{0, INT16U_MAX, I_DUT_TO_DAC_OFFSET},													// 120
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, I_DUT_TO_DAC_K},							// 121
-		{0, INT16U_MAX, 0},																		// 122
-		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 123
-		{0, INT16U_MAX, 0},																		// 124
+		{0, 0, 0},																				// 120
+		{0, 0, 0},																				// 121
+		{0, 0, 0},																				// 122
+		{0, 0, 0},																				// 123
+		{0, 0, 0},																				// 124
 		{0, 0, 0},																				// 125
 		{0, 0, 0},																				// 126
 		{0, 0, 0}																				// 127

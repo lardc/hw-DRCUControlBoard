@@ -1,10 +1,11 @@
-// Header
+ï»¿// Header
 #include "InitConfig.h"
 //
 // Includes
 #include "Logic.h"
 #include "Global.h"
 #include "BCCIxParams.h"
+#include "ZwCommon.h"
 
 // Forward functions
 //
@@ -21,25 +22,23 @@ void INITCFG_ConfigSystemClock()
 
 void INITCFG_ConfigIO()
 {
-	// Âêëþ÷åíèå òàêòèðîâàíèÿ ïîðòîâ
+	// Ð’ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ñ‚Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¿Ð¾Ñ€Ñ‚Ð¾Ð²
 	RCC_GPIO_Clk_EN(PORTA);
 	RCC_GPIO_Clk_EN(PORTB);
 	RCC_GPIO_Clk_EN(PORTC);
 	
-	// Àíàëîãîâûå ïîðòû
+	// ÐÐ½Ð°Ð»Ð¾Ð³Ð¾Ð²Ñ‹Ðµ Ð¿Ð¾Ñ€Ñ‚Ñ‹
 	GPIO_InitAnalog(GPIO_MEASURE_INT_PS);
 	GPIO_InitAnalog(GPIO_MEASURE_BAT);
 	GPIO_InitAnalog(GPIO_MEASURE_CURRENT);
-	GPIO_InitAnalog(GPIO_COMPENSATION_SET);
 	//
 
-	// Âõîäû
+	// Ð’Ñ…Ð¾Ð´Ñ‹
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	GPIO_InitInput(GPIO_PROTECTION, NoPull);
 	//
 	
-	// Âûõîäû
-	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
+	// Ð’Ñ‹Ñ…Ð¾Ð´Ñ‹
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
@@ -52,10 +51,10 @@ void INITCFG_ConfigIO()
 	GPIO_InitPushPullOutput(GPIO_SPI_RCK);
 	//
 	
-	// Âûõîäû ñ OpenDrain
+	// Ð’Ñ‹Ñ…Ð¾Ð´Ñ‹ Ñ OpenDrain
 	GPIO_InitOpenDrainOutput(GPIO_PROTECTION_RST, NoPull);
 
-	// Àëüòåðíàòèâíûå ôóíêöèè
+	// ÐÐ»ÑŒÑ‚ÐµÑ€Ð½Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ðµ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸
 	GPIO_InitAltFunction(GPIO_ALT_CAN_RX, AltFn_9);
 	GPIO_InitAltFunction(GPIO_ALT_CAN_TX, AltFn_9);
 	GPIO_InitAltFunction(GPIO_ALT_UART1_RX, AltFn_7);
@@ -70,11 +69,11 @@ void INITCFG_ConfigIO()
 
 void INITCFG_ConfigExtInterrupt()
 {
-	// Âõîä PROTECTION
+	// Ð’Ñ…Ð¾Ð´ PROTECTION
 	EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
 
-	// Âõîä SYNC
+	// Ð’Ñ…Ð¾Ð´ SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
 }
@@ -110,7 +109,7 @@ void INITCFG_ConfigADC()
 	ADC_Enable(ADC1);
 	ADC_SoftTrigConfig(ADC1);
 
-	// Êîíôèãóðàöèÿ è îòêëþ÷åíèå DMA
+	// ÐšÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸Ñ Ð¸ Ð¾Ñ‚ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ DMA
 	ADC_DMAConfig(ADC1);
 	ADC_DMAEnable(ADC1, false);
 }
@@ -118,7 +117,6 @@ void INITCFG_ConfigADC()
 
 void ADC_SwitchToHighSpeed()
 {
-	ADC_Disable(ADC1);
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
 	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
@@ -182,22 +180,11 @@ void INITCFG_ConfigTimer6()
 }
 //------------------------------------------------------------------------------
 
-void INITCFG_ConfigDAC()
-{
-	DAC_ClkEnable(DAC1);
-	DAC_Reset(DAC1);
-	DAC_EnableCh1(DAC1);
-	DAC_BufferCh1(DAC1, true);
-	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
-	DAC_SetValueCh1(DAC1, 0);
-}
-//------------------------------------------------------------------------------
-
 void INITCFG_ConfigDMA()
 {
 	DMA_Clk_Enable(DMA1_ClkEN);
 
-	// DMA äëÿ ÀÖÏ òîêà íà DUT
+	// DMA Ð´Ð»Ñ ÐÐ¦ÐŸ Ñ‚Ð¾ÐºÐ° Ð½Ð° DUT
 	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
 	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (Int32U)&LOGIC_DUTCurrentRaw[0], (Int32U)(&ADC1->DR), ADC_AVG_SAMPLES);
 	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,

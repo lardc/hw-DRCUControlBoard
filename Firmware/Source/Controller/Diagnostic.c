@@ -1,4 +1,4 @@
-// Header
+﻿// Header
 #include "Diagnostic.h"
 
 // Includes
@@ -52,14 +52,6 @@ bool DIAG_HandleDiagnosticAction(Int16U ActionID, Int16U *pUserError)
 
 		case ACT_DBG_GENERATE_PULSE:
 			DBGACT_GeneratePulse();
-			break;
-
-		case ACT_DBG_CURRENT_READY_OUTPUT:
-			DBGACT_CurrentReadyOutput();
-			break;
-
-		case ACT_DBG_SET_COMPENSATION:
-			DBGACT_SetCompensationVoltage();
 			break;
 
 		default:
