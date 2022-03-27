@@ -40,10 +40,10 @@
 //
 #define MAXIMUM_UNIT_CURRENT_MIN		0			// A
 #define MAXIMUM_UNIT_CURRENT_MAX		1100		// A
-#define MAXIMUM_UNIT_CURRENT_DEF		400			// A
+#define MAXIMUM_UNIT_CURRENT_DEF		500			// A
 //
-#define CURRENT_SETPOINT_MIN			100			// A
-#define CURRENT_SETPOINT_MAX			420			// A
+#define CURRENT_SETPOINT_MIN			50			// A
+#define CURRENT_SETPOINT_MAX			520			// A
 #define CURRENT_SETPOINT_DEF			100			// A
 //
 #define CURRENT_RATE_MIN				50			// A / us / 100
