@@ -234,11 +234,12 @@ void CONTROL_HandleBatteryCharge()
 {
 	float BatteryVoltage;
 
+	BatteryVoltage = MEASURE_BatteryVoltage() * 10;
+	DataTable[REG_BAT_VOLTAGE] = (Int16U) BatteryVoltage;
+
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
 		LL_PowerOnSolidStateRelay(true);
-
-		BatteryVoltage = MEASURE_BatteryVoltage() * 10;
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
@@ -250,8 +251,6 @@ void CONTROL_HandleBatteryCharge()
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
 				CONTROL_SwitchToFault(DF_BATTERY);
 		}
-
-		DataTable[REG_BAT_VOLTAGE] = (Int16U) BatteryVoltage;
 	}
 }
 //-----------------------------------------------
