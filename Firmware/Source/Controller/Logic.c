@@ -79,9 +79,6 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
-
-	// Переключение АЦП в базовый режим
-	ADC_SwitchToBase();
 }
 //-------------------------------------------
 
