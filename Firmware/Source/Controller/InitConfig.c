@@ -108,32 +108,6 @@ void INITCFG_ConfigADC()
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
 	ADC_SoftTrigConfig(ADC1);
-
-	// Конфигурация и отключение DMA
-	ADC_DMAConfig(ADC1);
-	ADC_DMAEnable(ADC1, false);
-}
-//------------------------------------------------------------------------------
-
-void ADC_SwitchToHighSpeed()
-{
-	ADC_Calibration(ADC1);
-	ADC_Enable(ADC1);
-	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
-	ADC_ChannelSeqReset(ADC1);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, 1);
-	ADC_ChannelSeqLen(ADC1, 1);
-	ADC_DMAEnable(ADC1, true);
-}
-//------------------------------------------------------------------------------
-
-void ADC_SwitchToBase()
-{
-	ADC_Disable(ADC1);
-	ADC_Calibration(ADC1);
-	ADC_Enable(ADC1);
-	ADC_SoftTrigConfig(ADC1);
-	ADC_DMAEnable(ADC1, false);
 }
 //------------------------------------------------------------------------------
 
@@ -168,32 +142,6 @@ void INITCFG_ConfigTimer7()
 	TIM_Config(TIM7, SYSCLK, TIMER7_uS);
 	TIM_Interupt(TIM7, 0, true);
 	TIM_Start(TIM7);
-}
-//------------------------------------------------------------------------------
-
-void INITCFG_ConfigTimer6()
-{
-	TIM_Clock_En(TIM_6);
-	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
-	TIM_DMA(TIM6, DMAEN);
-	TIM_MasterMode(TIM6, MMS_UPDATE);
-}
-//------------------------------------------------------------------------------
-
-void INITCFG_ConfigDMA()
-{
-	DMA_Clk_Enable(DMA1_ClkEN);
-
-	// DMA для АЦП тока на DUT
-	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
-	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (Int32U)&LOGIC_DUTCurrentRaw[0], (Int32U)(&ADC1->DR), ADC_AVG_SAMPLES);
-	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
-						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_EN, DMA_READ_FROM_PERIPH);
-	DMA_Interrupt(DMA_ADC_DUT_I_CHANNEL, DMA_TRANSFER_COMPLETE, 0, true);
-	DMA_ChannelEnable(DMA_ADC_DUT_I_CHANNEL, true);
-
-	ADC_SamplingStart(ADC1);
-	TIM_Start(TIM6);
 }
 //------------------------------------------------------------------------------
 

@@ -27,16 +27,6 @@ void INT_OutputLockCheck();
 
 // Functions
 //
-void DMA1_Channel1_IRQHandler()
-{
-	if (DMA_IsTransferComplete(DMA1, DMA_ISR_TCIF1))
-	{
-		LOGIC_HandleAdcSamples();
-		DMA_TransferCompleteReset(DMA1, DMA_IFCR_CTCIF1);
-	}
-}
-//-----------------------------------------
-
 void EXTI9_5_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_6))
@@ -50,9 +40,6 @@ void EXTI9_5_IRQHandler()
 			LOGIC_StartRiseEdge();
 
 			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
-
-			ADC_SwitchToHighSpeed();
-			MEASURE_HighSpeedStart(true);
 
 			CONTROL_HandleFanLogic(true);
 			CONTROL_HandleExternalLamp(true);

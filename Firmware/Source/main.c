@@ -39,14 +39,8 @@ int main()
 	// Настройка Timer16 для формирования импульса синхронизации
 	INITCFG_ConfigTimer16();
 
-	// Настройка Timer6 тактирования АЦП
-	INITCFG_ConfigTimer6();
-
 	// Начальная настройка АЦП
 	INITCFG_ConfigADC();
-
-	// Настройка DMA для АЦП
-	INITCFG_ConfigDMA();
 
 	// Настройка сторожевого таймера
 	INITCFG_ConfigWatchDog();
