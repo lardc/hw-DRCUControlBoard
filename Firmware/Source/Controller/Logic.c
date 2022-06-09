@@ -304,9 +304,9 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
 	if(PulseWidth < 0)
 		PulseWidth = 0;
-
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
+	DataTable[REG_DBG_PULSE_WIDTH] = PulseWidth;
 }
 //-------------------------------------------
 
