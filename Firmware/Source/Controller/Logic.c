@@ -58,8 +58,8 @@ struct __ConfigParamsStruct ConfigParams;
 volatile Int16U LOGIC_ADCRaw[ADC_CHANNELS];
 float TestCurrent = 0;
 float TestCurrentRate = 0;
-float LOGIC_BatteryVolatge = 0;
-float LOGIC_IntPsVolatge = 0;
+float LOGIC_BatteryVoltage = 0;
+float LOGIC_IntPsVoltage = 0;
 
 // Forward functions
 //
@@ -409,8 +409,8 @@ void LOGIC_HandleAdcSamples()
 	}
 	else
 	{
-		LOGIC_BatteryVolatge = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS]);
-		LOGIC_IntPsVolatge = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS]);
+		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS]);
+		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS]);
 	}
 }
 //-------------------------------------------
