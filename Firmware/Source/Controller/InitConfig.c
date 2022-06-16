@@ -105,17 +105,17 @@ void INITCFG_ConfigSPI()
 void INITCFG_ConfigADC()
 {
 	RCC_ADC_Clk_EN(ADC_12_ClkEN);
-
-	ADC_Calibration(ADC1);
-	ADC_Enable(ADC1);
-	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
-	ADC_ChannelSeqReset(ADC1);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, ADC_CURRENT_POS);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_BAT_VOLTAGE_CHANNEL, ADC_BAT_VOLTAGE_POS);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_INT_PS_VOLTAGE_CHANNEL, ADC_INTPS_VOLTAGE_POS);
-	ADC_ChannelSeqLen(ADC1, ADC_CHANNELS);
-	ADC_DMAEnable(ADC1, true);
-	ADC_SamplingStart(ADC1);
+		ADC_Calibration(ADC1);
+		ADC_Enable(ADC1);
+		ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
+		ADC_ChannelSeqReset(ADC1);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, ADC_CURRENT_POS);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_BAT_VOLTAGE_CHANNEL, ADC_BAT_VOLTAGE_POS);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_INT_PS_VOLTAGE_CHANNEL, ADC_INTPS_VOLTAGE_POS);
+		ADC_ChannelSeqLen(ADC1, ADC_CHANNELS);
+		ADC_DMAConfig(ADC1);
+		ADC_DMAEnable(ADC1, true);
+		ADC_SamplingStart(ADC1);
 }
 //------------------------------------------------------------------------------
 
