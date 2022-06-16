@@ -35,9 +35,12 @@
 #define ADC_REF_VOLTAGE					3300.0f						// Опорное напряжение (в В)
 #define ADC_RESOLUTION					4095						// Разрешение АЦП
 #define ADC_CHANNELS					3							// Количество каналов преобразования АЦП
-#define ADC_CURRENT_POS					1							// Позиция семплов тока в буфере DMA
-#define ADC_BAT_VOLTAGE_POS				2							// Позиция семплов напряжения на батарее в буфере DMA
-#define ADC_INTPS_VOLTAGE_POS			3							// Позиция семплов напряжения формирователя в буфере DMA
+#define ADC_CURRENT_POS					0							// Позиция семплов тока в буфере DMA
+#define ADC_BAT_VOLTAGE_POS				1							// Позиция семплов напряжения на батарее в буфере DMA
+#define ADC_INTPS_VOLTAGE_POS			2							// Позиция семплов напряжения формирователя в буфере DMA
+#define ADC_CURRENT_SEQ					(ADC_CURRENT_POS + 1)		// Номер последовательности преобразования АЦП
+#define ADC_BAT_VOLTAGE_SEQ				(ADC_BAT_VOLTAGE_POS + 1)	// Номер последовательности преобразования АЦП
+#define ADC_INTPS_VOLTAGE_SEQ			(ADC_INTPS_VOLTAGE_POS + 1)	// Номер последовательности преобразования АЦП
 // -----------------------------------------------
 
 #define INTPS_VOLTAGE_MAX				1250.0f						// Максимальное напряжение внутреннего источника формирователя (В * 10)
