@@ -26,7 +26,9 @@ extern struct __ConfigParamsStruct ConfigParams;
 
 // Variables
 //
-extern volatile Int16U LOGIC_DUTCurrentRaw[];
+extern volatile Int16U LOGIC_ADCRaw[];
+extern float LOGIC_BatteryVolatge;
+extern float LOGIC_IntPsVolatge;
 
 //Functions
 //

@@ -108,34 +108,14 @@ void INITCFG_ConfigADC()
 
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
-	ADC_SoftTrigConfig(ADC1);
-
-	// Конфигурация и отключение DMA
-	ADC_DMAConfig(ADC1);
-	ADC_DMAEnable(ADC1, false);
-}
-//------------------------------------------------------------------------------
-
-void ADC_SwitchToHighSpeed()
-{
-	ADC_Disable(ADC1);
-	ADC_Calibration(ADC1);
-	ADC_Enable(ADC1);
 	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
 	ADC_ChannelSeqReset(ADC1);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, 1);
-	ADC_ChannelSeqLen(ADC1, 1);
+	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, ADC_CURRENT_POS);
+	ADC_ChannelSet_Sequence(ADC1, ADC1_BAT_VOLTAGE_CHANNEL, ADC_BAT_VOLTAGE_POS);
+	ADC_ChannelSet_Sequence(ADC1, ADC1_INT_PS_VOLTAGE_CHANNEL, ADC_INTPS_VOLTAGE_POS);
+	ADC_ChannelSeqLen(ADC1, ADC_CHANNELS);
 	ADC_DMAEnable(ADC1, true);
-}
-//------------------------------------------------------------------------------
-
-void ADC_SwitchToBase()
-{
-	ADC_Disable(ADC1);
-	ADC_Calibration(ADC1);
-	ADC_Enable(ADC1);
-	ADC_SoftTrigConfig(ADC1);
-	ADC_DMAEnable(ADC1, false);
+	ADC_SamplingStart(ADC1);
 }
 //------------------------------------------------------------------------------
 
@@ -179,6 +159,7 @@ void INITCFG_ConfigTimer6()
 	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
 	TIM_DMA(TIM6, DMAEN);
 	TIM_MasterMode(TIM6, MMS_UPDATE);
+	TIM_Start(TIM6);
 }
 //------------------------------------------------------------------------------
 
@@ -198,15 +179,12 @@ void INITCFG_ConfigDMA()
 	DMA_Clk_Enable(DMA1_ClkEN);
 
 	// DMA для АЦП тока на DUT
-	DMA_Reset(DMA_ADC_DUT_I_CHANNEL);
-	DMAChannelX_DataConfig(DMA_ADC_DUT_I_CHANNEL, (Int32U)&LOGIC_DUTCurrentRaw[0], (Int32U)(&ADC1->DR), ADC_AVG_SAMPLES);
-	DMAChannelX_Config(DMA_ADC_DUT_I_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
+	DMA_Reset(DMA_ADC1_CHANNEL);
+	DMAChannelX_DataConfig(DMA_ADC1_CHANNEL, (Int32U)&LOGIC_ADCRaw[0], (Int32U)(&ADC1->DR), ADC_CHANNELS);
+	DMAChannelX_Config(DMA_ADC1_CHANNEL, DMA_MEM2MEM_DIS, DMA_LvlPriority_LOW, DMA_MSIZE_16BIT, DMA_PSIZE_16BIT,
 						DMA_MINC_EN, DMA_PINC_DIS, DMA_CIRCMODE_EN, DMA_READ_FROM_PERIPH);
-	DMA_Interrupt(DMA_ADC_DUT_I_CHANNEL, DMA_TRANSFER_COMPLETE, 0, true);
-	DMA_ChannelEnable(DMA_ADC_DUT_I_CHANNEL, true);
-
-	ADC_SamplingStart(ADC1);
-	TIM_Start(TIM6);
+	DMA_Interrupt(DMA_ADC1_CHANNEL, DMA_TRANSFER_COMPLETE, 0, true);
+	DMA_ChannelEnable(DMA_ADC1_CHANNEL, true);
 }
 //------------------------------------------------------------------------------
 

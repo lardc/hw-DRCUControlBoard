@@ -17,29 +17,29 @@ float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U Re
 
 // Functions
 //
-float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK)
+float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK)
 {
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 1000;
-	float result = ((float)ADC_Measure(ADC1, ADC1Channel) - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
+	float result = (ADCValue - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
 	return (result > 0) ? result : 0;
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_BatteryVoltage()
+float MEASURE_ConvertBatteryVoltage(Int16U ADCValue)
 {
-	return MEASURE_VoltageX(ADC1_BAT_VOLTAGE_CHANNEL, REG_V_BAT_OFFSET, REG_V_BAT_K);
+	return MEASURE_VoltageX(ADCValue, REG_V_BAT_OFFSET, REG_V_BAT_K);
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_IntPSVoltage()
+float MEASURE_ConvertIntPsVoltage(Int16U ADCValue)
 {
 	static Int16U MeasureCounter = 0;
 	static float DataArray[MEASURE_FILTER_SIZE];
 	float DataSum = 0;
 
-	DataArray[MeasureCounter] = MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+	DataArray[MeasureCounter] = MEASURE_VoltageX(ADCValue, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
 
 	MeasureCounter++;
 	MeasureCounter &= MEASURE_FILTER_MASK;
@@ -87,20 +87,5 @@ float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U Re
 float MEASURE_ConvertCurrent(Int16U ADCValue)
 {
 	return MEASURE_ConvertADCtoValx(ADCValue, REG_I_DUT_OFFSET, REG_I_DUT_K, REG_I_DUT_P0, REG_I_DUT_P1, REG_I_DUT_P2);
-}
-//------------------------------------------------------------------------------
-
-void MEASURE_HighSpeedStart(bool State)
-{
-	if (State)
-	{
-		ADC_SamplingStart(ADC1);
-		TIM_Start(TIM6);
-	}
-	else
-	{
-		ADC_SamplingStop(ADC1);
-		TIM_Stop(TIM6);
-	}
 }
 //------------------------------------------------------------------------------
