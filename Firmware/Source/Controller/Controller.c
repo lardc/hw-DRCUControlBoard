@@ -238,7 +238,7 @@ void CONTROL_HandleBatteryCharge()
 	{
 		LL_PowerOnSolidStateRelay(true);
 
-		if (LOGIC_BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		if (DataTable[REG_BAT_VOLTAGE] >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
 			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
 				CONTROL_SetDeviceState(DS_Ready, SS_None);
