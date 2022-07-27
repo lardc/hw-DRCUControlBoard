@@ -55,8 +55,6 @@ void EXTI9_5_IRQHandler()
 					LL_OutputLock(false);
 
 					LOGIC_StartRiseEdge();
-					ADC_SwitchToHighSpeed();
-					MEASURE_HighSpeedStart(true);
 
 					CONTROL_HandleFanLogic(true);
 					CONTROL_HandleExternalLamp(true);

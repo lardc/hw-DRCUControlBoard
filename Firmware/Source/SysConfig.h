@@ -20,7 +20,7 @@
 // ----------------------------------------------
 
 // Timers
-#define TIMER6_uS                		2.0f		// Таймер тактирования ЦАП и АЦП
+#define TIMER6_uS                		10.0f		// Таймер тактирования ЦАП и АЦП
 #define TIMER7_uS                  		1000		// Таймер общего назначения
 #define TIMER2_3_uS						2500		// Таймеры для формирования управляющих импульсов
 #define TIMER16_uS						5000		// Таймеры для формирования импульса синхронизации
@@ -30,8 +30,8 @@
 #define CAN_BAUDRATE					1000000		// Битрейт CAN
 // ----------------------------------------------
 
-// High-speed sampling
-#define DMA_ADC_DUT_I_CHANNEL			DMA1_Channel1	// Канал DMA для АЦП тока
+// ADC
+#define DMA_ADC1_CHANNEL				DMA1_Channel1	// Канал DMA для АЦП тока
 #define ADC1_CURRENT_CHANNEL			3				// АЦП1 номер канала тока
 #define ADC1_BAT_VOLTAGE_CHANNEL		2				// АЦП1 канал измерения напряжения на батарее
 #define ADC1_INT_PS_VOLTAGE_CHANNEL		1				// АЦП1 канал измерения напряжени на внутреннем БП

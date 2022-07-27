@@ -11,8 +11,6 @@ void INITCFG_ConfigCAN();
 void INITCFG_ConfigUART();
 void INITCFG_ConfigSPI();
 void INITCFG_ConfigADC();
-void ADC_SwitchToBase();
-void ADC_SwitchToHighSpeed();
 void INITCFG_ConfigTimer7();
 void INITCFG_ConfigTimer6();
 void INITCFG_ConfigDAC();

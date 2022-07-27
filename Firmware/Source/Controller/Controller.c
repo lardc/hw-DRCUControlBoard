@@ -194,7 +194,7 @@ void CONTROL_HandleIntPSTune()
 	{
 		if(DataTable[REG_V_INTPS_SETPOINT])
 			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
-		DataTable[REG_INT_PS_VOLTAGE] = MEASURE_IntPSVoltage() * 10;
+		DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
@@ -232,16 +232,13 @@ void CONTROL_HandleIntPSTune()
 
 void CONTROL_HandleBatteryCharge()
 {
-	float BatteryVoltage;
-
-	BatteryVoltage = MEASURE_BatteryVoltage() * 10;
-	DataTable[REG_BAT_VOLTAGE] = (Int16U) BatteryVoltage;
+	DataTable[REG_BAT_VOLTAGE] = (Int16U) (LOGIC_BatteryVoltage * 10);
 
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
 		LL_PowerOnSolidStateRelay(true);
 
-		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		if (DataTable[REG_BAT_VOLTAGE] >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
 			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
 				CONTROL_SetDeviceState(DS_Ready, SS_None);

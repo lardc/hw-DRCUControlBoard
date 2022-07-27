@@ -55,9 +55,11 @@ struct __ConfigParamsStruct ConfigParams;
 
 // Varibales
 //
-volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
+volatile Int16U LOGIC_ADCRaw[ADC_CHANNELS];
 float TestCurrent = 0;
 float TestCurrentRate = 0;
+float LOGIC_BatteryVoltage = 0;
+float LOGIC_IntPsVoltage = 0;
 
 // Forward functions
 //
@@ -77,16 +79,12 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
-	MEASURE_HighSpeedStart(false);
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
 	LL_OutputCompensation(false);
 	LL_External_DC_RDY(false);
-
-	// Переключение АЦП в базовый режим
-	ADC_SwitchToBase();
 }
 //-------------------------------------------
 
@@ -377,39 +375,43 @@ Int16U LOGIC_ExctractCurrentValue()
 
 void LOGIC_HandleAdcSamples()
 {
-	float AvgData = 0, Error;
+	float Error;
 	static Int16S AllowedErrorCounter = 0;
 	float Current;
 
-	// Сохранение усредненного результата
-	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
-		AvgData += LOGIC_DUTCurrentRaw[i];
-
-	Current = MEASURE_ConvertCurrent(AvgData / ADC_AVG_SAMPLES);
-
-	if (CONTROL_Values_Counter < VALUES_x_SIZE)
+	if (CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_FallEdge)
 	{
-		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
-		CONTROL_Values_Counter++;
-	}
+		Current = MEASURE_ConvertCurrent(LOGIC_ADCRaw[ADC_CURRENT_POS]);
 
-	// Определение выхода тока на заданный уровень
-	if(CONTROL_SubState == SS_Plate)
-	{
-		Error = abs(100 - Current / TestCurrent * 100);
+		if(CONTROL_Values_Counter < VALUES_x_SIZE)
+		{
+			CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
+			CONTROL_Values_Counter++;
+		}
 
-		if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
-			AllowedErrorCounter++;
+		// Определение выхода тока на заданный уровень
+		if(CONTROL_SubState == SS_Plate)
+		{
+			Error = abs(100 - Current / TestCurrent * 100);
+
+			if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
+				AllowedErrorCounter++;
+			else
+				AllowedErrorCounter--;
+
+			if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+				LL_External_DC_RDY(true);
+			else if (-AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
+					DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
+		}
 		else
-			AllowedErrorCounter--;
-
-		if (AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-			LL_External_DC_RDY(true);
-		else if (-AllowedErrorCounter >= DataTable[REG_ERROR_COUNTER_MAX])
-				DataTable[REG_WARNING] = WARNING_CURRENT_NOT_READY;
+			AllowedErrorCounter = 0;
 	}
 	else
-		AllowedErrorCounter = 0;
+	{
+		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS]);
+		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS]);
+	}
 }
 //-------------------------------------------
 
