@@ -361,8 +361,8 @@ Int16U LOGIC_ExctractCurrentValue()
 		ArrayTemp[i] = CONTROL_Values_DUTCurrent[i];
 
 	// Сортировка
-	SortSize = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
-	SortStartIndex = CONTROL_Values_Counter - (CONTROL_Values_Counter - SortSize);
+	SortStartIndex = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
+	SortSize = CONTROL_Values_Counter - SortStartIndex;
 	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
 
 	// Усреднение и возврат результата
