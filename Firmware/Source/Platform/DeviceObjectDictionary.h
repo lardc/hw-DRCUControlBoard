@@ -180,7 +180,7 @@
 //
 #define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
 #define REG_INT_PS_VOLTAGE						201		// Напряжение источника формирователя, (в В х10)
-#define REG_CURRENT								202		// Измеренное значение амплитуды тока (в А)
+#define REG_CURRENT								202		// Измеренное значение амплитуды тока (в А*10)
 // -----------------------------
 #define REG_FWINFO_SLAVE_NID					256	// Device CAN slave node ID
 #define REG_FWINFO_MASTER_NID					257	// Device CAN master node ID (if presented)
