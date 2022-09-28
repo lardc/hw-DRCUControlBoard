@@ -43,7 +43,7 @@
 #define CODE_CURRENT_RATE_R9		0x3F
 #define CODE_CURRENT_RATE_R10		0x0F
 //
-#define ARRAY_SORTING_PART_LENGHT	4					// Часть массива для сортировки
+#define ARRAY_SORTING_PART_LENGHT	10					// Часть массива для сортировки
 #define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
 //
 #define EXT_LAMP_ON_STATE_TIME		500					// Время работы внешнего индикатора, мс
@@ -362,7 +362,7 @@ Int16U LOGIC_ExctractCurrentValue()
 
 	// Сортировка
 	SortSize = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
-	SortStartIndex = CONTROL_Values_Counter - SortSize;
+	SortStartIndex = CONTROL_Values_Counter - (CONTROL_Values_Counter - SortSize);
 	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
 
 	// Усреднение и возврат результата
