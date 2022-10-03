@@ -43,7 +43,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, 0, 0},																				// 37
 		{0, 0, 0},																				// 38
 		{0, 0, 0},																				// 39
-		{0, 0, 0},																				// 40
+		{0, INT16U_MAX, 0},																		// 40
 		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 41
 		{0, INT16U_MAX, I_TO_V_INTPS_K_DEF},													// 42
 		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 43
