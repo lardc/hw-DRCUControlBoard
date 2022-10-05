@@ -1,4 +1,4 @@
-// Include
+п»ї// Include
 #include "Interrupts.h"
 //
 #include "LowLevel.h"
@@ -14,7 +14,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			7			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			7			// РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ РёРјРїСѓР»СЊСЃР° СЃРёРЅС…СЂРѕРЅРёР·Р°С†РёРё, РјСЃ
 
 // Variables
 //
@@ -48,7 +48,7 @@ void EXTI9_5_IRQHandler()
 			{
 				DELAY_US(50);
 
-				// Формирование переднего фронта импульса
+				// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ РїРµСЂРµРґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
 				if (LL_ReadLineSync())
 				{
 					LL_IntPowerSupplyEn(false);
@@ -67,7 +67,7 @@ void EXTI9_5_IRQHandler()
 		}
 		else
 		{
-			// Формирование заднего фронта импульса
+			// Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р·Р°РґРЅРµРіРѕ С„СЂРѕРЅС‚Р° РёРјРїСѓР»СЊСЃР°
 			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
 			{
 				SyncLineTimeCounter = 0;
@@ -78,7 +78,7 @@ void EXTI9_5_IRQHandler()
 			}
 		}
 
-		// Запуск импульса в отладочном режиме
+		// Р—Р°РїСѓСЃРє РёРјРїСѓР»СЊСЃР° РІ РѕС‚Р»Р°РґРѕС‡РЅРѕРј СЂРµР¶РёРјРµ
 		if ((CONTROL_State == DS_None))
 		{
 			if (LL_ReadLineSync())
@@ -185,7 +185,7 @@ void INT_SyncWidthControl()
 {
 	if(SyncLineTimeCounter && (CONTROL_TimeCounter >= SyncLineTimeCounter))
 	{
-		// Выкл. формирователя
+		// Р’С‹РєР». С„РѕСЂРјРёСЂРѕРІР°С‚РµР»СЏ
 		LL_OutputLock(true);
 		LL_FlipLineRCK();
 
