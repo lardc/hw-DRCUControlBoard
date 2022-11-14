@@ -269,7 +269,7 @@ void LOGIC_Config()
 	if(DataTable[REG_V_INTPS_SETPOINT])
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
-		ConfigParams.IntPsVoltage = 1000 * DataTable[REG_I_TO_V_K_2]  / ( TestCurrent * TestCurrent ) + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+		ConfigParams.IntPsVoltage = 100000 * DataTable[REG_I_TO_V_K_2]  / ( TestCurrent * TestCurrent * TestCurrent ) + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
