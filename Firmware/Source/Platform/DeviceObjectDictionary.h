@@ -53,13 +53,14 @@
 #define REG_BAT_VOLTAGE_THRESHOLD				15		// Минимальный порог заряда батареи, В *10
 #define REG_MAXIMUM_UNIT_CURRENT				16		// Максимальное значение тока с блока
 #define REG_CONFIG_RDY_STATE_TIMEOUT			17		// Таймаут нахождения блока в состоянии ConfigReady
-#define REG_AFTER_PULSE_PAUSE					18		// Пауза после импульса, мс
+#define REG_AFTER_PULSE_PAUSE_MIN				18		// Максимальная пауза после импульса, мс
 #define REG_FAN_CTRL							19		// Разрешение работы вентиляторов
 #define REG_FAN_OPERATE_PERIOD					20		// Период работы вентилятора, с
 #define REG_FAN_OPERATE_TIME					21		// Длительность работы вентилятора, с
 #define REG_ERROR_COUNTER_MAX					22		// Максимальное значение счетчика при определении выхода тока на задание
 #define REG_ALLOWED_ERROR						23		// Допустимая ошибка определения выхода тока на задание (% * 10)
-// 24
+#define REG_CURRENT_BOARD_PER_UNIT				24		// Количество силовых плат в блоке
+//
 #define REG_CTRL1_MAX_WIDTH_R0					25		// Максимальная длительность импульса CTRL1 (скорость 0)
 #define REG_CTRL1_MAX_WIDTH_R1					26		// Максимальная длительность импульса CTRL1 (скорость 1)
 #define REG_CTRL1_MAX_WIDTH_R2					27		// Максимальная длительность импульса CTRL1 (скорость 2)
@@ -167,6 +168,7 @@
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
 #define REG_V_INTPS_SETPOINT					130		// Принудительная установка напряжения внутреннего источника, В * 10
+#define REG_PULSE_WIDTH							131		// Длительность импульса тока, мс  * 10
 
 #define REG_DBG									150		// Отладочный регистр 1
 #define REG_DBG2								151		// Отладочный регистр 2

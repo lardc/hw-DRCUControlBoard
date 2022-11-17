@@ -13,6 +13,14 @@
 
 //Definitions
 //
+#define CURRENT_BOARD_MIN				1
+#define CURRENT_BOARD_MAX				6
+#define CURRENT_BOARD_DEF				6
+//
+#define PULSE_WIDTH_MIN					10
+#define PULSE_WIDTH_MAX					50
+#define PULSE_WIDTH_DEF					30
+//
 #define GAIN_COEFFICIENT_MIN			1
 #define GAIN_COEFFICIENT_MAX			60000
 #define GAIN_COEFFICIENT_DEF			1000
@@ -50,7 +58,7 @@
 #define CURRENT_RATE_MAX				10			//
 #define CURRENT_RATE_DEF				0			//
 //
-#define AFTER_PULSE_TIMEOUT_MIN			1000		// мс
+#define AFTER_PULSE_TIMEOUT_MIN			500			// мс
 #define AFTER_PULSE_TIMEOUT_MAX			10000		// мс
 #define AFTER_PULSE_TIMEOUT_DEF			1000		// мс
 //

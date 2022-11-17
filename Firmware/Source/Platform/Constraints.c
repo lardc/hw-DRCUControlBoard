@@ -27,7 +27,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 21
 		{0, INT16U_MAX, ERROR_COUNTER_DEF},														// 22
 		{ALLOWED_ERROR_MIN, ALLOWED_ERROR_MAX, ALLOWED_ERROR_DEF},								// 23
-		{0, 0, 0},																				// 24
+		{CURRENT_BOARD_MIN, CURRENT_BOARD_MAX, CURRENT_BOARD_DEF},								// 24
 		{0, CTRL1_MAX_WIDTH_R0_MAX, CTRL1_MAX_WIDTH_R0_DEF},									// 25
 		{0, CTRL1_MAX_WIDTH_R1_MAX, CTRL1_MAX_WIDTH_R1_DEF},									// 26
 		{0, CTRL1_MAX_WIDTH_R2_MAX, CTRL1_MAX_WIDTH_R2_DEF},									// 27
@@ -137,7 +137,7 @@ const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START]
 		{CURRENT_SETPOINT_MIN, CURRENT_SETPOINT_MAX, CURRENT_SETPOINT_DEF},						// 128
 		{CURRENT_RATE_MIN, CURRENT_RATE_MAX, CURRENT_RATE_DEF},									// 129
 		{0, INTPS_VOLTAGE_MAX, 0},																// 130
-		{0, 0, 0},																				// 131
+		{PULSE_WIDTH_MIN, PULSE_WIDTH_MAX, PULSE_WIDTH_DEF},									// 131
 		{0, 0, 0},																				// 132
 		{0, 0, 0},																				// 133
 		{0, 0, 0},																				// 134
