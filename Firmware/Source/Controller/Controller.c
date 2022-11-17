@@ -52,6 +52,7 @@ void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
+Int16U CONTROL_CalcPostPulseDelay();
 
 // Functions
 //
@@ -257,12 +258,44 @@ void CONTROL_StopProcess()
 	LOGIC_ResetHWToDefaults(false);
 	CONTROL_SaveResults();
 
-	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
+	CONTROL_AfterPulsePause = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay();
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
 
 	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------
+
+Int16U CONTROL_CalcPostPulseDelay()
+{
+	// Длительность импульса
+	float RiseTime = (float)ConfigParams.PulseWidth_CTRL1 / TIM2_3_MAX_VALUE * TIMER2_3_uS / 1000;
+	float FallTime = (float)ConfigParams.PulseWidth_CTRL2 / TIM2_3_MAX_VALUE * TIMER2_3_uS / 1000;
+	float PulseWidth = (float)DataTable[REG_PULSE_WIDTH] / 10 + RiseTime + FallTime;
+	float PulseWidthEq = (float)DataTable[REG_PULSE_WIDTH] / 10 + RiseTime / 2 + FallTime / 2;
+
+	// Коэффициент формы импульса
+	float PulseFormCoef = PulseWidthEq / PulseWidth;
+
+	// Максимальная мощность на транзисторе
+	float MaxCurrentPerMOSFET = (float)DataTable[REG_MAXIMUM_UNIT_CURRENT] / DataTable[REG_CURRENT_BOARD_PER_UNIT] / PPD_MOSFETS_PER_CURR_BOARD;
+	float MaxPowerPerMOSFET = MaxCurrentPerMOSFET * PPD_BATTERY_VOLTAGE;
+
+	// Рабочая мощность на транзисторе
+	float CurrentPerMOSFET = (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_CURRENT_BOARD_PER_UNIT] / PPD_MOSFETS_PER_CURR_BOARD;
+	float PowerPerMOSFET = CurrentPerMOSFET * (PPD_BATTERY_VOLTAGE - CurrentPerMOSFET * PPD_SOURCE_RESISTOR) * PulseFormCoef;
+
+	// Расчет запаса по температуре кристалла транзисторов
+	float TavgMax = (float)PPD_T_J_MAX - PPD_T_AMB_MAX - PPD_T_MARGIN - MaxPowerPerMOSFET * PPD_ZTH_MAX;
+
+	if(TavgMax <= 0)
+		return PPD_FAULT_DELAY;
+	else
+	{
+		float Delay = PowerPerMOSFET / MaxPowerPerMOSFET * PulseWidth * 1000 + DataTable[REG_AFTER_PULSE_PAUSE_MIN];
+		return (Delay > PPD_FAULT_DELAY) ? PPD_FAULT_DELAY : Delay;
+	}
+}
+//------------------------------------------
 
 void CONTROL_SaveResults()
 {
