@@ -2,10 +2,8 @@
 #include "LowLevel.h"
 #include "Delay.h"
 #include "Board.h"
-
-// Definitions
-//
-#define DCU_PULSE_SYNC_WIDTH		35000
+#include "DataTable.h"
+#include "Global.h"
 
 // Functions
 //
@@ -40,10 +38,14 @@ void LL_External_DC_RDY(bool State)
 // Software trigger
 void LL_SW_Trig(bool Start)
 {
+	Int16U PWM_PulseWidth = 0;
+
 	if(Start)
 	{
+		PWM_PulseWidth = (float)DataTable[REG_PULSE_WIDTH] * 100 / TIMER16_uS * TIM16_MAX_VALUE;
+
 		TIM_Reset(TIM16);
-		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, DCU_PULSE_SYNC_WIDTH);
+		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, PWM_PulseWidth);
 		TIM_Start(TIM16);
 	}
 	else
