@@ -53,6 +53,7 @@ void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
 Int16U CONTROL_CalcPostPulseDelay();
+void CONTROL_CoolingProcess();
 
 // Functions
 //
@@ -169,6 +170,9 @@ void CONTROL_Idle()
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
 
+	// Unit cooling process
+	CONTROL_CoolingProcess();
+
 	// Control of device state
 	CONTROL_DeviceStateControl();
 
@@ -231,6 +235,44 @@ void CONTROL_HandleIntPSTune()
 }
 //-----------------------------------------------
 
+void CONTROL_CoolingProcess()
+{
+	static Int64U TimeoutCounter = 0;
+	static Int16U CurrentPulseCounter = 0;
+
+
+	// Задержка после импульса
+	if (CONTROL_SubState == SS_PostPulseDelay)
+	{
+		if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
+		{
+			CurrentPulseCounter++;
+			TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
+		}
+	}
+
+	// Если в течении времени REG_PULSE_DELAY_TQ_TIMEOUT не было нового формирвоания тока,
+	// то блок переходит в режим охлаждения
+	if (CONTROL_State == DS_Ready)
+	{
+		if(CONTROL_TimeCounter >= TimeoutCounter || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
+		{
+			CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
+			TimeoutCounter = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
+			CurrentPulseCounter = 0;
+		}
+	}
+
+	//Охлаждение блока
+	if (CONTROL_SubState == SS_Cooling)
+	{
+		if (CONTROL_TimeCounter >= TimeoutCounter)
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
+	}
+}
+//-----------------------------------------------
+
 void CONTROL_HandleBatteryCharge()
 {
 	DataTable[REG_BAT_VOLTAGE] = (Int16U) (LOGIC_BatteryVoltage * 10);
@@ -240,10 +282,7 @@ void CONTROL_HandleBatteryCharge()
 		LL_PowerOnSolidStateRelay(true);
 
 		if (DataTable[REG_BAT_VOLTAGE] >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
-		{
-			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
-				CONTROL_SetDeviceState(DS_Ready, SS_None);
-		}
+			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
@@ -267,33 +306,8 @@ void CONTROL_StopProcess()
 
 Int16U CONTROL_CalcPostPulseDelay()
 {
-	// Длительность импульса
-	float RiseTime = (float)ConfigParams.PulseWidth_CTRL1 / TIM2_3_MAX_VALUE * TIMER2_3_uS / 1000;
-	float FallTime = (float)ConfigParams.PulseWidth_CTRL2 / TIM2_3_MAX_VALUE * TIMER2_3_uS / 1000;
-	float PulseWidth = (float)DataTable[REG_PULSE_WIDTH] / 10 + RiseTime + FallTime;
-	float PulseWidthEq = (float)DataTable[REG_PULSE_WIDTH] / 10 + RiseTime / 2 + FallTime / 2;
-
-	// Коэффициент формы импульса
-	float PulseFormCoef = PulseWidthEq / PulseWidth;
-
-	// Максимальная мощность на транзисторе
-	float MaxCurrentPerMOSFET = (float)DataTable[REG_MAXIMUM_UNIT_CURRENT] / DataTable[REG_CURRENT_BOARD_PER_UNIT] / PPD_MOSFETS_PER_CURR_BOARD;
-	float MaxPowerPerMOSFET = MaxCurrentPerMOSFET * PPD_BATTERY_VOLTAGE;
-
-	// Рабочая мощность на транзисторе
-	float CurrentPerMOSFET = (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_CURRENT_BOARD_PER_UNIT] / PPD_MOSFETS_PER_CURR_BOARD;
-	float PowerPerMOSFET = CurrentPerMOSFET * (PPD_BATTERY_VOLTAGE - CurrentPerMOSFET * PPD_SOURCE_RESISTOR) * PulseFormCoef;
-
-	// Расчет запаса по температуре кристалла транзисторов
-	float TavgMax = (float)PPD_T_J_MAX - PPD_T_AMB_MAX - PPD_T_MARGIN - MaxPowerPerMOSFET * PPD_ZTH_MAX;
-
-	if(TavgMax <= 0)
-		return PPD_FAULT_DELAY;
-	else
-	{
-		float Delay = PowerPerMOSFET / MaxPowerPerMOSFET * PulseWidth * 1000 + DataTable[REG_AFTER_PULSE_PAUSE_MIN];
-		return (Delay > PPD_FAULT_DELAY) ? PPD_FAULT_DELAY : Delay;
-	}
+	float PulseDelayCoef = (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+	return (UNIT_PULSE_DELAY_MIN + DataTable[REG_PULSE_DELAY_TQ] * PulseDelayCoef);
 }
 //------------------------------------------
 

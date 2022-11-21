@@ -53,14 +53,13 @@
 #define REG_BAT_VOLTAGE_THRESHOLD				15		// Минимальный порог заряда батареи, В *10
 #define REG_MAXIMUM_UNIT_CURRENT				16		// Максимальное значение тока с блока
 #define REG_CONFIG_RDY_STATE_TIMEOUT			17		// Таймаут нахождения блока в состоянии ConfigReady
-#define REG_AFTER_PULSE_PAUSE_MIN				18		// Максимальная пауза после импульса, мс
+// 18
 #define REG_FAN_CTRL							19		// Разрешение работы вентиляторов
 #define REG_FAN_OPERATE_PERIOD					20		// Период работы вентилятора, с
 #define REG_FAN_OPERATE_TIME					21		// Длительность работы вентилятора, с
 #define REG_ERROR_COUNTER_MAX					22		// Максимальное значение счетчика при определении выхода тока на задание
 #define REG_ALLOWED_ERROR						23		// Допустимая ошибка определения выхода тока на задание (% * 10)
-#define REG_CURRENT_BOARD_PER_UNIT				24		// Количество силовых плат в блоке
-//
+// 24
 #define REG_CTRL1_MAX_WIDTH_R0					25		// Максимальная длительность импульса CTRL1 (скорость 0)
 #define REG_CTRL1_MAX_WIDTH_R1					26		// Максимальная длительность импульса CTRL1 (скорость 1)
 #define REG_CTRL1_MAX_WIDTH_R2					27		// Максимальная длительность импульса CTRL1 (скорость 2)
@@ -73,7 +72,10 @@
 #define REG_CTRL1_MAX_WIDTH_R9					34		// Максимальная длительность импульса CTRL1 (скорость 9)
 #define REG_CTRL1_MAX_WIDTH_R10					35		// Максимальная длительность импульса CTRL1 (скорость 10)
 #define REG_CTRL2_MAX_WIDTH						36		// Максимальная длительность импульса CTRL2
-// 37 - 39
+//
+#define REG_TQ_TIMEOUT							37		// Таймаут между измерениями Tq (мс)
+#define REG_PULSE_DELAY_TQ						38		// Задержка (мс) между импульсами тока при макс. амплитуде минус UNIT_PULSE_DELAY_MIN (Global.h)
+// 39
 #define REG_I_TO_V_K_2							40		// Дополнительный коэффицент
 #define REG_I_TO_V_INTPS_R0_OFFSET				41		// Смещение преобразования тока в напряжение внутреннего источника (скорость 0)
 #define REG_I_TO_V_INTPS_R0_K					42		// Коэффициент преобразования тока в напряжение внутреннего источника (скорость 0)

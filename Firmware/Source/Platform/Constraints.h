@@ -13,9 +13,19 @@
 
 //Definitions
 //
-#define CURRENT_BOARD_MIN				1
-#define CURRENT_BOARD_MAX				6
-#define CURRENT_BOARD_DEF				6
+#define TQ_TIMEOUT_MIN					2000
+#define TQ_TIMEOUT_MAX					5000
+#define TQ_TIMEOUT_DEF					2000
+//
+#define PULSE_DELAY_TQ_MIN				500
+#define PULSE_DELAY_TQ_MAX				2000
+#define PULSE_DELAY_TQ_DEF				500
+//
+#define COOLING_TIME_MIN				500
+#define COOLING_TIME_MAX				2000
+#define COOLING_TIME_DEF				1000
+//
+#define REG_PULSE_TO_PULSE_DELAY_MAX
 //
 #define PULSE_WIDTH_MIN					10
 #define PULSE_WIDTH_MAX					50
@@ -57,10 +67,6 @@
 #define CURRENT_RATE_MIN				0			//
 #define CURRENT_RATE_MAX				10			//
 #define CURRENT_RATE_DEF				0			//
-//
-#define AFTER_PULSE_TIMEOUT_MIN			500			// мс
-#define AFTER_PULSE_TIMEOUT_MAX			10000		// мс
-#define AFTER_PULSE_TIMEOUT_DEF			1000		// мс
 //
 #define FAN_OPERATE_PERIOD_MIN			60			// с
 #define FAN_OPERATE_PERIOD_MAX			2000		// с

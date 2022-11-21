@@ -44,26 +44,14 @@
 // -----------------------------------------------
 
 // Параметры таймеров
-#define TIM2_3_MAX_VALUE		63630								// Максимальное значение таймеров
-#define TIM16_MAX_VALUE			58330
+#define TIM2_3_MAX_VALUE				63630						// Максимальное значение таймеров
+#define TIM16_MAX_VALUE					58330
 // -----------------------------------------------
 
-// Параметры силовых плат QRRCurrentBoard
-#define PPD_MOSFETS_PER_CURR_BOARD		32
-#define PPD_BATTERY_VOLTAGE				100
-#define PPD_SOURCE_RESISTOR				3.3f
-//
-#define PPD_FAULT_DELAY					15000
-// -----------------------------------------------
-
-// Параметры транзисторов
-#define PPD_T_J_MAX						150
-#define PPD_T_AMB_MAX					35
-#define PPD_T_MARGIN					15
-//
-#define PPD_RTH_J_A						62.5	// in C/W
-#define PPD_ZTH_MAX						0.125f	// in C/W
-// -----------------------------------------------
+#define UNIT_TQ_MEASURE_PULSES			11							// (в импульсах) + 1
+#define UNIT_TQ_EXTRA_PULSES			15							// в импульсах
+#define UNIT_MAX_NUM_OF_PULSES			(UNIT_TQ_MEASURE_PULSES + UNIT_TQ_EXTRA_PULSES)	// в импульсах
+#define UNIT_PULSE_DELAY_MIN			500							// мс
 
 #define INTPS_VOLTAGE_MAX				1250.0f						// Максимальное напряжение внутреннего источника формирователя (В * 10)
 #define INTPS_VOLTAGE_MIN				800.0f						// Минимальное напряжение внутреннего источника формирователя (В * 10)
