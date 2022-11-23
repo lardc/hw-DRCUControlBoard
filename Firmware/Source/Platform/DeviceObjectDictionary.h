@@ -171,6 +171,8 @@
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
 #define REG_V_INTPS_SETPOINT					130		// Принудительная установка напряжения внутреннего источника, В * 10
 #define REG_PULSE_WIDTH							131		// Длительность импульса тока, мс  * 10
+//
+#define REG_CALIBRATION_PROCESS					140		// Флаг процесса калибровки
 
 #define REG_DBG									150		// Отладочный регистр 1
 #define REG_DBG2								151		// Отладочный регистр 2
