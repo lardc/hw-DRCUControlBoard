@@ -53,7 +53,7 @@
 #define UNIT_MAX_NUM_OF_PULSES			(UNIT_TQ_MEASURE_PULSES + UNIT_TQ_EXTRA_PULSES)	// в импульсах
 #define UNIT_PULSE_DELAY_MIN			500							// мс
 
-#define INTPS_VOLTAGE_MAX				1250.0f						// Максимальное напряжение внутреннего источника формирователя (В * 10)
+#define INTPS_VOLTAGE_MAX				1500.0f						// Максимальное напряжение внутреннего источника формирователя (В * 10)
 #define INTPS_VOLTAGE_MIN				800.0f						// Минимальное напряжение внутреннего источника формирователя (В * 10)
 
 #endif //  __GLOBAL_H
