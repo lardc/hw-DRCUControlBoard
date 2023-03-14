@@ -16,9 +16,8 @@ struct __ConfigParamsStruct
 	float PulseWidth_CTRL1_Offset;
 	float PulseWidth_CTRL2_K;
 	Int16S PulseWidth_CTRL2_Offset;
-	float PulseWidth_CTRL1_P2;
-	float PulseWidth_CTRL1_P1;
-	Int16S PulseWidth_CTRL1_P0;
+	float IntPsVoltageK4;
+	float IntPsVoltageK2;
 	float IntPsVoltageK;
 	Int16S IntPsVoltageOffset;
 };

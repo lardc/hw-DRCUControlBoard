@@ -150,6 +150,8 @@
 #define CTRL2_OFFSET_DEF				2400
 #define CTRL2_K_DEF						25000
 //
+#define I_TO_V_INTPS_K4_DEF				1000
+#define I_TO_V_INTPS_K2_DEF				0
 #define I_TO_V_INTPS_K_DEF				200
 #define I_TO_V_INTPS_OFFSET_DEF			1000
 //
