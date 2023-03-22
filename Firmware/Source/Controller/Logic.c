@@ -18,30 +18,30 @@
 
 // Definitions
 //
-#define CURRENT_RATE_050			50					// A * 10 / мкс
-#define CURRENT_RATE_075			75					// A * 10 / мкс
-#define CURRENT_RATE_100			100					// A * 10 / мкс
-#define CURRENT_RATE_250			250					// A * 10 / мкс
-#define CURRENT_RATE_500			500					// A * 10 / мкс
-#define CURRENT_RATE_750			750					// A * 10 / мкс
-#define CURRENT_RATE_1000			1000				// A * 10 / мкс
-#define CURRENT_RATE_1500			1500				// A * 10 / мкс
-#define CURRENT_RATE_2500			2500				// A * 10 / мкс
-#define CURRENT_RATE_3000			3000				// A * 10 / мкс
-#define CURRENT_RATE_5000			5000				// A * 10 / мкс
+#define CURRENT_RATE_R0				50
+#define CURRENT_RATE_R1 			75
+#define CURRENT_RATE_R2				100
+#define CURRENT_RATE_R3 			250
+#define CURRENT_RATE_R4				500
+#define CURRENT_RATE_R5				750
+#define CURRENT_RATE_R6				1000
+#define CURRENT_RATE_R7				1500
+#define CURRENT_RATE_R8				2500
+#define CURRENT_RATE_R9				3000
+#define CURRENT_RATE_R10			5000
 //
 #define CODE_CURRENT_RATE_OFF		0x7F
-#define CODE_CURRENT_RATE_050		0x77
-#define CODE_CURRENT_RATE_075		0x7B
-#define CODE_CURRENT_RATE_100		0x7D
-#define CODE_CURRENT_RATE_250		0x7E
-#define CODE_CURRENT_RATE_500		0x6F
-#define CODE_CURRENT_RATE_750		0x6E
-#define CODE_CURRENT_RATE_1000		0x60
-#define CODE_CURRENT_RATE_1500		0x5F
-#define CODE_CURRENT_RATE_2500		0x40
-#define CODE_CURRENT_RATE_3000		0x3F
-#define CODE_CURRENT_RATE_5000		0x0F
+#define CODE_CURRENT_RATE_R0		0x77
+#define CODE_CURRENT_RATE_R1		0x7B
+#define CODE_CURRENT_RATE_R2		0x7D
+#define CODE_CURRENT_RATE_R3		0x7E
+#define CODE_CURRENT_RATE_R4		0x6F
+#define CODE_CURRENT_RATE_R5		0x6E
+#define CODE_CURRENT_RATE_R6		0x60
+#define CODE_CURRENT_RATE_R7		0x5F
+#define CODE_CURRENT_RATE_R8		0x40
+#define CODE_CURRENT_RATE_R9		0x3F
+#define CODE_CURRENT_RATE_R10		0x0F
 //
 #define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
 //
@@ -130,136 +130,136 @@ void LOGIC_Config()
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
-		case CURRENT_RATE_050:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_050;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_050];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_050_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_050_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_50_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_50_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_50_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_050_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_050_OFFSET];
+		case CURRENT_RATE_R0:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R0;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R0];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R0_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R0_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R0_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R0_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R0_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R0_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R0_OFFSET];
 			break;
 
-		case CURRENT_RATE_075:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_075;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_075];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_075_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_075_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_75_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_75_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_75_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_075_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_075_OFFSET];
+		case CURRENT_RATE_R1:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R1;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R1];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R1_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R1_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R1_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R1_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R1_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R1_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R1_OFFSET];
 			break;
 
-		case CURRENT_RATE_100:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_100;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_100];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_100_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_100_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_100_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_100_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_100_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_100_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_100_OFFSET];
+		case CURRENT_RATE_R2:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R2;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R2];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R2_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R2_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R2_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R2_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R2_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R2_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R2_OFFSET];
 			break;
 
-		case CURRENT_RATE_250:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_250;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_250];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_250_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_250_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_250_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_250_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_250_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_250_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_250_OFFSET];
+		case CURRENT_RATE_R3:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R3;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R3];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R3_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R3_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R3_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R3_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R3_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R3_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R3_OFFSET];
 			break;
 
-		case CURRENT_RATE_500:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_500;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_500];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_500_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_500_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_500_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_500_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_500_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_500_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_500_OFFSET];
+		case CURRENT_RATE_R4:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R4;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R4];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R4_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R4_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R4_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R4_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R4_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R4_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R4_OFFSET];
 			break;
 
-		case CURRENT_RATE_750:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_750;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_750];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_750_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_750_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_750_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_750_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_750_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_750_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_750_OFFSET];
+		case CURRENT_RATE_R5:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R5;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R5];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R5_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R5_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R5_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R5_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R5_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R5_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R5_OFFSET];
 			break;
 
-		case CURRENT_RATE_1000:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_1000;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1000];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_1000_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_1000_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_1000_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_1000_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_1000_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_1000_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_1000_OFFSET];
+		case CURRENT_RATE_R6:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R6;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R6];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R6_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R6_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R6_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R6_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R6_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R6_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R6_OFFSET];
 			break;
 
-		case CURRENT_RATE_1500:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_1500;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_1500];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_1500_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_1500_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_1500_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_1500_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_1500_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_1500_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_1500_OFFSET];
+		case CURRENT_RATE_R7:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R7;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R7];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R7_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R7_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R7_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R7_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R7_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R7_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R7_OFFSET];
 			break;
 
-		case CURRENT_RATE_2500:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_2500;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_2500];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_2500_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_2500_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_2500_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_2500_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_2500_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_2500_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_2500_OFFSET];
+		case CURRENT_RATE_R8:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R8;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R8];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R8_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R8_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R8_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R8_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R8_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R8_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R8_OFFSET];
 			break;
 
-		case CURRENT_RATE_3000:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_3000;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_3000];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_3000_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_3000_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_3000_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_3000_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_3000_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_3000_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_3000_OFFSET];
+		case CURRENT_RATE_R9:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R9;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R9];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R9_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R9_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R9_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R9_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R9_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R9_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R9_OFFSET];
 			break;
 
-		case CURRENT_RATE_5000:
-			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_5000;
-			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_5000];
-			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_5000_K] / 1000;
-			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_5000_OFFSET];
-			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_5000_P2] / 1e6;
-			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_5000_P1] / 1000;
-			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_5000_P0];
-			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_5000_K] / 1000;
-			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_5000_OFFSET];
+		case CURRENT_RATE_R10:
+			ConfigParams.CurrentRateCode = CODE_CURRENT_RATE_R10;
+			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R10];
+			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R10_K] / 1000;
+			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R10_OFFSET];
+			ConfigParams.PulseWidth_CTRL1_P2 = (float)(Int16S)DataTable[REG_CTRL1_R10_P2] / 1e6;
+			ConfigParams.PulseWidth_CTRL1_P1 = (float)DataTable[REG_CTRL1_R10_P1] / 1000;
+			ConfigParams.PulseWidth_CTRL1_P0 = (Int16S)DataTable[REG_CTRL1_R10_P0];
+			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R10_K] / 1000;
+			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R10_OFFSET];
 			break;
 
 		default:
