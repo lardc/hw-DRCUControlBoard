@@ -21,7 +21,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{V_BAT_THRESHOLD_MIN, V_BAT_THRESHOLD_MAX, V_BAT_THRESHOLD_DEF},						// 15
 		{MAXIMUM_UNIT_CURRENT_MIN, MAXIMUM_UNIT_CURRENT_MAX, MAXIMUM_UNIT_CURRENT_DEF},			// 16
 		{CONF_STATE_TIMEOUT_MIN, CONF_STATE_TIMEOUT_MAX, CONF_STATE_TIMEOUT_DEF},				// 17
-		{AFTER_PULSE_TIMEOUT_MIN, AFTER_PULSE_TIMEOUT_MAX, AFTER_PULSE_TIMEOUT_DEF},			// 18
+		{0,0,0},																				// 18
 		{false, true, false},																	// 19
 		{FAN_OPERATE_PERIOD_MIN, FAN_OPERATE_PERIOD_MAX, FAN_OPERATE_PERIOD_DEF},				// 20
 		{FAN_OPERATE_TIME_MIN, FAN_OPERATE_TIME_MAX, FAN_OPERATE_TIME_DEF},						// 21
@@ -40,8 +40,8 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, CTRL1_MAX_WIDTH_R9_MAX, CTRL1_MAX_WIDTH_R9_DEF},									// 34
 		{0, CTRL1_MAX_WIDTH_R10_MAX, CTRL1_MAX_WIDTH_R10_DEF},									// 35
 		{0, CTRL2_MAX_WIDTH_MAX, CTRL2_MAX_WIDTH_DEF},											// 36
-		{0, 0, 0},																				// 37
-		{0, 0, 0},																				// 38
+		{TQ_TIMEOUT_MIN, TQ_TIMEOUT_MAX, TQ_TIMEOUT_DEF},										// 37
+		{PULSE_DELAY_TQ_MIN, PULSE_DELAY_TQ_MAX, PULSE_DELAY_TQ_DEF},							// 38
 		{0, 0, 0},																				// 39
 		{0, 0, 0},																				// 40
 		{0, INT16U_MAX, I_TO_V_INTPS_OFFSET_DEF},												// 41

@@ -51,7 +51,8 @@ void CONTROL_RegistersReset();
 void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
-
+Int16U CONTROL_CalcPostPulseDelay();
+void CONTROL_CoolingProcess();
 // Functions
 //
 void CONTROL_Init()
@@ -167,6 +168,9 @@ void CONTROL_Idle()
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
 
+	// Unit cooling process
+	CONTROL_CoolingProcess();
+
 	// Control of device state
 	CONTROL_DeviceStateControl();
 
@@ -229,6 +233,46 @@ void CONTROL_HandleIntPSTune()
 		if(CONTROL_State != DS_None)
 			LL_IntPowerSupplyEn(false);
 }
+
+//-----------------------------------------------
+
+void CONTROL_CoolingProcess()
+{
+	static Int64U TimeoutCounter = 0;
+	static Int16U CurrentPulseCounter = 0;
+
+
+	// Задержка после импульса
+	if (CONTROL_SubState == SS_PostPulseDelay)
+	{
+		if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
+		{
+			CurrentPulseCounter++;
+			TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
+		}
+	}
+
+	// Если в течении времени REG_PULSE_DELAY_TQ_TIMEOUT не было нового формирвоания тока,
+	// то блок переходит в режим охлаждения
+	if (CONTROL_State == DS_Ready)
+	{
+		if(CONTROL_TimeCounter >= TimeoutCounter || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
+		{
+			CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
+			TimeoutCounter = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
+			CurrentPulseCounter = 0;
+		}
+	}
+
+	//Охлаждение блока
+	if (CONTROL_SubState == SS_Cooling)
+	{
+		if (CONTROL_TimeCounter >= TimeoutCounter)
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
+	}
+}
+
 //-----------------------------------------------
 
 void CONTROL_HandleBatteryCharge()
@@ -242,10 +286,7 @@ void CONTROL_HandleBatteryCharge()
 		LL_PowerOnSolidStateRelay(true);
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
-		{
-			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
-				CONTROL_SetDeviceState(DS_Ready, SS_None);
-		}
+			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
@@ -261,12 +302,18 @@ void CONTROL_StopProcess()
 {
 	LOGIC_ResetHWToDefaults(false);
 
-	CONTROL_AfterPulsePause = CONTROL_TimeCounter + DataTable[REG_AFTER_PULSE_PAUSE];
+	CONTROL_AfterPulsePause = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay();
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
 
 	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------
+Int16U CONTROL_CalcPostPulseDelay()
+{
+	float PulseDelayCoef = (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
+	return (UNIT_PULSE_DELAY_MIN + DataTable[REG_PULSE_DELAY_TQ] * PulseDelayCoef);
+}
+//------------------------------------------
 
 void CONTROL_RegistersReset()
 {

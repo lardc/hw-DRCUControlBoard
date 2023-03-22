@@ -37,6 +37,17 @@
 #define ADC_AVG_SAMPLES					5							// Количество точек усреднения
 // -----------------------------------------------
 
+// Параметры таймеров
+#define TIM2_3_MAX_VALUE				63630						// Максимальное значение таймеров
+#define TIM16_MAX_VALUE					58330
+
+//
+#define UNIT_TQ_MEASURE_PULSES			11							// (в импульсах) + 1
+#define UNIT_TQ_EXTRA_PULSES			15							// в импульсах
+#define UNIT_MAX_NUM_OF_PULSES			(UNIT_TQ_MEASURE_PULSES + UNIT_TQ_EXTRA_PULSES)	// в импульсах
+#define UNIT_PULSE_DELAY_MIN			500							// мс
+
+// Параметры внутреннего источника
 #define INTPS_VOLTAGE_MAX				1250.0f						// Максимальное напряжение внутреннего источника формирователя (В * 10)
 #define INTPS_VOLTAGE_MIN				900.0f						// Минимальное напряжение внутреннего источника формирователя (В * 10)
 
