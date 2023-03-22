@@ -20,7 +20,7 @@ float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U Re
 float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK)
 {
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
-	float K = (float)DataTable[RegisterK] / 1000;
+	float K = (float)DataTable[RegisterK] / 10000;
 	float result = ((float)ADC_Measure(ADC1, ADC1Channel) - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
 	return (result > 0) ? result : 0;
