@@ -23,7 +23,6 @@ typedef enum __SubState
 	SS_FallEdge			= 5,
 	SS_PostPulseDelay	= 6,
 	SS_Cooling			= 7,
-	SS_SyncWaiting		= 8
 } SubState;
 //
 typedef enum __DeviceState
