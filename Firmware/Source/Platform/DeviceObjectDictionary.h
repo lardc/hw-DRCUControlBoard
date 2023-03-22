@@ -170,7 +170,7 @@
 #define REG_FAILED_SUBSTATE						198		// Подстатус на котором возник фолт
 //
 #define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
-#define REG_INT_PS_VOLTAGE						201
+#define REG_INT_PS_VOLTAGE						201		// Напряжение источника формирователя, (в В х10)
 // -----------------------------
 #define REG_FWINFO_SLAVE_NID					256		// Device CAN slave node ID
 #define REG_FWINFO_MASTER_NID					257		// Device CAN master node ID (if presented)
