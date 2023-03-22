@@ -140,7 +140,9 @@
 //
 #define I_TO_V_INTPS_K_DEF				200
 #define I_TO_V_INTPS_OFFSET_DEF			1000
-
+//
+#define NO								0
+#define YES								1
 // Types
 //
 typedef struct __TableItemConstraint

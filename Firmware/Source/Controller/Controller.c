@@ -247,32 +247,38 @@ void CONTROL_CoolingProcess()
 	{
 		if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
 		{
-			CurrentPulseCounter++;
-			TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
+			if(!DataTable[REG_CALIBRATION_PROCESS])
+			{
+				CurrentPulseCounter++;
+				TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
+			}
+
 			CONTROL_SetDeviceState(DS_Ready, SS_None);
 		}
 	}
 
 	// Если в течении времени REG_PULSE_DELAY_TQ_TIMEOUT не было нового формирвоания тока,
 	// то блок переходит в режим охлаждения
-	if (CONTROL_State == DS_Ready)
+	if(!DataTable[REG_CALIBRATION_PROCESS])
 	{
-		if(CONTROL_TimeCounter >= TimeoutCounter || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
+		if (CONTROL_State == DS_Ready)
 		{
-			CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
-			TimeoutCounter = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
-			CurrentPulseCounter = 0;
+			if(CONTROL_TimeCounter >= TimeoutCounter || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
+			{
+				CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
+				TimeoutCounter = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
+				CurrentPulseCounter = 0;
+			}
+		}
+
+		//Охлаждение блока
+		if (CONTROL_SubState == SS_Cooling)
+		{
+			if (CONTROL_TimeCounter >= TimeoutCounter)
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
 		}
 	}
-
-	//Охлаждение блока
-	if (CONTROL_SubState == SS_Cooling)
-	{
-		if (CONTROL_TimeCounter >= TimeoutCounter)
-			CONTROL_SetDeviceState(DS_Ready, SS_None);
-	}
 }
-
 //-----------------------------------------------
 
 void CONTROL_HandleBatteryCharge()
@@ -311,7 +317,8 @@ void CONTROL_StopProcess()
 Int16U CONTROL_CalcPostPulseDelay()
 {
 	float PulseDelayCoef = (float)DataTable[REG_CURRENT_SETPOINT] / DataTable[REG_MAXIMUM_UNIT_CURRENT];
-	return (UNIT_PULSE_DELAY_MIN + DataTable[REG_PULSE_DELAY_TQ] * PulseDelayCoef);
+	return (DataTable[REG_CALIBRATION_PROCESS]) ? (UNIT_PULSE_DELAY_MIN + DataTable[REG_PULSE_DELAY_TQ]) :
+				(UNIT_PULSE_DELAY_MIN + DataTable[REG_PULSE_DELAY_TQ] * PulseDelayCoef);
 }
 //------------------------------------------
 
