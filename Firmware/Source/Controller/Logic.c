@@ -18,17 +18,17 @@
 
 // Definitions
 //
-#define CURRENT_RATE_R0				50
-#define CURRENT_RATE_R1 			75
-#define CURRENT_RATE_R2				100
-#define CURRENT_RATE_R3 			250
-#define CURRENT_RATE_R4				500
-#define CURRENT_RATE_R5				750
-#define CURRENT_RATE_R6				1000
-#define CURRENT_RATE_R7				1500
-#define CURRENT_RATE_R8				2500
-#define CURRENT_RATE_R9				3000
-#define CURRENT_RATE_R10			5000
+#define CURRENT_RATE_R0				0
+#define CURRENT_RATE_R1 			1
+#define CURRENT_RATE_R2				2
+#define CURRENT_RATE_R3 			3
+#define CURRENT_RATE_R4				4
+#define CURRENT_RATE_R5				5
+#define CURRENT_RATE_R6				6
+#define CURRENT_RATE_R7				7
+#define CURRENT_RATE_R8				8
+#define CURRENT_RATE_R9				9
+#define CURRENT_RATE_R10			10
 //
 #define CODE_CURRENT_RATE_OFF		0x7F
 #define CODE_CURRENT_RATE_R0		0x77

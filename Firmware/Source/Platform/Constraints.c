@@ -137,7 +137,7 @@ const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START]
 		{CURRENT_SETPOINT_MIN, CURRENT_SETPOINT_MAX, CURRENT_SETPOINT_DEF},						// 128
 		{CURRENT_RATE_MIN, CURRENT_RATE_MAX, CURRENT_RATE_DEF},									// 129
 		{0, INTPS_VOLTAGE_MAX, 0},																// 130
-		{0, 0, 0},																				// 131
+		{PULSE_WIDTH_MIN, PULSE_WIDTH_MAX, PULSE_WIDTH_DEF},									// 131
 		{0, 0, 0},																				// 132
 		{0, 0, 0},																				// 133
 		{0, 0, 0},																				// 134
