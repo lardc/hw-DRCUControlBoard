@@ -29,8 +29,8 @@
 #define REG_PULSE_TO_PULSE_DELAY_MAX
 //
 #define PULSE_WIDTH_MIN					10
-#define PULSE_WIDTH_MAX					50
-#define PULSE_WIDTH_DEF					30
+#define PULSE_WIDTH_MAX					100
+#define PULSE_WIDTH_DEF					100
 //
 #define GAIN_COEFFICIENT_MIN			1
 #define GAIN_COEFFICIENT_MAX			60000
