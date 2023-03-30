@@ -13,7 +13,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			10			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			7			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
@@ -90,6 +90,7 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
+			DataTable[REG_DBG_PULSE_CTRL2_WIDTH] = ConfigParams.PulseWidth_CTRL2;
 			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 
 			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;

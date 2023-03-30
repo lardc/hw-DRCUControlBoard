@@ -165,6 +165,7 @@
 #define REG_DBG2								151		// Отладочный регистр 2
 
 #define REG_DBG_PULSE_WIDTH						155		// Отладочный регистр для PulseWidth
+#define REG_DBG_PULSE_CTRL2_WIDTH				156		// Отладочный регистр длины CTRL2
 // -----------------------------------------------
 
 #define REG_DEV_STATE							192		// Статус работы блока

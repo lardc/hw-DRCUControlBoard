@@ -286,6 +286,7 @@ void LOGIC_Config()
 	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
+
 	// Тонкая подстройка
 	float I = TestCurrent;
 	I = I * I * ConfigParams.PulseWidth_CTRL1_P2 + I * ConfigParams.PulseWidth_CTRL1_P1 + ConfigParams.PulseWidth_CTRL1_P0;
@@ -306,12 +307,13 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 		PulseWidth = 0;
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
-	DataTable[REG_DBG_PULSE_WIDTH] = PulseWidth;
+
 }
 //-------------------------------------------
 
 void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
 {
+	DataTable[REG_DBG_PULSE_WIDTH] = PulseWidth;
 	TIM_Reset(TIM2);
 	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
 }
