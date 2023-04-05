@@ -36,6 +36,7 @@
 #define GAIN_COEFFICIENT_MAX			60000
 #define GAIN_COEFFICIENT_DEF			1000
 //
+
 #define INTPS_ADC_TO_V_K				45
 #define INTPS_ADC_TO_V_OFFSET			0
 //
@@ -142,6 +143,8 @@
 #define CTRL2_OFFSET_DEF				75
 #define CTRL2_K_DEF						813
 //
+#define I_TO_V_INTPS_K4_DEF				1000
+#define I_TO_V_INTPS_K2_DEF				0
 #define I_TO_V_INTPS_K_DEF				200
 #define I_TO_V_INTPS_OFFSET_DEF			1000
 //
