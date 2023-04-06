@@ -29,22 +29,21 @@ void INT_OutputLockCheck();
 //
 void EXTI9_5_IRQHandler()
 {
-	if (EXTI_FlagCheck(EXTI_6))
+	// Формирование переднего фронта импульса
+	if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
 	{
-		// Формирование переднего фронта импульса
-		if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
-		{
-			LL_IntPowerSupplyEn(false);
-			LL_OutputLock(false);
+		LL_IntPowerSupplyEn(false);
+		LL_OutputLock(false);
 
-			LOGIC_StartRiseEdge();
+		LOGIC_StartRiseEdge();
 
-			CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+		CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
 
-			CONTROL_HandleFanLogic(true);
-			CONTROL_HandleExternalLamp(true);
-		}
-
+		CONTROL_HandleFanLogic(true);
+		CONTROL_HandleExternalLamp(true);
+	}
+	else
+	{
 		// Формирование заднего фронта импульса
 		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
 		{
@@ -52,17 +51,15 @@ void EXTI9_5_IRQHandler()
 			SyncLineTimeCounter = 0;
 			LOGIC_StartFallEdge();
 		}
+	}
 
-		// Запуск импульса в отладочном режиме
-		if ((CONTROL_State == DS_None))
-		{
-			if (LL_ReadLineSync())
-				LOGIC_StartRiseEdge();
-			else
-			{
-				LOGIC_StartFallEdge();
-			}
-		}
+	// Запуск импульса в отладочном режиме
+	if ((CONTROL_State == DS_None))
+	{
+		if (LL_ReadLineSync())
+			LOGIC_StartRiseEdge();
+		else
+			LOGIC_StartFallEdge();
 	}
 
 	EXTI_FlagReset(EXTI_6);
@@ -71,9 +68,7 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-
 	TIMx_Process(TIM2, TIM_SR_CC3IF);
-
 }
 //-----------------------------------------
 
@@ -87,31 +82,18 @@ void TIM3_IRQHandler()
 
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 {
+	if (CONTROL_SubState == SS_RiseEdge)
+	{
+		CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
+		LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 
-	//if (TIM_InterruptEventFlagCheck(TIMx, Event))
-	//{
-		TIM_Stop(TIMx);
+		SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+	}
 
-		if (CONTROL_SubState == SS_RiseEdge)
-		{
+	if (CONTROL_SubState == SS_FallEdge)
+		CONTROL_StopProcess();
 
-
-
-			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-			DataTable[REG_DBG_PULSE_CTRL2_WIDTH] = ConfigParams.PulseWidth_CTRL2;
-			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
-
-			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
-		}
-
-		if (CONTROL_SubState == SS_FallEdge)
-		{
-			CONTROL_StopProcess();
-		}
-		TIM_InterruptEventFlagClear(TIMx, Event);
-	//}
-
+	TIM_InterruptEventFlagClear(TIMx, Event);
 }
 //-----------------------------------------
 

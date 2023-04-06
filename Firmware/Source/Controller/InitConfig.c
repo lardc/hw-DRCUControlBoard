@@ -61,7 +61,7 @@ void INITCFG_ConfigIO()
 	GPIO_InitAltFunction(GPIO_ALT_UART1_TX, AltFn_7);
 	GPIO_InitAltFunction(GPIO_ALT_SPI1_SCK, AltFn_5);
 	GPIO_InitAltFunction(GPIO_ALT_SPI1_DATA, AltFn_5);
-	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_6);
+	GPIO_InitAltFunction(GPIO_ALT_CTRL1, AltFn_2);
 	GPIO_InitAltFunction(GPIO_ALT_CTRL2, AltFn_1);
 	GPIO_InitAltFunction(GPIO_ALT_MCU_SYNC, AltFn_1);
 }
@@ -118,16 +118,15 @@ void INITCFG_ConfigTimer2_3()
 	TIM_Config(TIM2, SYSCLK, TIMER2_3_uS);
 	TIM_OnePulseMode(TIM2, true);
 	TIMx_PWM_ConfigChannel(TIM2, TIMx_CHANNEL3);
-	//TIM_InterruptEventConfig(TIM2, TIM_DIER_CC3IE, true);
+	TIM_InterruptEventConfig(TIM2, TIM_DIER_CC3IE, true);
 
 	// Timer3
-	TIM_Clock_En(TIM_1);
-	TIM_Config(TIM1, SYSCLK, TIMER2_3_uS);
-	TIM_OnePulseMode(TIM1, true);
-	TIMx_PWM_ConfigChannel(TIM1, TIMx_CHANNEL3);
-	//TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
-	TIM_Config(TIM1, SYSCLK, TIMER2_3_uS);
-
+	TIM_Clock_En(TIM_3);
+	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
+	TIM_OnePulseMode(TIM3, true);
+	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
+	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
+	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
 }
 //------------------------------------------------------------------------------
 

@@ -300,10 +300,6 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 
 void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
 {
-	if (PulseWidth != 0)
-	{
-	DataTable[REG_DBG_PULSE_WIDTH] = PulseWidth;
-	}
 	TIM_Reset(TIM2);
 	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
 }
@@ -317,11 +313,9 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
-	//TIM_Stop(TIM3);
 	LOGIC_SofwarePulseStart(false);
 	TIM_Start(TIM2);
 	LOGIC_VariablePulseRateConfig(0, 0);
-
 }
 //-------------------------------------------
 
