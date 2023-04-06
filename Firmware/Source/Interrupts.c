@@ -21,7 +21,6 @@ volatile Int64U SyncLineTimeCounter = 0;
 
 // Functions prototypes
 //
-void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
 void INT_SyncWidthControl();
 void INT_OutputLockCheck();
 
@@ -73,7 +72,7 @@ void TIM2_IRQHandler()
 	if (CONTROL_SubState == SS_FallEdge)
 		CONTROL_StopProcess();
 
-	TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC3IF);
+	TIM_InterruptEventFlagClear(TIM2, TIM_SR_CC3IF);
 }
 //-----------------------------------------
 
@@ -90,16 +89,6 @@ void TIM3_IRQHandler()
 	}
 
 	TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC4IF);
-}
-//-----------------------------------------
-
-void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
-{
-
-
-
-
-	TIM_InterruptEventFlagClear(TIMx, Event);
 }
 //-----------------------------------------
 
