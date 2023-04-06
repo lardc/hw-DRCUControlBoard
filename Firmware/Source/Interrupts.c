@@ -68,20 +68,19 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-	TIMx_Process(TIM2, TIM_SR_CC3IF);
+	TIM_Stop(TIM2);
+
+	if (CONTROL_SubState == SS_FallEdge)
+		CONTROL_StopProcess();
+
+	TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC3IF);
 }
 //-----------------------------------------
 
 void TIM3_IRQHandler()
 {
-	GPIO_SetState(GPIO_LED, true);
-	TIMx_Process(TIM3, TIM_SR_CC4IF);
-	GPIO_SetState(GPIO_LED, false);
-}
-//-----------------------------------------
+	TIM_Stop(TIM3);
 
-void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
-{
 	if (CONTROL_SubState == SS_RiseEdge)
 	{
 		CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
@@ -90,8 +89,15 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 		SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
 	}
 
-	if (CONTROL_SubState == SS_FallEdge)
-		CONTROL_StopProcess();
+	TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC4IF);
+}
+//-----------------------------------------
+
+void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
+{
+
+
+
 
 	TIM_InterruptEventFlagClear(TIMx, Event);
 }
