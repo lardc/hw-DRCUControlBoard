@@ -92,6 +92,17 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 	switch (ActionID)
 	{
+		case 10:
+			TIM_Reset(TIM16);
+			TIM_Reset(TIM1);
+			TIM_Reset(TIM2);
+			TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, 1000);
+			TIMx_PWM_SetValue(TIM1, TIMx_CHANNEL3, 1000);
+			TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, 1000);
+			TIM_Start(TIM16);
+			TIM_Start(TIM1);
+			TIM_Start(TIM2);
+			break;
 		case ACT_ENABLE_POWER:
 			if(CONTROL_State == DS_None)
 			{

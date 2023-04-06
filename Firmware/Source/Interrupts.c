@@ -71,36 +71,47 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
+
 	TIMx_Process(TIM2, TIM_SR_CC3IF);
+
 }
 //-----------------------------------------
 
 void TIM3_IRQHandler()
 {
+	GPIO_SetState(GPIO_LED, true);
 	TIMx_Process(TIM3, TIM_SR_CC4IF);
+	GPIO_SetState(GPIO_LED, false);
 }
 //-----------------------------------------
 
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 {
-	if (TIM_InterruptEventFlagCheck(TIMx, Event))
-	{
+
+	//if (TIM_InterruptEventFlagCheck(TIMx, Event))
+	//{
 		TIM_Stop(TIMx);
 
 		if (CONTROL_SubState == SS_RiseEdge)
 		{
+
+
+
 			CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
 			DataTable[REG_DBG_PULSE_CTRL2_WIDTH] = ConfigParams.PulseWidth_CTRL2;
 			LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 
 			SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
 		}
 
 		if (CONTROL_SubState == SS_FallEdge)
+		{
 			CONTROL_StopProcess();
-
+		}
 		TIM_InterruptEventFlagClear(TIMx, Event);
-	}
+	//}
+
 }
 //-----------------------------------------
 
@@ -143,7 +154,7 @@ void TIM7_IRQHandler()
 		CONTROL_TimeCounter++;
 		if (++LED_BlinkTimeCounter > TIME_LED_BLINK)
 		{
-			LL_ToggleBoardLED();
+			//LL_ToggleBoardLED();
 			LED_BlinkTimeCounter = 0;
 		}
 
