@@ -29,7 +29,7 @@ void INT_OutputLockCheck();
 void EXTI9_5_IRQHandler()
 {
 	// Формирование переднего фронта импульса
-	if (CONTROL_State == DS_ConfigReady)
+	if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
 	{
 		LL_IntPowerSupplyEn(false);
 		LL_OutputLock(false);
@@ -44,7 +44,7 @@ void EXTI9_5_IRQHandler()
 	else
 	{
 		// Формирование заднего фронта импульса
-		if(CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)
+		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 			SyncLineTimeCounter = 0;
@@ -83,7 +83,6 @@ void TIM3_IRQHandler()
 	if (CONTROL_SubState == SS_RiseEdge)
 	{
 		CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-		LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 
 		SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
 	}

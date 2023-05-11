@@ -280,6 +280,7 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
+	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 }
 //-------------------------------------------
 
@@ -302,6 +303,7 @@ void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth)
 {
 	TIM_Reset(TIM2);
 	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
+	TIM2->CNT = PulseWidth;
 }
 //-------------------------------------------
 
@@ -313,7 +315,9 @@ void LOGIC_StartRiseEdge()
 
 void LOGIC_StartFallEdge()
 {
+	TIM_Stop(TIM3);
 	LOGIC_SofwarePulseStart(false);
+	TIM_Reset(TIM2);
 	TIM_Start(TIM2);
 	LOGIC_VariablePulseRateConfig(0, 0);
 }
