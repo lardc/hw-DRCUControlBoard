@@ -13,7 +13,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			7			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			2			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //
@@ -29,7 +29,7 @@ void INT_OutputLockCheck();
 void EXTI9_5_IRQHandler()
 {
 	// Формирование переднего фронта импульса
-	if (LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
+	if (CONTROL_State == DS_ConfigReady)
 	{
 		LL_IntPowerSupplyEn(false);
 		LL_OutputLock(false);
@@ -44,7 +44,7 @@ void EXTI9_5_IRQHandler()
 	else
 	{
 		// Формирование заднего фронта импульса
-		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
+		if(CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 			SyncLineTimeCounter = 0;
