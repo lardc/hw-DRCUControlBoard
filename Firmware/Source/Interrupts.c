@@ -13,7 +13,7 @@
 
 // Definitions
 //
-#define WIDTH_SYNC_LINE_MAX			2			// Максимальная длительность импульса синхронизации, мс
+#define WIDTH_SYNC_LINE_MAX			3			// Максимальная длительность импульса синхронизации, мс
 
 // Variables
 //

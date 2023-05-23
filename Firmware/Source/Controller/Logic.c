@@ -135,7 +135,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R0];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R0_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R0_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R0_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R0_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R0_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R0_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R0_OFFSET];
@@ -146,7 +146,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R1];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R1_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R1_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R1_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R1_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R1_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R1_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R1_OFFSET];
@@ -157,7 +157,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R2];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R2_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R2_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R2_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R2_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R2_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R2_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R2_OFFSET];
@@ -168,7 +168,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R3];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R3_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R3_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R3_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R3_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R3_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R3_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R3_OFFSET];
@@ -179,7 +179,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R4];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R4_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R4_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R4_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R4_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R4_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R4_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R4_OFFSET];
@@ -190,7 +190,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R5];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R5_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R5_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R5_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R5_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R5_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R5_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R5_OFFSET];
@@ -201,7 +201,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R6];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R6_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R6_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R6_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R6_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R6_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R6_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R6_OFFSET];
@@ -212,7 +212,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R7];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R7_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R7_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R7_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R7_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R7_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R7_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R7_OFFSET];
@@ -223,7 +223,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R8];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R8_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R8_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R8_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R8_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R8_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R8_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R8_OFFSET];
@@ -234,7 +234,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R9];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R9_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R9_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R9_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R9_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R9_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R9_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R9_OFFSET];
@@ -245,7 +245,7 @@ void LOGIC_Config()
 			ConfigParams.MaxPulseWidth_CTRL1 = DataTable[REG_CTRL1_MAX_WIDTH_R10];
 			ConfigParams.PulseWidth_CTRL1_K = (float)DataTable[REG_CTRL1_R10_K] / 1000;
 			ConfigParams.PulseWidth_CTRL1_Offset = (Int16S)DataTable[REG_CTRL1_R10_OFFSET];
-			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R10_K4] * 1e7;
+			ConfigParams.IntPsVoltageK4 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R10_K4] * 1000;
 			ConfigParams.IntPsVoltageK2 = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R10_K2] / 1e6;
 			ConfigParams.IntPsVoltageK = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_R10_K] / 1000;
 			ConfigParams.IntPsVoltageOffset = (Int16S)DataTable[REG_I_TO_V_INTPS_R10_OFFSET];
@@ -260,7 +260,7 @@ void LOGIC_Config()
 	if(DataTable[REG_V_INTPS_SETPOINT])
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / TestCurrent + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
 
