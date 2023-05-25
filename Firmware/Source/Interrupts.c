@@ -136,13 +136,9 @@ void TIM6_DAC_IRQHandler()
 {
 	if (TIM_StatusCheck(TIM6))
 	{
-		// Выкл. формирователя
-		LL_FlipLineRCK();
-		LL_OutputLock(true);
-
 		if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
 			DataTable[REG_WARNING] = WARNING_SYNC;
-
+		LOGIC_StartFallEdge();
 		TIM_StatusClear(TIM6);
 		TIM_Stop(TIM6);
 	}
