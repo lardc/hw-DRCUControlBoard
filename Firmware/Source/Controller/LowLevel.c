@@ -95,9 +95,9 @@ void LL_ExtRegWriteData(Int16U Data)
 
 void LL_FlipLineRCK()
 {
-	DELAY_US(10);
+	//DELAY_US(10);
 	GPIO_SetState(GPIO_SPI_RCK, true);
-	DELAY_US(10);
+	//DELAY_US(10);
 	GPIO_SetState(GPIO_SPI_RCK, false);
 }
 //------------------------------------------------------------------------------
