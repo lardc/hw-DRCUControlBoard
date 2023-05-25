@@ -116,9 +116,6 @@ void LOGIC_Config()
 {
 	float CurrentTemp;
 
-	DEVPROFILE_ResetScopes(0);
-	DEVPROFILE_ResetEPReadState();
-
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
 

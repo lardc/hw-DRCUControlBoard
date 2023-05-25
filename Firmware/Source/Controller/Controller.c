@@ -32,9 +32,6 @@ volatile DeviceState CONTROL_State = DS_None;
 volatile SubState CONTROL_SubState = SS_None;
 static Boolean CycleActive = false;
 //
-volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
-volatile Int16U CONTROL_Values_Counter = 0;
-//
 volatile Int64U CONTROL_TimeCounter = 0;
 Int64U CONTROL_BatteryChargeTimeCounter = 0;
 Int64U CONTROL_DeviceStateTimeCounter = 0;
@@ -57,12 +54,6 @@ void CONTROL_CoolingProcess();
 //
 void CONTROL_Init()
 {
-	// Переменные для конфигурации EndPoint
-	Int16U EPIndexes[EP_COUNT] = { EP_DUT_I };
-	Int16U EPSized[EP_COUNT] = { VALUES_x_SIZE };
-	pInt16U EPCounters[EP_COUNT] = { (pInt16U)&CONTROL_Values_Counter };
-	pInt16U EPDatas[EP_COUNT] = { (pInt16U)CONTROL_Values_DUTCurrent };
-
 	// Конфигурация сервиса работы Data-table и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
 	// Инициализация data table
@@ -70,7 +61,6 @@ void CONTROL_Init()
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
 	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
-	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
 	// Сброс значений
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults(true);

@@ -172,11 +172,6 @@
 #define REG_FWINFO_STR_BEGIN					261		// Begining of the information string record
 
 
-// ENDPOINTS
-//
-#define EP_DUT_I								1		// Оцифрованные данные тока DUT (в мА)
-
-
 // FAULT & DISABLE
 //
 #define DF_NONE									0

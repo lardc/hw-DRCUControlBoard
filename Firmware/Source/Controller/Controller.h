@@ -40,9 +40,6 @@ typedef enum __DeviceState
 //
 extern volatile Int64U CONTROL_TimeCounter;
 //
-extern volatile Int16U CONTROL_Values_DUTCurrent[];
-extern volatile Int16U CONTROL_Values_Counter;
-//
 extern volatile DeviceState CONTROL_State;
 extern volatile SubState CONTROL_SubState;
 
