@@ -54,12 +54,10 @@ struct __ConfigParamsStruct ConfigParams;
 
 // Varibales
 //
-volatile Int16U LOGIC_DUTCurrentRaw[ADC_AVG_SAMPLES];
 float TestCurrent = 0;
 
 // Forward functions
 //
-int MEASURE_SortCondition(const void *A, const void *B);
 void LOGIC_SetCurrentRangeRate(Int16U Code);
 void LOGIC_CurrentSourceTurnOff();
 
@@ -74,7 +72,6 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
-	MEASURE_HighSpeedStart(false);
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
@@ -328,31 +325,6 @@ void LOGIC_SofwarePulseStart(bool Start)
 	LL_SW_Trig(Start);
 }
 //-------------------------------------------
-
-void LOGIC_HandleAdcSamples()
-{
-	float AvgData = 0;
-	float Current;
-
-	// Сохранение усредненного результата
-	for (int i = 0; i < ADC_AVG_SAMPLES; ++i)
-		AvgData += LOGIC_DUTCurrentRaw[i];
-
-	Current = MEASURE_ConvertCurrent(AvgData / ADC_AVG_SAMPLES);
-
-	if (CONTROL_Values_Counter < VALUES_x_SIZE)
-	{
-		CONTROL_Values_DUTCurrent[CONTROL_Values_Counter] = Current * 10;
-		CONTROL_Values_Counter++;
-	}
-}
-//-------------------------------------------
-
-int MEASURE_SortCondition(const void *A, const void *B)
-{
-	return (int)(*(Int16U *)A) - (int)(*(Int16U *)B);
-}
-//-----------------------------------------
 
 void CONTROL_HandleFanLogic(bool IsImpulse)
 {

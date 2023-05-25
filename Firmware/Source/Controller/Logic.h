@@ -40,7 +40,6 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage);
 void LOGIC_Config();
 void LOGIC_StartFallEdge();
 void LOGIC_StartRiseEdge();
-void LOGIC_HandleAdcSamples();
 void CONTROL_HandleFanLogic(bool IsImpulse);
 void CONTROL_HandleExternalLamp(bool IsImpulse);
 

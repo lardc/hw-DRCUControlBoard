@@ -7,8 +7,5 @@
 //
 float MEASURE_BatteryVoltage();
 float MEASURE_IntPSVoltage();
-void MEASURE_HighSpeedStart(bool State);
-float MEASURE_ConvertCurrent(Int16U ADCValue);
-Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0);
 
 #endif // __MEASUREMENT_H
