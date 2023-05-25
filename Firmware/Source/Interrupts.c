@@ -138,7 +138,7 @@ void TIM6_DAC_IRQHandler()
 	{
 		if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
 			DataTable[REG_WARNING] = WARNING_SYNC;
-		LOGIC_StartFallEdge();
+		CONTROL_StopProcess();
 		TIM_StatusClear(TIM6);
 		TIM_Stop(TIM6);
 	}
