@@ -317,12 +317,12 @@ void CONTROL_HandleBatteryCharge()
 
 void CONTROL_StopProcess()
 {
+	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+
 	LOGIC_ResetHWToDefaults(false);
 
 	CONTROL_AfterPulsePause = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay();
 	CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
-
-	CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 }
 //-----------------------------------------------
 Int16U CONTROL_CalcPostPulseDelay()

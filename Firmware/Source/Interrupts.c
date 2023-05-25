@@ -11,18 +11,11 @@
 #include "InitConfig.h"
 #include "DataTable.h"
 
-// Definitions
-//
-#define WIDTH_SYNC_LINE_MAX			3			// Максимальная длительность импульса синхронизации, мс
-
-// Variables
-//
-volatile Int64U SyncLineTimeCounter = 0;
 
 // Functions prototypes
 //
-void INT_SyncWidthControl();
 void INT_OutputLockCheck();
+void INT_ActivateProtection();
 
 // Functions
 //
@@ -40,6 +33,7 @@ void EXTI9_5_IRQHandler()
 
 		CONTROL_HandleFanLogic(true);
 		CONTROL_HandleExternalLamp(true);
+		INT_ActivateProtection();
 	}
 	else
 	{
@@ -47,7 +41,6 @@ void EXTI9_5_IRQHandler()
 		if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-			SyncLineTimeCounter = 0;
 			LOGIC_StartFallEdge();
 		}
 	}
@@ -81,11 +74,7 @@ void TIM3_IRQHandler()
 	TIM_Stop(TIM3);
 
 	if (CONTROL_SubState == SS_RiseEdge)
-	{
 		CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
-
-		SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-	}
 
 	TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC4IF);
 }
@@ -137,24 +126,26 @@ void TIM7_IRQHandler()
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
 		INT_OutputLockCheck();
-		INT_SyncWidthControl();
 
 		TIM_StatusClear(TIM7);
 	}
 }
 //-----------------------------------------
 
-void INT_SyncWidthControl()
+void TIM6_IRQHandler()
 {
-	if(SyncLineTimeCounter && (CONTROL_TimeCounter >= SyncLineTimeCounter))
+	if (TIM_StatusCheck(TIM6))
 	{
 		// Выкл. формирователя
-		LL_OutputLock(true);
 		LL_FlipLineRCK();
+		LL_OutputLock(true);
 
-		SyncLineTimeCounter = 0;
+		if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
+			DataTable[REG_WARNING] = WARNING_SYNC;
 
-		CONTROL_SwitchToFault(DF_SYNC);
+		TIM_Stop(TIM6);
+		TIM_Reset(TIM6);
+		TIM_StatusClear(TIM6);
 	}
 }
 //-----------------------------------------
@@ -167,8 +158,13 @@ void INT_OutputLockCheck()
 																		&& (CONTROL_SubState != SS_Plate))
 		{
 			LL_OutputLock(true);
-			SyncLineTimeCounter = 0;
 		}
 	}
+}
+//-----------------------------------------
+
+void INT_ActivateProtection()
+{
+	TIM_Start(TIM6);
 }
 //-----------------------------------------
