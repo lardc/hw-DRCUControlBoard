@@ -132,17 +132,20 @@ void TIM7_IRQHandler()
 }
 //-----------------------------------------
 
-void TIM6_IRQHandler()
+void TIM6_DAC_IRQHandler()
 {
-	// Выкл. формирователя
-	LL_FlipLineRCK();
-	LL_OutputLock(true);
+	if (TIM_StatusCheck(TIM6))
+	{
+		// Выкл. формирователя
+		LL_FlipLineRCK();
+		LL_OutputLock(true);
 
-	if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
-		DataTable[REG_WARNING] = WARNING_SYNC;
+		if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
+			DataTable[REG_WARNING] = WARNING_SYNC;
 
-	TIM_StatusClear(TIM6);
-	TIM_Stop(TIM6);
+		TIM_StatusClear(TIM6);
+		TIM_Stop(TIM6);
+	}
 }
 //-----------------------------------------
 
