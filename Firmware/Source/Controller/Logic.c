@@ -125,6 +125,9 @@ void LOGIC_Config()
 
 	// Кеширование переменных
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET];
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1000;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e6;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -259,8 +262,13 @@ void LOGIC_Config()
 	if(DataTable[REG_V_INTPS_SETPOINT])
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
-
+	{
+		float IntPsVoltage;
+		//Напряжение по внутренним коэффицентам
+		IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+		// Корректировка напряжения по внешним коэффицентам
+		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK2_Ext * IntPsVoltage * IntPsVoltage  + ConfigParams.IntPsVoltageK_Ext * IntPsVoltage + ConfigParams.IntPsVoltageOffset_Ext;
+	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
 
@@ -274,8 +282,7 @@ void LOGIC_Config()
 	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	float I = TestCurrent;
-	ConfigParams.PulseWidth_CTRL1 = (Int16U)((I + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
 	if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
 		ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;

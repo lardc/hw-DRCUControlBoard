@@ -20,6 +20,9 @@ struct __ConfigParamsStruct
 	float IntPsVoltageK2;
 	float IntPsVoltageK;
 	Int16S IntPsVoltageOffset;
+	Int16S IntPsVoltageOffset_Ext;
+	float IntPsVoltageK_Ext;
+	float IntPsVoltageK2_Ext;
 };
 extern struct __ConfigParamsStruct ConfigParams;
 
