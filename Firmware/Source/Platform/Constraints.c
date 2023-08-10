@@ -138,11 +138,11 @@ const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START]
 		{CURRENT_RATE_MIN, CURRENT_RATE_MAX, CURRENT_RATE_DEF},									// 129
 		{0, INTPS_VOLTAGE_MAX, 0},																// 130
 		{PULSE_WIDTH_MIN, PULSE_WIDTH_MAX, PULSE_WIDTH_DEF},									// 131
-		{0, 0, 0},																				// 132
-		{0, 0, 0},																				// 133
-		{0, 0, 0},																				// 134
-		{0, 0, 0},																				// 135
-		{0, 0, 0},																				// 136
+		{0, INT16U_MAX, I_TO_V_INTPS_EXT_OFFSET_DEF},											// 132
+		{0, INT16U_MAX, I_TO_V_INTPS_EXT_K_DEF},												// 133
+		{0, INT16U_MAX, I_TO_V_INTPS_EXT_K2_DEF},												// 134
+		{0, INT16U_MAX, CTRL1_EXT_OFFSET_DEF},													// 135
+		{0, INT16U_MAX, CTRL1_EXT_K_DEF},														// 136
 		{0, 0, 0},																				// 137
 		{0, 0, 0},																				// 138
 		{0, 0, 0},																				// 139
