@@ -263,8 +263,9 @@ void LOGIC_Config()
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
 	{
-		//Напряжение по  коэффицентам
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset + (ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
+		//Напряжение по коэффицентам
+		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext * TestCurrent * TestCurrent) + ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
+		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK  + ConfigParams.IntPsVoltageOffset + EXTRate;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
