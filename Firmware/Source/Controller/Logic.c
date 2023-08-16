@@ -123,7 +123,7 @@ void LOGIC_Config()
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET];
 	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1000;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e6;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] * 1000;
 	ConfigParams.PulseWidth_CTRL1_Offset_Ext = (Int16S)DataTable[REG_CTRL1_EXT_OFFSET];
 	ConfigParams.PulseWidth_CTRL1_K_Ext = (float)(Int16S)DataTable[REG_CTRL1_EXT_K] / 1000;
 
@@ -261,7 +261,7 @@ void LOGIC_Config()
 	else
 	{
 		//Напряжение по коэффицентам
-		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext * TestCurrent * TestCurrent) + ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
+		float EXTRate = ((TestCurrent / ConfigParams.IntPsVoltageK2_Ext) + ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
 		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK  + ConfigParams.IntPsVoltageOffset + EXTRate;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
@@ -277,8 +277,8 @@ void LOGIC_Config()
 	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	// Амплитуда тока по внутренним коэффицентам
-	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + (ConfigParams.PulseWidth_CTRL1_Offset + ConfigParams.PulseWidth_CTRL1_Offset_Ext)) * ConfigParams.PulseWidth_CTRL1_K * ConfigParams.PulseWidth_CTRL1_K_Ext);
+	// Амплитуда тока по коэффицентам
+	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K * ConfigParams.PulseWidth_CTRL1_K_Ext + ConfigParams.PulseWidth_CTRL1_Offset_Ext);
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
