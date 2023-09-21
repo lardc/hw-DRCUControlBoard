@@ -7,5 +7,6 @@
 //
 float MEASURE_BatteryVoltage();
 float MEASURE_IntPSVoltage();
+Int16U MEASURE_ConvertValxtoDAC();
 
 #endif // __MEASUREMENT_H

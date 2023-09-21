@@ -20,6 +20,7 @@
 #define ACT_DBG_SYNC							58		// Отладочный режим - формирование импульса синхронизации
 #define ACT_DBG_EXT_REG_WRITE_DATA				59		// Отладочный режим - запись данных во внешний регистр
 #define ACT_DBG_GENERATE_PULSE					60		// Отладочный режим - формирование импульса
+#define ACT_DBG_REVERS_V_COMPENSATION			61		// отладочный режим - формирование отрицательного напряжения
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск
@@ -142,6 +143,8 @@
 #define REG_CTRL1_R10_K							105		// Коэффициент грубой подстройки тока при скрости спада (скорость 10)
 #define REG_CTRL2_OFFSET						106		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								107		// Коэффициент грубой подстройки тока
+//
+#define REG_V_TO_DAC_OFFSET						120		// Смещение обратного напряжения в В*10
 //
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс

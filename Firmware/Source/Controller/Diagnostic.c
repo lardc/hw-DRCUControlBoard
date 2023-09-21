@@ -54,6 +54,10 @@ bool DIAG_HandleDiagnosticAction(Int16U ActionID, Int16U *pUserError)
 			DBGACT_GeneratePulse();
 			break;
 
+		case ACT_DBG_REVERS_V_COMPENSATION:
+			DBGACT_ReversVCompensation();
+			break;
+
 		default:
 			return false;
 	}

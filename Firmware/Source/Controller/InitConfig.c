@@ -39,6 +39,7 @@ void INITCFG_ConfigIO()
 	//
 	
 	// Выходы
+	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_LOCK);
@@ -98,6 +99,17 @@ void INITCFG_ConfigUART()
 void INITCFG_ConfigSPI()
 {
 	SPI_Init8b(SPI1, 7, false);
+}
+//------------------------------------------------------------------------------
+
+void INITCFG_ConfigDAC()
+{
+	DAC_ClkEnable(DAC1);
+	DAC_Reset(DAC1);
+	DAC_EnableCh1(DAC1);
+	DAC_BufferCh1(DAC1, true);
+	DAC_TriggerConfigCh1(DAC1, TRIG1_SOFTWARE, TRIG1_ENABLE);
+	DAC_SetValueCh1(DAC1, 0);
 }
 //------------------------------------------------------------------------------
 

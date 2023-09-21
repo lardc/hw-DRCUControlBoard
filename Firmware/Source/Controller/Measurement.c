@@ -50,3 +50,10 @@ float MEASURE_IntPSVoltage()
 	return (DataSum / MEASURE_FILTER_SIZE);
 }
 //------------------------------------------------------------------------------
+
+Int16U MEASURE_ConvertValxtoDAC()
+{
+		float Offset = (float)((Int16S)DataTable[REG_V_TO_DAC_OFFSET]);
+
+		return Offset;
+}

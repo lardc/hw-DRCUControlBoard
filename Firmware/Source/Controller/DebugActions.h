@@ -18,5 +18,6 @@ void DBGACT_OutputLockControl();
 void DBGACT_Sync();
 void DBGACT_ExtRegWriteData();
 void DBGACT_GeneratePulse();
+void DBGACT_ReversVCompensation();
 
 #endif //__DEBUGACTIONS_H

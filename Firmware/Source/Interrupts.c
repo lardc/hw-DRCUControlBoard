@@ -26,6 +26,7 @@ void EXTI9_5_IRQHandler()
 	{
 		LL_IntPowerSupplyEn(false);
 		LL_OutputLock(false);
+		LL_ReversVCompensation(false);
 
 		LOGIC_StartRiseEdge();
 
@@ -42,6 +43,7 @@ void EXTI9_5_IRQHandler()
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 			LOGIC_StartFallEdge();
+			LL_ReversVCompensation(true);
 		}
 	}
 

@@ -61,6 +61,12 @@ void LL_PowerOnSolidStateRelay(bool State)
 }
 //------------------------------------------------------------------------------
 
+void LL_ReversVCompensation(bool State)
+{
+	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
+}
+//------------------------------------------------------------------------------
+
 void LL_OutputLock(bool State)
 {
 	GPIO_SetState(GPIO_OUTPUT_LOCK, State);

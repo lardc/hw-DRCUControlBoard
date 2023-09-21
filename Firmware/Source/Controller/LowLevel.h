@@ -13,6 +13,7 @@ void LL_FAN(bool State);
 void LL_SW_Trig(bool Start);
 void LL_PowerOnMechRelay(bool State);
 void LL_PowerOnSolidStateRelay(bool State);
+void LL_ReversVCompensation(bool State);
 void LL_OutputLock(bool State);
 void LL_IntPowerSupplyEn(bool State);
 void LL_OverVoltageProtectionReset();

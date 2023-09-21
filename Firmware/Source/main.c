@@ -30,6 +30,9 @@ int main()
 	// SPI config
 	INITCFG_ConfigSPI();
 
+	// Настройка ЦАПа
+	INITCFG_ConfigDAC();
+
 	// Настройка Timer7 общего назначения
 	INITCFG_ConfigTimer7();
 

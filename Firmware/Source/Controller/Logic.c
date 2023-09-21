@@ -72,6 +72,7 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
+	LL_ReversVCompensation(true);
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
@@ -95,6 +96,12 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 }
 //-------------------------------------------
 
+void LOGIC_SetReversVoltage()
+{
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC());
+	DAC_ForceSWTrigCh1(DAC1);
+}
+//-------------------------------------------
 // Включение заряда батареи
 void LOGIC_BatteryCharge(bool State)
 {
@@ -321,6 +328,7 @@ void LOGIC_StartFallEdge()
 	TIM_Reset(TIM2);
 	TIM_Start(TIM2);
 	LOGIC_VariablePulseRateConfig(0, 0);
+
 }
 //-------------------------------------------
 
