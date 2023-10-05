@@ -336,6 +336,13 @@ void LOGIC_StartFallEdge()
 	LL_OutputCompensation(false);
 }
 //-------------------------------------------
+void LOGIC_StopFallEdge()
+{
+	TIM_Stop(TIM3);
+	TIM_Reset(TIM3);
+	LL_OutputLock(true);
+}
+//-------------------------------------------
 
 void LOGIC_SofwarePulseStart(bool Start)
 {

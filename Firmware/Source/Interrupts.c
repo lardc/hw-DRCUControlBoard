@@ -74,8 +74,14 @@ void EXTI9_5_IRQHandler()
 
 				LOGIC_StartFallEdge();
 				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-
 			}
+			// Остановка заднего фронта импульса
+			if((LL_ReadLineSync()) && (CONTROL_SubState == SS_FallEdge))
+			{
+				LOGIC_StopFallEdge();
+				CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+			}
+
 		}
 
 		// Запуск импульса в отладочном режиме

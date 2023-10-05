@@ -41,6 +41,7 @@ void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage);
 void LOGIC_VariablePulseRateConfig(Int16U PulseWidth);
 void LOGIC_Config();
 void LOGIC_StartFallEdge();
+void LOGIC_StopFallEdge();
 void LOGIC_StartRiseEdge();
 Int16U LOGIC_ExctractCurrentValue();
 void LOGIC_HandleAdcSamples();
