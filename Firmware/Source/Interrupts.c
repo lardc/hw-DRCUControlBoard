@@ -46,6 +46,7 @@ void EXTI9_5_IRQHandler()
 		{
 			if(LL_ReadLineSync())
 			{
+				LL_PulseEn(true);
 				DELAY_US(50);
 
 				// Формирование переднего фронта импульса
@@ -82,6 +83,11 @@ void EXTI9_5_IRQHandler()
 				CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
 			}
 
+			if(CONTROL_SubState == SS_PostPulseDelay)
+			{
+
+				LL_PulseEn(false);
+			}
 		}
 
 		// Запуск импульса в отладочном режиме
@@ -134,14 +140,14 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 }
 //-----------------------------------------
 
-void EXTI15_10_IRQHandler()
-{
-	if (EXTI_FlagCheck(EXTI_13))
-	{
-		CONTROL_SwitchToFault(DF_PROTECTION);
-		EXTI_FlagReset(EXTI_13);
-	}
-}
+//void EXTI15_10_IRQHandler()
+//{
+//	if (EXTI_FlagCheck(EXTI_13))
+//	{
+//		CONTROL_SwitchToFault(DF_PROTECTION);
+//		EXTI_FlagReset(EXTI_13);
+//	}
+//}
 //-----------------------------------------
 
 void USART1_IRQHandler()

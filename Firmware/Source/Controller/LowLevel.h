@@ -22,5 +22,6 @@ void LL_IntPowerSupplyDischarge(bool State);
 void LL_ExtRegWriteData(Int16U Data);
 bool LL_ReadLineSync();
 void LL_FlipLineRCK();
+void LL_PulseEn(bool State);
 
 #endif //__LOWLEVEL_H

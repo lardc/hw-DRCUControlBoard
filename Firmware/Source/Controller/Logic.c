@@ -73,11 +73,13 @@ void LOGIC_CurrentSourceTurnOff();
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
+	LL_PulseEn(false);
 	LOGIC_SofwarePulseStart(false);
 	LOGIC_CurrentSourceTurnOff();
 
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
+
 
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
@@ -287,6 +289,7 @@ void LOGIC_Config()
 
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
 	LOGIC_SetCompensationVoltage(TestCurrent);
+
 }
 //-------------------------------------------
 
@@ -338,6 +341,7 @@ void LOGIC_StartFallEdge()
 //-------------------------------------------
 void LOGIC_StopFallEdge()
 {
+	LL_PulseEn(false);
 	TIM_Stop(TIM3);
 	TIM_Reset(TIM3);
 	LL_OutputLock(true);

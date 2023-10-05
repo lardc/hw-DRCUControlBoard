@@ -35,10 +35,10 @@ void INITCFG_ConfigIO()
 
 	// Входы
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
-	GPIO_InitInput(GPIO_PROTECTION, NoPull);
 	//
 	
 	// Выходы
+	GPIO_InitPushPullOutput(GPIO_PULSE_EN);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
@@ -71,8 +71,8 @@ void INITCFG_ConfigIO()
 void INITCFG_ConfigExtInterrupt()
 {
 	// Вход PROTECTION
-	EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
-	EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+	//EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
+	//EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
 
 	// Вход SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);

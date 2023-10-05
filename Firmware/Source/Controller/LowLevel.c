@@ -120,3 +120,9 @@ bool LL_ReadLineSync()
 	return GPIO_GetState(GPIO_SYNC);
 }
 //------------------------------------------------------------------------------
+
+void LL_PulseEn(bool State)
+{
+	GPIO_SetState(GPIO_PULSE_EN, State);
+}
+//------------------------------------------------------------------------------
