@@ -46,7 +46,6 @@ void EXTI9_5_IRQHandler()
 		{
 			if(LL_ReadLineSync())
 			{
-				LL_PulseEn(true);
 				DELAY_US(50);
 
 				// Формирование переднего фронта импульса
@@ -54,6 +53,7 @@ void EXTI9_5_IRQHandler()
 				{
 					LL_IntPowerSupplyEn(false);
 					LL_OutputLock(false);
+					LL_PulseEn(true);
 
 					LOGIC_StartRiseEdge();
 
@@ -80,13 +80,7 @@ void EXTI9_5_IRQHandler()
 			if((LL_ReadLineSync()) && (CONTROL_SubState == SS_FallEdge))
 			{
 				LOGIC_StopFallEdge();
-				CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
-			}
-
-			if(CONTROL_SubState == SS_PostPulseDelay)
-			{
-
-				LL_PulseEn(false);
+				CONTROL_StopProcess();
 			}
 		}
 
