@@ -49,7 +49,7 @@
 #define REG_INTPS_ALLOWED_ERROR					12		// Минимально допустимая ошибка задания напряжения внутреннего источника (% * 10)
 #define REG_BATTERY_FULL_CHRAGE_TIMEOUT			13		// Таймаут полного заряда батареи,мс
 #define REG_BATTERY_RECHRAGE_TIMEOUT			14		// Таймаут дозаряда батареи,мс
-#define REG_BAT_VOLTAGE_THRESHOLD				15		// Минимальный порог заряда батареи, В *10
+#define REG_BAT_VOLTAGE_THRESHOLD				15		// Задание заряда батареи, В *10
 #define REG_MAXIMUM_UNIT_CURRENT				16		// Максимальное значение тока с блока
 #define REG_CONFIG_RDY_STATE_TIMEOUT			17		// Таймаут нахождения блока в состоянии ConfigReady
 // 18

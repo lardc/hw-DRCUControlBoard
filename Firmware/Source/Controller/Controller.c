@@ -292,14 +292,29 @@ void CONTROL_HandleBatteryCharge()
 
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
-		LL_PowerOnSolidStateRelay(true);
+
+		if (BatteryVoltage < DataTable[REG_BAT_VOLTAGE_THRESHOLD] )
+
+			LL_PowerOnSolidStateRelay(true);
 
 		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		{
+			LL_PowerOnSolidStateRelay(false);
 			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+		}
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
 				CONTROL_SwitchToFault(DF_BATTERY);
+		}
+	}
+// Поддержание заряда батареи
+	if (CONTROL_State == DS_Ready)
+	{
+		if (BatteryVoltage < (DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
+		{
+			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 		}
 	}
 

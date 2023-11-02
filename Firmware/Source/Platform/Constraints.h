@@ -79,7 +79,7 @@
 #define FAN_OPERATE_TIME_DEF			60			// с
 //
 #define V_BAT_THRESHOLD_MIN				0			// В * 10
-#define V_BAT_THRESHOLD_MAX				1400		// В * 10
+#define V_BAT_THRESHOLD_MAX				1500		// В * 10
 #define V_BAT_THRESHOLD_DEF				1400		// В * 10
 //
 #define ERR_FOR_FORCED_DISCHRG_MIN		1			// % * 10
