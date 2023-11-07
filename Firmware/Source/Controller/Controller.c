@@ -108,7 +108,8 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_DISABLE_POWER:
 			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_ConfigReady) ||
-					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)))
+					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)) ||
+					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_Cooling)))
 				CONTROL_ResetToDefaults(true);
 			else if(CONTROL_State != DS_None)
 					*pUserError = ERR_OPERATION_BLOCKED;
@@ -293,11 +294,11 @@ void CONTROL_HandleBatteryCharge()
 	if (CONTROL_SubState == SS_PowerPrepare)
 	{
 
-		if (BatteryVoltage < DataTable[REG_BAT_VOLTAGE_THRESHOLD] )
+		if (BatteryVoltage < (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD] )
 
 			LL_PowerOnSolidStateRelay(true);
 
-		if (BatteryVoltage >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		if (BatteryVoltage >= (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
 			LL_PowerOnSolidStateRelay(false);
 			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
@@ -311,7 +312,7 @@ void CONTROL_HandleBatteryCharge()
 // Поддержание заряда батареи
 	if (CONTROL_State == DS_Ready)
 	{
-		if (BatteryVoltage < (DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
+		if (BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST) )
 		{
 			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
 			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
