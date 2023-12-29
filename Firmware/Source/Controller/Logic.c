@@ -285,20 +285,20 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
 	// Амплитуда тока по коэффицентам
-	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K * ConfigParams.PulseWidth_CTRL1_K_Ext + ConfigParams.PulseWidth_CTRL1_Offset_Ext);
+	ConfigParams.PulseWidth_CTRL1 = (Int32U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K * ConfigParams.PulseWidth_CTRL1_K_Ext + ConfigParams.PulseWidth_CTRL1_Offset_Ext);
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2);
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
+void LOGIC_VariablePulseRateConfig(Int32U PulseWidth, Int16U IntPsVoltage)
 {
 	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
 	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
 
-	if(PulseWidth > ConfigParams.MaxPulseWidth_CTRL1)
-		PulseWidth = ConfigParams.MaxPulseWidth_CTRL1;
+	if(PulseWidth > (Int32U)ConfigParams.MaxPulseWidth_CTRL1)
+		PulseWidth = (Int32U)ConfigParams.MaxPulseWidth_CTRL1;
 	if(PulseWidth < 0)
 		PulseWidth = 0;
 	TIM_Reset(TIM3);
