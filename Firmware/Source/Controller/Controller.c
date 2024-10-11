@@ -108,8 +108,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 		case ACT_DISABLE_POWER:
 			if((CONTROL_State == DS_Ready) || (CONTROL_State == DS_ConfigReady) ||
-					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare)) ||
-					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_Cooling)))
+					((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare || CONTROL_SubState == SS_Cooling)))
 				CONTROL_ResetToDefaults(true);
 			else if(CONTROL_State != DS_None)
 					*pUserError = ERR_OPERATION_BLOCKED;
