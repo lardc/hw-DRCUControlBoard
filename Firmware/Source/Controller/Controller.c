@@ -305,7 +305,7 @@ void CONTROL_HandleBatteryCharge()
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
-				CONTROL_SwitchToFault(DF_BATTERY);
+				CONTROL_SwitchToFault(DF_BATTERY_LOW);
 		}
 	}
 // Поддержание заряда батареи
@@ -315,6 +315,10 @@ void CONTROL_HandleBatteryCharge()
 		{
 			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
 			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+		}
+		else if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST) )
+		{
+			CONTROL_SwitchToFault(DF_BATTERY_UP);
 		}
 	}
 
