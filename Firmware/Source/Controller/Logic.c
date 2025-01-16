@@ -281,7 +281,7 @@ void LOGIC_Config()
 
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	CurrentTemp_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	CurrentTemp_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
 	CurrentTemp_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 	ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
