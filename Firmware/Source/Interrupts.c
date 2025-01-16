@@ -71,7 +71,7 @@ void TIM2_IRQHandler()
 	if (CONTROL_SubState == SS_FallEdge)
 	{
 		LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2_Low);
-		DELAY_US(300);
+		DELAY_US(FALL_EDGE_TIME_PLATE);
 		CONTROL_SetDeviceState(DS_InProcess, SS_FallPlate);
 
 		LOGIC_StartFallEdge();
