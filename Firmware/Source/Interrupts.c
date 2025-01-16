@@ -10,7 +10,7 @@
 #include "Measurement.h"
 #include "InitConfig.h"
 #include "DataTable.h"
-
+#include "Delay.h"
 
 // Functions prototypes
 //
@@ -43,7 +43,11 @@ void EXTI9_5_IRQHandler()
 		{
 			CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
 			LOGIC_StartFallEdge();
+		}
+		else if(!LL_ReadLineSync() && CONTROL_SubState == SS_FallPlate)
+		{
 			LL_ReversVCompensation(true);
+
 		}
 	}
 
@@ -65,8 +69,18 @@ void TIM2_IRQHandler()
 	TIM_Stop(TIM2);
 
 	if (CONTROL_SubState == SS_FallEdge)
-		CONTROL_StopProcess();
+	{
+		LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2_Low);
+		DELAY_US(300);
+		CONTROL_SetDeviceState(DS_InProcess, SS_FallPlate);
 
+		LOGIC_StartFallEdge();
+	}
+
+	else if (CONTROL_SubState == SS_FallPlate)
+	{
+		CONTROL_StopProcess();
+	}
 	TIM_InterruptEventFlagClear(TIM2, TIM_SR_CC3IF);
 }
 //-----------------------------------------

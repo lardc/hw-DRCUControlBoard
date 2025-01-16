@@ -311,12 +311,12 @@ void CONTROL_HandleBatteryCharge()
 // Поддержание заряда батареи
 	if (CONTROL_State == DS_Ready)
 	{
-		if (BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST) )
+		if (BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
 		{
 			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
 			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 		}
-		else if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST) )
+		if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST))
 		{
 			CONTROL_SwitchToFault(DF_BATTERY_UP);
 		}

@@ -10,7 +10,8 @@ struct __ConfigParamsStruct
 	Int16U CurrentRateCode;
 	Int16U IntPsVoltage;
 	Int32U PulseWidth_CTRL1;
-	Int16U PulseWidth_CTRL2;
+	Int16U PulseWidth_CTRL2_Up;
+	Int16U PulseWidth_CTRL2_Low;
 	Int16U MaxPulseWidth_CTRL1;
 	float PulseWidth_CTRL1_K;
 	float PulseWidth_CTRL1_Offset;
