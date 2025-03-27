@@ -149,10 +149,10 @@
 #define I_TO_V_INTPS_OFFSET_DEF			1000
 //
 #define I_TO_V_INTPS_EXT_OFFSET_DEF		0
-#define I_TO_V_INTPS_EXT_K_DEF			0
+#define I_TO_V_INTPS_EXT_K_DEF			1000
 #define I_TO_V_INTPS_EXT_K2_DEF			0
-#define CTRL1_EXT_OFFSET_DEF			0
-#define CTRL1_EXT_K_DEF					1000
+#define CTRL_EXT_OFFSET_DEF				0
+#define CTRL_EXT_K_DEF					1000
 //
 #define NO								0
 #define YES								1

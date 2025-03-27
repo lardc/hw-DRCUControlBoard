@@ -141,8 +141,8 @@ const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START]
 		{0, INT16U_MAX, I_TO_V_INTPS_EXT_OFFSET_DEF},											// 132
 		{0, INT16U_MAX, I_TO_V_INTPS_EXT_K_DEF},												// 133
 		{0, INT16U_MAX, I_TO_V_INTPS_EXT_K2_DEF},												// 134
-		{0, INT16U_MAX, CTRL1_EXT_OFFSET_DEF},													// 135
-		{0, INT16U_MAX, CTRL1_EXT_K_DEF},														// 136
+		{0, INT16U_MAX, CTRL_EXT_OFFSET_DEF},													// 135
+		{0, INT16U_MAX, CTRL_EXT_K_DEF},														// 136
 		{0, 0, 0},																				// 137
 		{0, 0, 0},																				// 138
 		{0, 0, 0},																				// 139

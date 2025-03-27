@@ -126,13 +126,11 @@ void LOGIC_Config()
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
 
-	// Кеширование переменных
+	// Кеширование переменных для скорости нарастания тока
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET];
 	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1000;
 	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2];
-	ConfigParams.PulseWidth_CTRL1_Offset_Ext = (Int16S)DataTable[REG_CTRL1_EXT_OFFSET];
-	ConfigParams.PulseWidth_CTRL1_K_Ext = (float)(Int16S)DataTable[REG_CTRL1_EXT_K] / 1000;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -267,7 +265,7 @@ void LOGIC_Config()
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
 	{
-		//Напряжение по коэффицентам
+		// Расчет напряжения для скорости нарастания по коэффицентам
 		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext / TestCurrent  ) + ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
 		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK  + ConfigParams.IntPsVoltageOffset + EXTRate;
 	}
@@ -279,8 +277,12 @@ void LOGIC_Config()
 
 	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
+	// Кеширование переменных для амплитуды тока
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
+	ConfigParams.PulseWidth_CTRL1_K_Ext = (float)(Int16S)DataTable[REG_CTRL_EXT_K] / 1000;
+	ConfigParams.PulseWidth_CTRL1_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
+
 	CurrentTemp_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
 	CurrentTemp_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
 	ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
