@@ -125,7 +125,7 @@ void LOGIC_Config()
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
 
-	// Кеширование переменных
+	// Кеширование переменных для скорости спада тока
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
 	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET];
 	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1000;
@@ -265,9 +265,11 @@ void LOGIC_Config()
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
 	{
-		//Напряжение по коэффицентам
-		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext / TestCurrent) + ConfigParams.IntPsVoltageK_Ext * TestCurrent + ConfigParams.IntPsVoltageOffset_Ext);
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent*TestCurrent*TestCurrent*TestCurrent) + TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK  + ConfigParams.IntPsVoltageOffset + EXTRate;
+		// Расчет напряжения для скорости спада по коэффицентам
+		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext / TestCurrent) + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext);
+
+		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
+				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset + EXTRate;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
@@ -277,9 +279,15 @@ void LOGIC_Config()
 
 	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
+		// Кеширование переменных для амплитуды тока
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	ConfigParams.PulseWidth_CTRL_K_Ext = (float)DataTable[REG_CTRL_EXT_K] / 1000;
+	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
+
+	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K * ConfigParams.PulseWidth_CTRL_K_Ext +
+			ConfigParams.PulseWidth_CTRL2_Offset + ConfigParams.PulseWidth_CTRL_Offset_Ext;
+
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
 	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
@@ -304,7 +312,7 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 void LOGIC_SetCompensationVoltage(Int16U Current)
 {
 	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
-			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0));
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P0, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P2));
 	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------
