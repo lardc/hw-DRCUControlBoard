@@ -161,8 +161,8 @@
 #define CTRL_OFFSET_DEF					0
 #define CTRL_K_DEF						1000
 #define I_TO_DAC_P0_DEF					0
-#define I_TO_DAC_P1_DEF					1000
-#define I_TO_DAC_P2_DEF					1000
+#define I_TO_DAC_P1_DEF					0
+#define I_TO_DAC_P2_DEF					0
 
 //
 #define NO								0
