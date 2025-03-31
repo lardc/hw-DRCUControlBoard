@@ -121,7 +121,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp_Up, CurrentTemp_Low;
+	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1;
 
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
@@ -287,14 +287,16 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL_K_Ext = (float)(Int16S)DataTable[REG_CTRL_EXT_K] / 1000;
 	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
 
-	CurrentTemp_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
-	CurrentTemp_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
-	ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
-	ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+	CurrentTempCtrl2_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
+	CurrentTempCtrl2_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+	ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+	ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
 	// Амплитуда тока по коэффицентам
-	ConfigParams.PulseWidth_CTRL1 = (Int32U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset + ConfigParams.PulseWidth_CTRL_Offset_Ext) *
-			ConfigParams.PulseWidth_CTRL1_K * ConfigParams.PulseWidth_CTRL_K_Ext);
+
+	CurrentTempCtrl1 = ((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+
+	ConfigParams.PulseWidth_CTRL1 = (Int32U)(CurrentTempCtrl1 * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext);
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2_Up);
