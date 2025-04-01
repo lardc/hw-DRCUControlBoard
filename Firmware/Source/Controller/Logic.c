@@ -117,7 +117,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp;
+	float CurrentTemp, dIdtTemp;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -266,9 +266,10 @@ void LOGIC_Config()
 	else
 	{
 		// Расчет напряжения для скорости спада по коэффицентам
-		float EXTRate = ((ConfigParams.IntPsVoltageK2_Ext * TestCurrent * TestCurrent) + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext);
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
-				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset + EXTRate;
+		dIdtTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
+						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+
+		ConfigParams.IntPsVoltage = dIdtTemp * dIdtTemp * ConfigParams.IntPsVoltageK2_Ext * dIdtTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
