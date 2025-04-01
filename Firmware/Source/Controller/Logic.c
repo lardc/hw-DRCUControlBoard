@@ -121,7 +121,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1;
+	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1, dIdtTemp;
 
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
@@ -266,10 +266,10 @@ void LOGIC_Config()
 	else
 	{
 		// Расчет напряжения для скорости нарастания по коэффицентам
-		ConfigParams.IntPsVoltage = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
-				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 * ConfigParams.IntPsVoltageK2_Ext +
-					TestCurrent * ConfigParams.IntPsVoltageK * ConfigParams.IntPsVoltageK_Ext +
-						ConfigParams.IntPsVoltageOffset + ConfigParams.IntPsVoltageOffset_Ext;
+		dIdtTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
+				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+
+		ConfigParams.IntPsVoltage = dIdtTemp * dIdtTemp * ConfigParams.IntPsVoltageK2_Ext * dIdtTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
