@@ -269,7 +269,7 @@ void LOGIC_Config()
 		dIdtTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
 				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 
-		ConfigParams.IntPsVoltage = dIdtTemp * dIdtTemp * ConfigParams.IntPsVoltageK2_Ext * dIdtTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		ConfigParams.IntPsVoltage = dIdtTemp * dIdtTemp * ConfigParams.IntPsVoltageK2_Ext + dIdtTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
