@@ -121,7 +121,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1, dIdtTemp;
+	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1, RateTemp, correctedRate;
 
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
@@ -266,10 +266,12 @@ void LOGIC_Config()
 	else
 	{
 		// Расчет напряжения для скорости нарастания по коэффицентам
-		dIdtTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
-				TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
-
-		ConfigParams.IntPsVoltage = dIdtTemp * dIdtTemp * ConfigParams.IntPsVoltageK2_Ext + dIdtTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		RateTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
+						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
+		DataTable[REG_DBGRATETEMP] = (Int16S)RateTemp;
+		correctedRate = RateTemp * RateTemp * ConfigParams.IntPsVoltageK2_Ext + RateTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		DataTable[REG_DBGRATECORR] = (Int16S)correctedRate;
+		ConfigParams.IntPsVoltage = RateTemp + RateTemp * correctedRate / 100;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;

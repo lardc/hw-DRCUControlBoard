@@ -162,6 +162,8 @@
 //
 #define REG_DBG									150		// Отладочный регистр 1
 #define REG_DBG2								151		// Отладочный регистр 2
+#define REG_DBGRATETEMP							152		//
+#define REG_DBGRATECORR							153		//
 // -----------------------------------------------
 
 #define REG_DEV_STATE							192		// Статус работы блока
