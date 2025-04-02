@@ -121,7 +121,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1, RateTemp, correctedRate;
+	float CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1Ext, RateTemp, correctedRate;
 
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
@@ -293,10 +293,8 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
 	// Амплитуда тока по коэффицентам
-
-	CurrentTempCtrl1 = ((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
-
-	ConfigParams.PulseWidth_CTRL1 = (Int32U)(CurrentTempCtrl1 * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext);
+	CurrentTempCtrl1Ext = TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext;
+	ConfigParams.PulseWidth_CTRL1 = (Int32U)((CurrentTempCtrl1Ext + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
 	LOGIC_VariablePulseRateConfig(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
 	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2_Up);
