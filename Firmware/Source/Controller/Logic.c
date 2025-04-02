@@ -269,7 +269,7 @@ void LOGIC_Config()
 		RateTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
 						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 		DataTable[REG_DBGRATETEMP] = (Int16S)RateTemp;
-		correctedRate = RateTemp * RateTemp * ConfigParams.IntPsVoltageK2_Ext + RateTemp * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		correctedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
 		DataTable[REG_DBGRATECORR] = (Int16S)correctedRate;
 		ConfigParams.IntPsVoltage = RateTemp + RateTemp * correctedRate / 100;
 	}
