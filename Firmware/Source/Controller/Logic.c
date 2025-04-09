@@ -127,9 +127,9 @@ void LOGIC_Config()
 
 	// Кеширование переменных для скорости спада тока
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
-	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET];
-	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1000;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e6;
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 1e3;
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e6;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e9;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -285,8 +285,8 @@ void LOGIC_Config()
 	ConfigParams.PulseWidth_CTRL_K_Ext = (float)DataTable[REG_CTRL_EXT_K] / 1000;
 	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
 
-	CurrentTemp = TestCurrent * ConfigParams.PulseWidth_CTRL2_K * ConfigParams.PulseWidth_CTRL_K_Ext +
-			ConfigParams.PulseWidth_CTRL2_Offset + ConfigParams.PulseWidth_CTRL_Offset_Ext;
+	CurrentTemp = ((TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext) +
+			ConfigParams.PulseWidth_CTRL2_Offset) * ConfigParams.PulseWidth_CTRL2_K;
 
 	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 

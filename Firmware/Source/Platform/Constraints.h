@@ -156,12 +156,12 @@
 #define I_TO_V_INTPS_OFFSET_DEF			1000
 //
 #define I_TO_V_INTPS_EXT_OFFSET_DEF		0
-#define I_TO_V_INTPS_EXT_K_DEF			1000
+#define I_TO_V_INTPS_EXT_K_DEF			0
 #define I_TO_V_INTPS_EXT_K2_DEF			0
 #define CTRL_OFFSET_DEF					0
 #define CTRL_K_DEF						1000
 #define I_TO_DAC_P0_DEF					0
-#define I_TO_DAC_P1_DEF					0
+#define I_TO_DAC_P1_DEF					1000
 #define I_TO_DAC_P2_DEF					0
 
 //
