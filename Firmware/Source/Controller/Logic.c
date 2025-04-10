@@ -128,9 +128,9 @@ void LOGIC_Config()
 
 	// Кеширование переменных для скорости нарастания тока
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
-	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 1e3;
-	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e6;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e9;
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 10;
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e4;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e7;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -270,7 +270,7 @@ void LOGIC_Config()
 						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
 		DataTable[REG_DBGRATETEMP] = (Int16S)RateTemp;
 		correctedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
-		DataTable[REG_DBGRATECORR] = ((Int16S)correctedRate * 1e3);
+		DataTable[REG_DBGRATECORR] = (Int16S)correctedRate;
 		ConfigParams.IntPsVoltage = RateTemp + RateTemp * correctedRate / 100;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
