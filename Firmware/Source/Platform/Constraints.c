@@ -113,7 +113,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 107
 		{0, 0, 0},																				// 108
 		{0, 0, 0},																				// 109
-		{0, 0, 0},																				// 110
+		{VERSION_DCU, VERSION_RCU, VERSION_DCU},												// 110
 		{0, 0, 0},																				// 111
 		{0, 0, 0},																				// 112
 		{0, 0, 0},																				// 113

@@ -168,6 +168,10 @@
 #define NO								0
 #define YES								1
 
+//
+#define VERSION_DCU						0
+#define VERSION_RCU						1
+
 // Types
 //
 typedef struct __TableItemConstraint
