@@ -146,7 +146,7 @@
 #define REG_CTRL2_OFFSET						106		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								107		// Коэффициент грубой подстройки тока
 
-#define REG_UNIT_DCU							110		// 0 - блок DCU
+#define REG_UNIT_DRCU							110		// 0 - блок DCU
 														// 1 - RCU
 // 108-119
 

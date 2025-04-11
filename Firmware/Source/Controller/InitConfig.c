@@ -5,6 +5,7 @@
 #include "Logic.h"
 #include "Global.h"
 #include "BCCIxParams.h"
+#include "DataTable.h"
 
 // Forward functions
 //
@@ -36,9 +37,9 @@ void INITCFG_ConfigIO()
 	// Входы
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	//
+	DataTable[REG_UNIT_DRCU] ? GPIO_InitInput(GPIO_PROTECTION_RCU, NoPull) : GPIO_InitPushPullOutput(GPIO_PULSE_EN_DCU);
 	
 	// Выходы
-	GPIO_InitPushPullOutput(GPIO_PULSE_EN);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);

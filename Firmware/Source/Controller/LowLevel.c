@@ -123,6 +123,6 @@ bool LL_ReadLineSync()
 
 void LL_PulseEn(bool State)
 {
-	GPIO_SetState(GPIO_PULSE_EN, State);
+	GPIO_SetState(GPIO_PULSE_EN_DCU, State);
 }
 //------------------------------------------------------------------------------
