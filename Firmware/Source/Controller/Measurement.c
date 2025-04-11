@@ -38,8 +38,14 @@ float MEASURE_ConvertIntPsVoltage(Int16U ADCValue)
 	static Int16U MeasureCounter = 0;
 	static float DataArray[MEASURE_FILTER_SIZE];
 	float DataSum = 0;
-
-	DataArray[MeasureCounter] = MEASURE_VoltageX(ADCValue, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+	if(ADCValue == 65530)
+	{
+		DataArray[MeasureCounter] = MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+	}
+	else
+	{
+		DataArray[MeasureCounter] = MEASURE_VoltageX(ADCValue, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
+	}
 
 	MeasureCounter++;
 	MeasureCounter &= MEASURE_FILTER_MASK;

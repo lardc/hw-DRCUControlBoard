@@ -213,7 +213,16 @@ void CONTROL_HandleIntPSTune()
 	{
 		if(DataTable[REG_V_INTPS_SETPOINT])
 			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
-		DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
+
+		if(DataTable[REG_UNIT_DRCU])
+		{
+			Int16U RCU_Flag = 65530;
+			DataTable[REG_INT_PS_VOLTAGE] = MEASURE_ConvertIntPsVoltage(RCU_Flag) * 10;
+		}
+		else
+		{
+			DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
+		}
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
