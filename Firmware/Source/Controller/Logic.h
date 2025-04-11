@@ -48,6 +48,7 @@ void LOGIC_StopFallEdge();
 void LOGIC_StartRiseEdge();
 Int16U LOGIC_ExctractCurrentValue();
 void LOGIC_HandleAdcSamples();
+void LOGIC_SetReversVoltage();
 void CONTROL_HandleFanLogic(bool IsImpulse);
 void CONTROL_HandleExternalLamp(bool IsImpulse);
 

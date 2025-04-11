@@ -51,7 +51,7 @@ float MEASURE_ConvertIntPsVoltage(Int16U ADCValue)
 }
 //------------------------------------------------------------------------------
 
-Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0,
+Int16U MEASURE_ConvertValxtoDAC_DCU(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0,
 		Int16U RegisterExtP2,  Int16U RegisterExtP1,  Int16U RegisterExtP0)
 {
 	float Offset = DataTable[RegisterOffset];
@@ -68,6 +68,13 @@ Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U Regis
 	Value = TempValue * TempValue * P2_Ext + TempValue * P1_Ext + P0_Ext;
 
 	return (Int16U)(Value * K + Offset);
+}
+//------------------------------------------------------------------------------
+Int16U MEASURE_ConvertValxtoDAC_RCU()
+{
+	float Offset = (float)((Int16S)DataTable[REG_V_TO_DAC_OFFSET]);
+
+	return Offset;
 }
 //------------------------------------------------------------------------------
 

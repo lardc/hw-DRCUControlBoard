@@ -28,8 +28,8 @@
 
 // Variables
 //
-DeviceState CONTROL_State = DS_None;
-SubState CONTROL_SubState = SS_None;
+volatile DeviceState CONTROL_State = DS_None;
+volatile SubState CONTROL_SubState = SS_None;
 static Boolean CycleActive = false;
 //
 volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
@@ -94,12 +94,26 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 
 	switch (ActionID)
 	{
+		case 10:
+			TIM_Reset(TIM16);
+			TIM_Reset(TIM1);
+			TIM_Reset(TIM2);
+			TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, 1000);
+			TIMx_PWM_SetValue(TIM1, TIMx_CHANNEL3, 1000);
+			TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, 1000);
+			TIM_Start(TIM16);
+			TIM_Start(TIM1);
+			TIM_Start(TIM2);
+			break;
+
 		case ACT_ENABLE_POWER:
 			if(CONTROL_State == DS_None)
 			{
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 				LOGIC_BatteryCharge(true);
+				if (DataTable[REG_UNIT_DRCU])
+					LOGIC_SetReversVoltage();
 			}
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;

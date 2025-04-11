@@ -156,7 +156,7 @@
 #define REG_I_TO_DAC_P1							123		// Регистр тонкой подстройки Р1
 #define REG_I_TO_DAC_P2							124		// Регистр тонкой подстройки Р2
 //
-
+#define REG_V_TO_DAC_OFFSET						125		// Смещение обратного напряжения в В*10
 
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс

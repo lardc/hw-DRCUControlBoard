@@ -311,7 +311,7 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 
 void LOGIC_SetCompensationVoltage(Int16U Current)
 {
-	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC_DCU(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
 			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P0, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P2));
 	DAC_ForceSWTrigCh1(DAC1);
 }
@@ -486,3 +486,10 @@ void CONTROL_HandleExternalLamp(bool IsImpulse)
 	}
 }
 //-----------------------------------------------
+
+void LOGIC_SetReversVoltage()
+{
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC_RCU());
+	DAC_ForceSWTrigCh1(DAC1);
+}
+//-------------------------------------------
