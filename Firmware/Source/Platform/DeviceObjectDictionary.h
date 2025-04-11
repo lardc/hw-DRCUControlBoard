@@ -205,9 +205,10 @@
 // FAULT & DISABLE
 //
 #define DF_NONE									0
-#define DF_BATTERY								1		// Ошибка заряда батареи
-//#define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
+#define DF_BATTERY_LOW							1		// Ошибка заряда батареи
+#define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
 #define DF_SYNC									3		// Длительность импульса синхронизации превышена
+#define DF_BATTERY_UP							4		// Напряжение батареи выше заданного
 
 // WARNINGS
 //

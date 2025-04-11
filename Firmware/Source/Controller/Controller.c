@@ -21,6 +21,7 @@
 #include "stdlib.h"
 #include "InitConfig.h"
 #include "BCCIxParams.h"
+#include "Constraints.h"
 
 // Definitions
 //
@@ -48,7 +49,8 @@ void CONTROL_ResetToDefaults(bool StopPowerSupply);
 void CONTROL_Idle();
 void CONTROL_WatchDogUpdate();
 void CONTROL_RegistersReset();
-void CONTROL_HandleBatteryCharge();
+void CONTROL_HandleBatteryCharge_DCU();
+void CONTROL_HandleBatteryCharge_RCU();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
@@ -112,7 +114,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 				LOGIC_BatteryCharge(true);
-				if (DataTable[REG_UNIT_DRCU])
+				if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 					LOGIC_SetReversVoltage();
 			}
 			else if(CONTROL_State != DS_Ready)
@@ -179,7 +181,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 void CONTROL_Idle()
 {
 	// Process battery charge
-	CONTROL_HandleBatteryCharge();
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? CONTROL_HandleBatteryCharge_RCU() : CONTROL_HandleBatteryCharge_DCU();
 
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
@@ -214,10 +216,9 @@ void CONTROL_HandleIntPSTune()
 		if(DataTable[REG_V_INTPS_SETPOINT])
 			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 
-		if(DataTable[REG_UNIT_DRCU])
+		if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 		{
-			Int16U RCU_Flag = 65530;
-			DataTable[REG_INT_PS_VOLTAGE] = MEASURE_ConvertIntPsVoltage(RCU_Flag) * 10;
+			DataTable[REG_INT_PS_VOLTAGE] = MEASURE_ConvertIntPsVoltage(0, true) * 10;
 		}
 		else
 		{
@@ -263,7 +264,6 @@ void CONTROL_CoolingProcess()
 	static Int64U TimeoutCounter = 0;
 	static Int16U CurrentPulseCounter = 0;
 
-
 	// Задержка после импульса
 	if (CONTROL_SubState == SS_PostPulseDelay)
 	{
@@ -303,7 +303,7 @@ void CONTROL_CoolingProcess()
 }
 //-----------------------------------------------
 
-void CONTROL_HandleBatteryCharge()
+void CONTROL_HandleBatteryCharge_DCU()
 {
 	DataTable[REG_BAT_VOLTAGE] = (Int16U) (LOGIC_BatteryVoltage * 10);
 
@@ -316,9 +316,47 @@ void CONTROL_HandleBatteryCharge()
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
-				CONTROL_SwitchToFault(DF_BATTERY);
+				CONTROL_SwitchToFault(DF_BATTERY_LOW);
 		}
 	}
+}
+//-----------------------------------------------
+
+void CONTROL_HandleBatteryCharge_RCU()
+{
+	float BatteryVoltage;
+	BatteryVoltage = MEASURE_ConvertBatteryVoltage(0, true) * 10;
+
+	if(CONTROL_SubState == SS_PowerPrepare)
+	{
+		if(BatteryVoltage < (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+			LL_PowerOnSolidStateRelay(true);
+
+		if(BatteryVoltage >= (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		{
+			LL_PowerOnSolidStateRelay(false);
+			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+		}
+		else
+		{
+			if(CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
+				CONTROL_SwitchToFault(DF_BATTERY_LOW);
+		}
+	}
+	// Поддержание заряда батареи
+	if(CONTROL_State == DS_Ready)
+	{
+		if(BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
+		{
+			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+		}
+		if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST))
+		{
+			CONTROL_SwitchToFault(DF_BATTERY_UP);
+		}
+	}
+	DataTable[REG_BAT_VOLTAGE] = (Int16U)BatteryVoltage;
 }
 //-----------------------------------------------
 

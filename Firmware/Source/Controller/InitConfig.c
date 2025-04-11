@@ -6,6 +6,7 @@
 #include "Global.h"
 #include "BCCIxParams.h"
 #include "DataTable.h"
+#include "Constraints.h"
 
 // Forward functions
 //
@@ -37,7 +38,7 @@ void INITCFG_ConfigIO()
 	// Входы
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	//
-	DataTable[REG_UNIT_DRCU] ? GPIO_InitInput(GPIO_PROTECTION_RCU, NoPull) : GPIO_InitPushPullOutput(GPIO_PULSE_EN_DCU);
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? GPIO_InitInput(GPIO_PROTECTION_RCU, NoPull) : GPIO_InitPushPullOutput(GPIO_PULSE_EN_DCU);
 	
 	// Выходы
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
@@ -72,7 +73,7 @@ void INITCFG_ConfigIO()
 void INITCFG_ConfigExtInterrupt()
 {
 	// Вход PROTECTION (только для RCU)
-	if(DataTable[REG_UNIT_DRCU])
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 	{
 		EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
 		EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);

@@ -27,18 +27,25 @@ float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK)
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_ConvertBatteryVoltage(Int16U ADCValue)
+float MEASURE_ConvertBatteryVoltage(Int16U ADCValue, bool RCU_Flag)
 {
-	return MEASURE_VoltageX(ADCValue, REG_V_BAT_OFFSET, REG_V_BAT_K);
+	if(RCU_Flag)
+	{
+		return MEASURE_VoltageX(ADC1_BAT_VOLTAGE_CHANNEL, REG_V_BAT_OFFSET, REG_V_BAT_K);
+	}
+	else
+	{
+		return MEASURE_VoltageX(ADCValue, REG_V_BAT_OFFSET, REG_V_BAT_K);
+	}
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_ConvertIntPsVoltage(Int16U ADCValue)
+float MEASURE_ConvertIntPsVoltage(Int16U ADCValue, bool RCU_Flag)
 {
 	static Int16U MeasureCounter = 0;
 	static float DataArray[MEASURE_FILTER_SIZE];
 	float DataSum = 0;
-	if(ADCValue == 65530)
+	if(RCU_Flag)
 	{
 		DataArray[MeasureCounter] = MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
 	}
