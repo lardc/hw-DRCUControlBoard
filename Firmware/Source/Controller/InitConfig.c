@@ -71,9 +71,12 @@ void INITCFG_ConfigIO()
 
 void INITCFG_ConfigExtInterrupt()
 {
-	// Вход PROTECTION
-	//EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
-	//EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+	// Вход PROTECTION (только для RCU)
+	if(DataTable[REG_UNIT_DRCU])
+	{
+		EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
+		EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+	}
 
 	// Вход SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
