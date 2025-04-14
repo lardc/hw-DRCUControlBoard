@@ -29,7 +29,7 @@
 //
 #define PULSE_WIDTH_MIN					10
 #define PULSE_WIDTH_MAX					50
-#define PULSE_WIDTH_DEF					30
+#define PULSE_WIDTH_DEF					10
 //
 #define GAIN_COEFFICIENT_MIN			1
 #define GAIN_COEFFICIENT_MAX			60000
@@ -77,7 +77,7 @@
 #define FAN_OPERATE_TIME_DEF			60			// с
 //
 #define V_BAT_THRESHOLD_MIN				0			// В * 10
-#define V_BAT_THRESHOLD_MAX				1400		// В * 10
+#define V_BAT_THRESHOLD_MAX				1500		// В * 10
 #define V_BAT_THRESHOLD_DEF				900			// В * 10
 //
 #define ERR_FOR_FORCED_DISCHRG_MIN		1			// % * 10
@@ -147,8 +147,8 @@
 #define CTRL1_R9_K_DEF					760
 #define CTRL1_R10_OFFSET_DEF			65441
 #define CTRL1_R10_K_DEF					428
-#define CTRL2_OFFSET_DEF				2400
-#define CTRL2_K_DEF						25000
+#define CTRL2_OFFSET_DEF				75		// для DCU 2400
+#define CTRL2_K_DEF						813		// для DCU 25000
 //
 #define I_TO_V_INTPS_K4_DEF				1000
 #define I_TO_V_INTPS_K2_DEF				0
@@ -156,7 +156,7 @@
 #define I_TO_V_INTPS_OFFSET_DEF			1000
 //
 #define I_TO_V_INTPS_EXT_OFFSET_DEF		0
-#define I_TO_V_INTPS_EXT_K_DEF			0
+#define I_TO_V_INTPS_EXT_K_DEF			0 		// для DCU 1000
 #define I_TO_V_INTPS_EXT_K2_DEF			0
 #define CTRL_OFFSET_DEF					0
 #define CTRL_K_DEF						1000

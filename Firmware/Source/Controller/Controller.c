@@ -85,6 +85,8 @@ void CONTROL_Init()
 	// Сброс значений
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults(true);
+	// Присвоение значений в регистре в зависимости от версии
+	DataTable[REG_I_TO_V_INTPS_EXT_K] = DataTable[REG_UNIT_DRCU] ? 1000 : 0;
 }
 //------------------------------------------------------------------------------
 
