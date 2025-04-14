@@ -78,14 +78,16 @@ void INITCFG_ConfigExtInterrupt()
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
 	EXTI_EnableInterrupt(EXTI9_5_IRQn, 0, true);
 }
-//------------------------------------------------
+//------------------------------------------------------------------------------
 
-void INITCFG_ConfigCAN()
+void INITCFG_ConfigCAN(Int16U NodeID)
 {
+	Int32U Mask = ((Int32U)NodeID) << CAN_SLAVE_NID_MPY;
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
-	NCAN_Init(SYSCLK, CAN_BAUDRATE, false);
-	NCAN_FIFOInterrupt(true);
-	NCAN_FilterInit(0, CAN_SLAVE_FILTER_ID, CAN_SLAVE_FILTER_ID);
+	NCAN_Init(SYSCLK, CAN_BAUDRATE, FALSE);
+	NCAN_FIFOInterrupt(TRUE);
+	NCAN_FilterInit(0, Mask, Mask);
+	NCAN_InterruptSetPriority(0);
 }
 //------------------------------------------------------------------------------
 
@@ -181,3 +183,5 @@ void InitializeController(Boolean GoodClock)
 	CONTROL_Init();
 }
 // -----------------------------------------------------------------------------
+
+

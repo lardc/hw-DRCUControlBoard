@@ -7,7 +7,7 @@
 //
 void INITCFG_ConfigSystemClock();
 void INITCFG_ConfigIO();
-void INITCFG_ConfigCAN();
+void INITCFG_ConfigCAN(Int16U NodeID);
 void INITCFG_ConfigUART();
 void INITCFG_ConfigSPI();
 void INITCFG_ConfigDAC();

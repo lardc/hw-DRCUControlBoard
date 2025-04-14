@@ -54,13 +54,21 @@ void CONTROL_CoolingProcess();
 //
 void CONTROL_Init()
 {
-	// Конфигурация сервиса работы Data-table и EPROM
+	// Конфигурация сервиса работы DataTable и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
-	// Инициализация data table
+
+	// Инициализация dataTable
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
+
+	// Инициализация функций связанных с CAN NodeID
+	Int16U NodeID = DataTable[REG_CFG_NODE_ID] ? DataTable[REG_CFG_NODE_ID] : CAN_SLAVE_NID;
+	DT_SaveFirmwareInfo(NodeID, 0);
+	INITCFG_ConfigCAN(NodeID);
+
 	// Инициализация device profile
-	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
+	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive, NodeID);
+
 	// Сброс значений
 	DEVPROFILE_ResetControlSection();
 	CONTROL_ResetToDefaults(true);
