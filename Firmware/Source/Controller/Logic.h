@@ -39,6 +39,7 @@ extern struct __ConfigParamsStruct ConfigParams;
 extern volatile Int16U LOGIC_ADCRaw[];
 extern float LOGIC_BatteryVoltage;
 extern float LOGIC_IntPsVoltage;
+extern volatile Int16U LOGIC_DUTCurrentRaw[];
 
 //Functions
 //

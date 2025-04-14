@@ -4,6 +4,7 @@
 #include "DataTable.h"
 #include "Board.h"
 #include "Global.h"
+#include "Constraints.h"
 
 // Definitions
 //
@@ -12,7 +13,7 @@
 
 // Forward functions
 //
-float MEASURE_VoltageX(Int16U ADC1Channel, Int16U RegisterOffset, Int16U RegisterK);
+float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK);
 float MEASURE_ConvertADCtoValx(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP0, Int16U RegisterP1, Int16U RegisterP2);
 
 // Functions
@@ -21,7 +22,8 @@ float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK)
 {
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 10000;
-	float result = (ADCValue - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
+	float ADCVariable = (DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? (float)ADC_Measure(ADC1, ADCValue) : (float)ADCValue;
+	float result = (ADCVariable - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
 	return (result > 0) ? result : 0;
 }
@@ -31,6 +33,7 @@ float MEASURE_ConvertBatteryVoltage(Int16U ADCValue, bool RCU_Flag)
 {
 	if(RCU_Flag)
 	{
+		//В версии RCU передается номер канала
 		return MEASURE_VoltageX(ADC1_BAT_VOLTAGE_CHANNEL, REG_V_BAT_OFFSET, REG_V_BAT_K);
 	}
 	else
