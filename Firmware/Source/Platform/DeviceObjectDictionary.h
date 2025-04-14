@@ -22,6 +22,7 @@
 #define ACT_DBG_GENERATE_PULSE					60		// Отладочный режим - формирование импульса
 #define ACT_DBG_CURRENT_READY_OUTPUT			61		// Отладочный режим - формирования сигнала CurrentReady
 #define ACT_DBG_SET_COMPENSATION				62		// Отладочный режим - установка напряжения компенсации
+#define ACT_DBG_REVERS_V_COMPENSATION			63		// Отладочный режим - формирование отрицательного напряжения
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск
