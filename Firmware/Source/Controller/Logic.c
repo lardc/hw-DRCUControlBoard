@@ -127,9 +127,9 @@ void LOGIC_Config()
 
 	// Кеширование переменных для скорости спада тока
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
-	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 1e3;
-	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e6;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e9;
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 10;
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e4;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e7;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -312,7 +312,7 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 void LOGIC_SetCompensationVoltage(Int16U Current)
 {
 	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
-			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P0, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P2));
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P2, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P0));
 	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------

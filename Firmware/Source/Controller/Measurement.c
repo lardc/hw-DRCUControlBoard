@@ -59,9 +59,9 @@ Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U Regis
 	float P2 = (float)((Int16S)DataTable[RegisterP2]) / 1e6;
 	float P1 = (float)DataTable[RegisterP1] / 1000;
 	float P0 = (float)((Int16S)DataTable[RegisterP0]);
-	float P2_Ext = (float)((Int16S)DataTable[REG_I_TO_DAC_EXT_P2]) / 1e6;
-	float P1_Ext = (float)DataTable[REG_I_TO_DAC_EXT_P1] / 1000;
-	float P0_Ext = (float)((Int16S)DataTable[REG_I_TO_DAC_EXT_P0]);
+	float P2_Ext = (float)((Int16S)DataTable[RegisterExtP2]) / 1e6;
+	float P1_Ext = (float)DataTable[RegisterExtP1] / 1000;
+	float P0_Ext = (float)((Int16S)DataTable[RegisterExtP0]);
 
 	float TempValue = Value * Value * P2 + Value * P1 + P0;
 
