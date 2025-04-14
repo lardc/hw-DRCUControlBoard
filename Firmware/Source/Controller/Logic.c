@@ -100,8 +100,16 @@ void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 
 void LOGIC_CurrentSourceTurnOff()
 {
-	LOGIC_ConstantPulseRateConfig_DCU(0, 0);
-	LOGIC_VariablePulseRateConfig_DCU(0);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		LOGIC_ConstantPulseRateConfig_RCU(0);
+		LOGIC_VariablePulseRateConfig_RCU(0, 0);
+	}
+	else
+	{
+		LOGIC_ConstantPulseRateConfig_DCU(0, 0);
+		LOGIC_VariablePulseRateConfig_DCU(0);
+	}
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
@@ -125,7 +133,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp, RateTemp, correctedRate;
+	float CurrentTemp, RateTemp, CorrectedRate, CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1Ext;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -133,11 +141,11 @@ void LOGIC_Config()
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
 
-	// Кеширование переменных для скорости спада тока
+	// Кеширование переменных для скорости нарастания тока(RCU) и спада тока(DCU)
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
-	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 1e3;
-	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e6;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e9;
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / (DataTable[REG_UNIT_DRCU] ? 10 : 1e3);
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / (DataTable[REG_UNIT_DRCU] ? 1e4 : 1e6);
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / (DataTable[REG_UNIT_DRCU] ? 1e7 : 1e9);
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -273,11 +281,13 @@ void LOGIC_Config()
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
 	{
-		// Расчет напряжения для скорости спада по коэффицентам
+		// Расчет напряжения для скорости нарастания(RCU) и спада(DCU) по коэффицентам
 		RateTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
 						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
-		correctedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
-		ConfigParams.IntPsVoltage = RateTemp + RateTemp * correctedRate / 100;
+		DataTable[REG_DBGRATETEMP] = (Int16S)RateTemp;
+		CorrectedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		DataTable[REG_DBGRATECORR] = (Int16S)CorrectedRate;
+		ConfigParams.IntPsVoltage = RateTemp + RateTemp * CorrectedRate / 100;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
