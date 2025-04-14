@@ -10,6 +10,8 @@
 #include "Measurement.h"
 #include "InitConfig.h"
 #include "Delay.h"
+#include "DataTable.h"
+#include "Constraints.h"
 
 
 // Definitions
@@ -25,6 +27,7 @@ Int64U SyncLineTimeCounter = 0;
 void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event);
 void INT_SyncWidthControl();
 void INT_OutputLockCheck();
+void INT_ActivateProtection();
 
 // Functions
 //
@@ -40,62 +43,107 @@ void DMA1_Channel1_IRQHandler()
 
 void EXTI9_5_IRQHandler()
 {
-	if (EXTI_FlagCheck(EXTI_6))
+	switch(DataTable[REG_UNIT_DRCU])
 	{
-		if(CONTROL_State == DS_ConfigReady)
-		{
-			if(LL_ReadLineSync())
+		case VERSION_RCU:
+			// Формирование переднего фронта импульса
+			if(LL_ReadLineSync() && (CONTROL_State == DS_ConfigReady))
 			{
-				DELAY_US(50);
+				LL_IntPowerSupplyEn(false);
+				LL_OutputLock(false);
+				LL_OutputCompensation(false);
 
-				// Формирование переднего фронта импульса
-				if (LL_ReadLineSync())
-				{
-					LL_IntPowerSupplyEn(false);
-					LL_OutputLock(false);
-					LL_PulseEn(true);
-
-					LOGIC_StartRiseEdge();
-
-					CONTROL_HandleFanLogic(true);
-					CONTROL_HandleExternalLamp(true);
-
-					SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
-
-					CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
-				}
-			}
-		}
-		else
-		{
-			// Формирование заднего фронта импульса
-			if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
-			{
-				SyncLineTimeCounter = 0;
-
-				LOGIC_StartFallEdge();
-				CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
-			}
-			// Остановка заднего фронта импульса
-			if((LL_ReadLineSync()) && (CONTROL_SubState == SS_FallEdge))
-			{
-				LOGIC_StopFallEdge();
-				CONTROL_StopProcess();
-			}
-		}
-
-		// Запуск импульса в отладочном режиме
-		if ((CONTROL_State == DS_None))
-		{
-			if (LL_ReadLineSync())
 				LOGIC_StartRiseEdge();
+
+				CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+
+				CONTROL_HandleFanLogic(true);
+				CONTROL_HandleExternalLamp(true);
+				INT_ActivateProtection();
+			}
 			else
 			{
-				LOGIC_StartFallEdge();
-			}
-		}
-	}
+				// Формирование заднего фронта импульса
+				if(!LL_ReadLineSync() && ((CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge)))
+				{
+					CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+					LOGIC_StartFallEdge();
+				}
+				else if(!LL_ReadLineSync() && CONTROL_SubState == SS_FallPlate)
+				{
+					LL_OutputCompensation(true);
 
+				}
+			}
+
+			// Запуск импульса в отладочном режиме
+			if((CONTROL_State == DS_None))
+			{
+				if(LL_ReadLineSync())
+					LOGIC_StartRiseEdge();
+				else
+					LOGIC_StartFallEdge();
+			}
+			break;
+
+		case VERSION_DCU:
+			if (EXTI_FlagCheck(EXTI_6))
+				{
+					if(CONTROL_State == DS_ConfigReady)
+					{
+						if(LL_ReadLineSync())
+						{
+							DELAY_US(50);
+
+							// Формирование переднего фронта импульса
+							if (LL_ReadLineSync())
+							{
+								LL_IntPowerSupplyEn(false);
+								LL_OutputLock(false);
+								LL_PulseEn(true);
+
+								LOGIC_StartRiseEdge();
+
+								CONTROL_HandleFanLogic(true);
+								CONTROL_HandleExternalLamp(true);
+
+								SyncLineTimeCounter = CONTROL_TimeCounter + WIDTH_SYNC_LINE_MAX;
+
+								CONTROL_SetDeviceState(DS_InProcess, SS_RiseEdge);
+							}
+						}
+					}
+					else
+					{
+						// Формирование заднего фронта импульса
+						if((!LL_ReadLineSync()) && (CONTROL_SubState == SS_Plate))
+						{
+							SyncLineTimeCounter = 0;
+
+							LOGIC_StartFallEdge();
+							CONTROL_SetDeviceState(DS_InProcess, SS_FallEdge);
+						}
+						// Остановка заднего фронта импульса
+						if((LL_ReadLineSync()) && (CONTROL_SubState == SS_FallEdge))
+						{
+							LOGIC_StopFallEdge();
+							CONTROL_StopProcess();
+						}
+					}
+
+					// Запуск импульса в отладочном режиме
+					if ((CONTROL_State == DS_None))
+					{
+						if (LL_ReadLineSync())
+							LOGIC_StartRiseEdge();
+						else
+						{
+							LOGIC_StartFallEdge();
+						}
+					}
+				}
+			break;
+	}
 	EXTI_FlagReset(EXTI_6);
 }
 //-----------------------------------------
@@ -213,5 +261,12 @@ void INT_OutputLockCheck()
 			SyncLineTimeCounter = 0;
 		}
 	}
+}
+//-----------------------------------------
+
+void INT_ActivateProtection()
+{
+	TIM_Reset(TIM6);
+	TIM_Start(TIM6);
 }
 //-----------------------------------------
