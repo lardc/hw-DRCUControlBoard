@@ -76,6 +76,9 @@ void CONTROL_Init()
 	// Инициализация data table
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
+	// Настройка DMA для АЦП
+	if (DataTable[REG_UNIT_DRCU] == VERSION_DCU)
+		INITCFG_ConfigDMA();
 	// Инициализация device profile
 	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
