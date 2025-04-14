@@ -74,20 +74,27 @@ void LOGIC_CurrentSourceTurnOff();
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
-	LL_PulseEn(false);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		LL_OutputCompensation(true);
+	}
+	else
+	{
+		LL_PulseEn(false);
+		LL_OutputCompensation(false);
+		LL_External_DC_RDY(false);
+	}
+
 	LOGIC_SofwarePulseStart(false);
 	LOGIC_CurrentSourceTurnOff();
 
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
-
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
-	LL_OutputCompensation(false);
-	LL_External_DC_RDY(false);
 }
 //-------------------------------------------
 

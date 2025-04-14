@@ -70,7 +70,7 @@ void LL_PowerOnSolidStateRelay(bool State)
 
 void LL_OutputCompensation(bool State)
 {
-	// Также выполняет функцию SetReversVoltage в RCU
+	// Также выполняет функцию ReversVCompensation в RCU
 	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
 }
 //------------------------------------------------------------------------------
