@@ -219,6 +219,7 @@
 //
 #define WARNING_NONE							0
 #define WARNING_CURRENT_NOT_READY				1		// Ток не вышел на заданный уровень
+#define WARNING_SYNC							2		// Длительность импульса синхронизации превышена
 
 // User Errors
 // 

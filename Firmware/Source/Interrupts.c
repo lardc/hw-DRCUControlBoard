@@ -220,14 +220,14 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 }
 //-----------------------------------------
 
-//void EXTI15_10_IRQHandler()
-//{
-//	if (EXTI_FlagCheck(EXTI_13))
-//	{
-//		CONTROL_SwitchToFault(DF_PROTECTION);
-//		EXTI_FlagReset(EXTI_13);
-//	}
-//}
+void EXTI15_10_IRQHandler()
+{
+	if (EXTI_FlagCheck(EXTI_13))
+	{
+		CONTROL_SwitchToFault(DF_PROTECTION);
+		EXTI_FlagReset(EXTI_13);
+	}
+}
 //-----------------------------------------
 
 void USART1_IRQHandler()
@@ -266,9 +266,24 @@ void TIM7_IRQHandler()
 		CONTROL_HandleFanLogic(false);
 		CONTROL_HandleExternalLamp(false);
 		INT_OutputLockCheck();
-		INT_SyncWidthControl();
+
+		if (DataTable[REG_UNIT_DRCU] == VERSION_DCU)
+			INT_SyncWidthControl();
 
 		TIM_StatusClear(TIM7);
+	}
+}
+//-----------------------------------------
+
+void TIM6_DAC_IRQHandler()
+{
+	if (TIM_StatusCheck(TIM6))
+	{
+		if (CONTROL_SubState == SS_Plate || CONTROL_SubState == SS_RiseEdge || CONTROL_SubState == SS_FallEdge)
+			DataTable[REG_WARNING] = WARNING_SYNC;
+		CONTROL_StopProcess();
+		TIM_StatusClear(TIM6);
+		TIM_Stop(TIM6);
 	}
 }
 //-----------------------------------------
