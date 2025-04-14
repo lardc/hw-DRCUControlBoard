@@ -135,3 +135,13 @@ void DBGACT_SetCompensationVoltage()
 	LL_OutputLock(true);
 }
 //-----------------------------------------------
+
+void DBGACT_ReversVCompensation()
+{
+	LOGIC_SetReversVoltage();
+
+	LL_OutputCompensation(true);
+	DELAY_US(DataTable[REG_DBG]);
+	LL_OutputCompensation(false);
+}
+//-----------------------------------------------
