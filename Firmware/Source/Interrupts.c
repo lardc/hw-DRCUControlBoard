@@ -150,7 +150,31 @@ void EXTI9_5_IRQHandler()
 
 void TIM2_IRQHandler()
 {
-	TIMx_Process(TIM2, TIM_SR_CC3IF);
+	switch(DataTable[REG_UNIT_DRCU])
+	{
+		case VERSION_RCU:
+			TIM_Stop(TIM2);
+
+			if(CONTROL_SubState == SS_FallEdge)
+			{
+				LOGIC_ConstantPulseRateConfig_RCU(ConfigParams.PulseWidth_CTRL2_Low);
+				DELAY_US(FALL_EDGE_TIME_PLATE);
+				CONTROL_SetDeviceState(DS_InProcess, SS_FallPlate);
+
+				LOGIC_StartFallEdge();
+			}
+
+			else if(CONTROL_SubState == SS_FallPlate)
+			{
+				CONTROL_StopProcess();
+			}
+			TIM_InterruptEventFlagClear(TIM2, TIM_SR_CC3IF);
+			break;
+
+		case VERSION_DCU:
+			TIMx_Process(TIM2, TIM_SR_CC3IF);
+			break;
+	}
 }
 //-----------------------------------------
 
