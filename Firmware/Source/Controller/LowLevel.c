@@ -42,7 +42,7 @@ void LL_SW_Trig(bool Start)
 
 	if(Start)
 	{
-		PWM_PulseWidth = (float)DataTable[REG_PULSE_WIDTH] * 100 / TIMER16_uS * TIM16_MAX_VALUE;
+		PWM_PulseWidth = (float)DataTable[REG_PULSE_WIDTH] * 100 / (DataTable[REG_UNIT_DRCU] ? TIMER16_RCU_uS : TIMER16_DCU_uS) * TIM16_MAX_VALUE;
 
 		TIM_Reset(TIM16);
 		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, PWM_PulseWidth);

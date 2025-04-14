@@ -158,7 +158,7 @@ void INITCFG_ConfigTimer2_3()
 void INITCFG_ConfigTimer16()
 {
 	TIM_Clock_En(TIM_16);
-	TIM_Config(TIM16, SYSCLK, TIMER16_uS);
+	TIM_Config(TIM16, SYSCLK, (DataTable[REG_UNIT_DRCU] ? TIMER16_RCU_uS : TIMER16_DCU_uS));
 	TIM_OnePulseMode(TIM16, true);
 	TIMx_PWM_ConfigChannel(TIM16, TIMx_CHANNEL1);
 }
@@ -176,14 +176,15 @@ void INITCFG_ConfigTimer7()
 void INITCFG_ConfigTimer6()
 {
 	TIM_Clock_En(TIM_6);
-	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
 	if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 	{
+		TIM_Config(TIM6, SYSCLK, TIMER6_RCU_uS);
 		TIM_Interupt(TIM6, 0, true);
 		TIM_Reset(TIM6);
 	}
 	else
 	{
+		TIM_Config(TIM6, SYSCLK, TIMER6_DCU_uS);
 		TIM_DMA(TIM6, DMAEN);
 		TIM_MasterMode(TIM6, MMS_UPDATE);
 		TIM_Start(TIM6);
