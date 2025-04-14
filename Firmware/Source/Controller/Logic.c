@@ -15,6 +15,7 @@
 #include "InitConfig.h"
 #include "Delay.h"
 #include "Measurement.h"
+#include "Constraints.h"
 
 // Definitions
 //
@@ -274,8 +275,16 @@ void LOGIC_Config()
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
 
-	if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN)
-		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN;
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN_RCU)
+			ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN_RCU;
+	}
+	else
+	{
+		if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN_DCU)
+			ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN_DCU;
+	}
 
 	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
