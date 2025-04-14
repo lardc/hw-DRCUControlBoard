@@ -399,15 +399,26 @@ void LOGIC_VariablePulseRateConfig_RCU(Int32U PulseWidth, Int16U IntPsVoltage)
 
 void LOGIC_StartRiseEdge()
 {
-	TIM_Start(TIM2);
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? TIM_Start(TIM3) : TIM_Start(TIM2);
 }
 //-------------------------------------------
 
 void LOGIC_StartFallEdge()
 {
-	LOGIC_SofwarePulseStart(false);
-	TIM_Start(TIM3);
-	LL_OutputCompensation(false);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		TIM_Stop(TIM3);
+		LOGIC_SofwarePulseStart(false);
+		TIM_Reset(TIM2);
+		TIM_Start(TIM2);
+		LOGIC_VariablePulseRateConfig_RCU(0, 0);
+	}
+	else
+	{
+		LOGIC_SofwarePulseStart(false);
+		TIM_Start(TIM3);
+		LL_OutputCompensation(false);
+	}
 }
 //-------------------------------------------
 void LOGIC_StopFallEdge()
