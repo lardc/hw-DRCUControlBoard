@@ -158,6 +158,7 @@
 #define REG_I_TO_DAC_P2							124		// Регистр тонкой подстройки Р2
 //
 #define REG_V_TO_DAC_OFFSET						125		// Смещение обратного напряжения в В*10
+#define REG_I_FALL_PLATE						126		// Ток при котором начинается полка тока на заднем фронте, А
 
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
@@ -194,11 +195,11 @@
 #define REG_INT_PS_VOLTAGE						201		// Напряжение источника формирователя, (в В х10)
 #define REG_CURRENT								202		// Измеренное значение амплитуды тока (в А*10)
 // -----------------------------
-#define REG_FWINFO_SLAVE_NID					256	// Device CAN slave node ID
-#define REG_FWINFO_MASTER_NID					257	// Device CAN master node ID (if presented)
+#define REG_FWINFO_SLAVE_NID					256		// Device CAN slave node ID
+#define REG_FWINFO_MASTER_NID					257		// Device CAN master node ID (if presented)
 // 258 - 259
-#define REG_FWINFO_STR_LEN						260	// Length of the information string record
-#define REG_FWINFO_STR_BEGIN					261	// Begining of the information string record
+#define REG_FWINFO_STR_LEN						260		// Length of the information string record
+#define REG_FWINFO_STR_BEGIN					261		// Begining of the information string record
 
 
 // ENDPOINTS

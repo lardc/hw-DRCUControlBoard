@@ -308,22 +308,37 @@ void LOGIC_Config()
 		// Кеширование переменных для амплитуды тока
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	ConfigParams.PulseWidth_CTRL_K_Ext = (float)DataTable[REG_CTRL_EXT_K] / 1000;
+	ConfigParams.PulseWidth_CTRL_K_Ext = ((DataTable[REG_UNIT_DRCU]) ? (float)(Int16S)DataTable[REG_CTRL_EXT_K] : (float)DataTable[REG_CTRL_EXT_K]) / 1000;
 	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		CurrentTempCtrl2_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
+		CurrentTempCtrl2_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+		ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+		ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	CurrentTemp = ((TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext) +
+		// Амплитуда тока по коэффицентам
+		CurrentTempCtrl1Ext = TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext;
+		ConfigParams.PulseWidth_CTRL1 = (Int32U)((CurrentTempCtrl1Ext + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+
+		LOGIC_VariablePulseRateConfig_RCU(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
+		LOGIC_ConstantPulseRateConfig_RCU(ConfigParams.PulseWidth_CTRL2_Up);
+	}
+	else
+	{
+		CurrentTemp = ((TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext) +
 			ConfigParams.PulseWidth_CTRL2_Offset) * ConfigParams.PulseWidth_CTRL2_K;
 
-	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+		ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+		ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
-	if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
-		ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
+		if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
+			ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
 
-	LOGIC_ConstantPulseRateConfig_DCU(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
-	LOGIC_SetCompensationVoltage(TestCurrent);
-
+		LOGIC_ConstantPulseRateConfig_DCU(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
+		LOGIC_SetCompensationVoltage(TestCurrent);
+	}
 }
 //-------------------------------------------
 
