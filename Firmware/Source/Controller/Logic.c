@@ -46,9 +46,6 @@
 //
 #define ARRAY_SORTING_PART_LENGHT	10					// Часть массива для сортировки
 #define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
-//
-#define EXT_LAMP_ON_STATE_TIME		500					// Время работы внешнего индикатора, мс
-
 
 // Structs
 //
@@ -65,7 +62,7 @@ float LOGIC_IntPsVoltage = 0;
 // Forward functions
 //
 void LOGIC_SetCompensationVoltage(Int16U Current);
-int MEASURE_SortCondition(const void *A, const void *B);
+int LOGIC_SortCondition(const void *A, const void *B);
 void LOGIC_SetCurrentRangeRate(Int16U Code);
 void LOGIC_CurrentSourceTurnOff();
 
@@ -449,7 +446,7 @@ Int16U LOGIC_ExctractCurrentValue()
 	// Сортировка
 	SortStartIndex = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
 	SortSize = CONTROL_Values_Counter - SortStartIndex;
-	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
+	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), LOGIC_SortCondition);
 
 	// Усреднение и возврат результата
 	for (int i = CONTROL_Values_Counter - RESULT_AVERAGE_POINTS; i < CONTROL_Values_Counter; ++i)
@@ -501,65 +498,11 @@ void LOGIC_HandleAdcSamples()
 }
 //-------------------------------------------
 
-int MEASURE_SortCondition(const void *A, const void *B)
+int LOGIC_SortCondition(const void *A, const void *B)
 {
 	return (int)(*(Int16U *)A) - (int)(*(Int16U *)B);
 }
 //-----------------------------------------
-
-void CONTROL_HandleFanLogic(bool IsImpulse)
-{
-	static uint32_t IncrementCounter = 0;
-	static uint64_t FanOnTimeout = 0;
-
-	if(CONTROL_State != DS_None)
-	{
-		if(DataTable[REG_FAN_CTRL])
-		{
-			// Увеличение счётчика в простое
-			if (!IsImpulse)
-				IncrementCounter++;
-
-			// Включение вентилятора
-			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
-			{
-				IncrementCounter = 0;
-				FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
-				LL_FAN(true);
-			}
-
-			// Отключение вентилятора
-			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
-			{
-				FanOnTimeout = 0;
-				LL_FAN(false);
-			}
-		}
-		else
-			LL_FAN(false);
-	}
-}
-//-----------------------------------------------
-
-void CONTROL_HandleExternalLamp(bool IsImpulse)
-{
-	static Int64U ExternalLampTimeout = 0;
-
-	if(CONTROL_State != DS_None)
-	{
-		if(IsImpulse)
-		{
-			LL_ExternalLamp(true);
-			ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
-		}
-		else
-		{
-			if(CONTROL_TimeCounter >= ExternalLampTimeout)
-				LL_ExternalLamp(false);
-		}
-	}
-}
-//-----------------------------------------------
 
 void LOGIC_SetReversVoltage()
 {

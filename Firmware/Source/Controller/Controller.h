@@ -53,5 +53,7 @@ extern volatile SubState CONTROL_SubState;
 void CONTROL_SetDeviceState(DeviceState NewState, SubState NewSubState);
 void CONTROL_StopProcess();
 void CONTROL_SwitchToFault(Int16U Reason);
+void CONTROL_HandleFanLogic(bool IsImpulse);
+void CONTROL_HandleExternalLamp(bool IsImpulse);
 
 #endif // __CONTROLLER_H

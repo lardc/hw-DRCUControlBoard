@@ -26,6 +26,8 @@
 // Definitions
 //
 #define TIME_INT_PS_ACTIVITY			250		// мс
+//
+#define EXT_LAMP_ON_STATE_TIME			500		// Время работы внешнего индикатора, мс
 
 // Variables
 //
@@ -56,6 +58,8 @@ void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
 Int16U CONTROL_CalcPostPulseDelay();
 void CONTROL_CoolingProcess();
+void CONTROL_HandleFanLogic(bool IsImpulse);
+void CONTROL_HandleExternalLamp(bool IsImpulse);
 
 // Functions
 //
@@ -422,5 +426,59 @@ void CONTROL_WatchDogUpdate()
 {
 	if (BOOT_LOADER_VARIABLE != BOOT_LOADER_REQUEST)
 		IWDG_Refresh();
+}
+//-----------------------------------------------
+
+void CONTROL_HandleFanLogic(bool IsImpulse)
+{
+	static uint32_t IncrementCounter = 0;
+	static uint64_t FanOnTimeout = 0;
+
+	if(CONTROL_State != DS_None)
+	{
+		if(DataTable[REG_FAN_CTRL])
+		{
+			// Увеличение счётчика в простое
+			if (!IsImpulse)
+				IncrementCounter++;
+
+			// Включение вентилятора
+			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
+			{
+				IncrementCounter = 0;
+				FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
+				LL_FAN(true);
+			}
+
+			// Отключение вентилятора
+			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
+			{
+				FanOnTimeout = 0;
+				LL_FAN(false);
+			}
+		}
+		else
+			LL_FAN(false);
+	}
+}
+//-----------------------------------------------
+
+void CONTROL_HandleExternalLamp(bool IsImpulse)
+{
+	static Int64U ExternalLampTimeout = 0;
+
+	if(CONTROL_State != DS_None)
+	{
+		if(IsImpulse)
+		{
+			LL_ExternalLamp(true);
+			ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
+		}
+		else
+		{
+			if(CONTROL_TimeCounter >= ExternalLampTimeout)
+				LL_ExternalLamp(false);
+		}
+	}
 }
 //-----------------------------------------------
