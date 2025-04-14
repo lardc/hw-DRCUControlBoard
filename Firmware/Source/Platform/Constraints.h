@@ -27,8 +27,8 @@
 //
 #define REG_PULSE_TO_PULSE_DELAY_MAX
 //
-#define PULSE_WIDTH_MIN					10
-#define PULSE_WIDTH_MAX					50
+#define PULSE_WIDTH_MIN					10			// для RCU 5(настроено в DeviceProf)
+#define PULSE_WIDTH_MAX					50			// для RCU 38(настроено в DeviceProf)
 #define PULSE_WIDTH_DEF					10
 //
 #define GAIN_COEFFICIENT_MIN			1

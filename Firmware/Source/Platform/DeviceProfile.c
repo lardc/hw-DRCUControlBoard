@@ -131,6 +131,16 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 	if (ENABLE_LOCKING && !UnlockedForNVWrite && (Address < DATA_TABLE_WR_START))
 		return FALSE;
 
+	if (Address == REG_PULSE_WIDTH)
+	{
+		Int16U RCUPulseWidthMin = 5;
+		Int16U RCUPulseWidthMax = 38;
+		Int16U Min = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMin : VConstraint[Address].Min;
+		Int16U Max = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMax : VConstraint[Address].Max;
+		if (Data < Min || Data > Max)
+			return FALSE;
+	}
+
 	if (Address < DATA_TABLE_WR_START)
 	{
 		if (Data < NVConstraint[Address - DATA_TABLE_NV_START].Min
