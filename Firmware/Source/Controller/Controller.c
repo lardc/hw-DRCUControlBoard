@@ -392,6 +392,7 @@ void CONTROL_RegistersReset()
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;
+	DataTable[REG_FAILED_SUBSTATE] = 0;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -402,6 +403,7 @@ void CONTROL_SwitchToFault(Int16U Reason)
 {
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
+	DataTable[REG_FAILED_SUBSTATE] = CONTROL_SubState;
 
 	LOGIC_ResetHWToDefaults(true);
 }
