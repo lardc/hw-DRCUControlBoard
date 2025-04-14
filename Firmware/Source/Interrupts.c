@@ -180,7 +180,21 @@ void TIM2_IRQHandler()
 
 void TIM3_IRQHandler()
 {
-	TIMx_Process(TIM3, TIM_SR_CC4IF);
+	switch(DataTable[REG_UNIT_DRCU])
+	{
+		case VERSION_RCU:
+			TIM_Stop(TIM3);
+
+			if(CONTROL_SubState == SS_RiseEdge)
+				CONTROL_SetDeviceState(DS_InProcess, SS_Plate);
+
+			TIM_InterruptEventFlagClear(TIM3, TIM_SR_CC4IF);
+			break;
+
+		case VERSION_DCU:
+			TIMx_Process(TIM3, TIM_SR_CC4IF);
+			break;
+	}
 }
 //-----------------------------------------
 
