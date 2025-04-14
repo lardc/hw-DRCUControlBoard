@@ -8,6 +8,7 @@
 #include "DataTable.h"
 #include "Delay.h"
 #include "Logic.h"
+#include "Constraints.h"
 
 // Functions
 //
@@ -75,18 +76,34 @@ void DBGACT_ExtRegWriteData()
 
 void DBGACT_GeneratePulse()
 {
-	LOGIC_ConstantPulseRateConfig(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
-	DELAY_US(500);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		LOGIC_VariablePulseRateConfig_RCU(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
+		DELAY_US(500);
 
-	LL_OutputLock(false);
-	DELAY_US(1000);
+		LL_OutputLock(false);
+		DELAY_US(1000);
 
-	LL_SW_Trig(true);
-	DELAY_US(3000);
+		LL_SW_Trig(true);
+		DELAY_US(500);
 
-	LOGIC_VariablePulseRateConfig(DataTable[REG_DBG2]);
-	DELAY_US(1000);
+		LOGIC_ConstantPulseRateConfig_RCU(DataTable[REG_DBG2]);
+		DELAY_US(500);
+	}
+	else
+	{
+		LOGIC_ConstantPulseRateConfig_DCU(DataTable[REG_DBG], INTPS_VOLTAGE_MAX);
+		DELAY_US(500);
 
+		LL_OutputLock(false);
+		DELAY_US(1000);
+
+		LL_SW_Trig(true);
+		DELAY_US(3000);
+
+		LOGIC_VariablePulseRateConfig_DCU(DataTable[REG_DBG2]);
+		DELAY_US(1000);
+	}
 	LL_SW_Trig(false);
 	DELAY_US(1000);
 
