@@ -387,8 +387,7 @@ void LOGIC_VariablePulseRateConfig_RCU(Int32U PulseWidth, Int16U IntPsVoltage)
 
 	if(PulseWidth > (Int32U)ConfigParams.MaxPulseWidth_CTRL1)
 		PulseWidth = (Int32U)ConfigParams.MaxPulseWidth_CTRL1;
-	if(PulseWidth < 0)
-		PulseWidth = 0;
+
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
