@@ -18,10 +18,10 @@ int main()
 	// Настройка системной частоты тактирования
 	INITCFG_ConfigSystemClock();
 
-	// Конфигурация сервиса работы Data-table и EPROM
+	// Конфигурация сервиса работы DataTable и EPROM
 	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
 
-	// Инициализация data table
+	// Инициализация DataTable
 	DT_Init(EPROMService, false);
 	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
 
@@ -30,9 +30,6 @@ int main()
 
 	// Настройка внешних прерываний
 	INITCFG_ConfigExtInterrupt();
-
-	// Настройка CAN
-	INITCFG_ConfigCAN();
 
 	// Настройка UART
 	INITCFG_ConfigUART();

@@ -86,12 +86,14 @@ void INITCFG_ConfigExtInterrupt()
 }
 //------------------------------------------------
 
-void INITCFG_ConfigCAN()
+void INITCFG_ConfigCAN(Int16U NodeID)
 {
+	Int32U Mask = ((Int32U)NodeID) << CAN_SLAVE_NID_MPY;
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
 	NCAN_Init(SYSCLK, CAN_BAUDRATE, false);
 	NCAN_FIFOInterrupt(true);
-	NCAN_FilterInit(0, CAN_SLAVE_FILTER_ID, CAN_SLAVE_FILTER_ID);
+	NCAN_FilterInit(0, Mask, Mask);
+	NCAN_InterruptSetPriority(0);
 }
 //------------------------------------------------------------------------------
 

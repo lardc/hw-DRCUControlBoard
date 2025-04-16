@@ -147,9 +147,11 @@
 #define REG_CTRL2_OFFSET						106		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								107		// Коэффициент грубой подстройки тока
 
+// 108
+#define REG_CFG_NODE_ID							109		// Настройка CAN NodeID: DCU начинаются с 160, RCU с 170
 #define REG_UNIT_DRCU							110		// 0 - блок DCU
 														// 1 - RCU
-// 108-119
+// 111-119
 
 #define REG_I_TO_DAC_OFFSET						120		// Смещение преобразования ток->ЦАП
 #define REG_I_TO_DAC_K							121		// Коэффициент преобразования ток->ЦАП
