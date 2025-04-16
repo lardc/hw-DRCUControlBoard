@@ -191,7 +191,7 @@
 #define DF_NONE									0
 #define DF_BATTERY_LOW							1		// Ошибка заряда батареи
 #define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
-#define DF_BATTERY_UP							3		// Напряжение батареи выше заданного
+#define DF_BATTERY_UP							4		// Напряжение батареи выше заданного
 
 // WARNINGS
 //
