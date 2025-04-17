@@ -474,7 +474,7 @@ void LOGIC_HandleAdcSamples()
 		// Определение выхода тока на заданный уровень
 		if(CONTROL_SubState == SS_Plate)
 		{
-			Error = abs(100 - Current / TestCurrent * 100);
+			Error = fabs(100 - Current / TestCurrent * 100);
 
 			if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
 				AllowedErrorCounter++;
