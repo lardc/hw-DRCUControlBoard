@@ -21,15 +21,18 @@
 #include "stdlib.h"
 #include "InitConfig.h"
 #include "BCCIxParams.h"
+#include "Constraints.h"
 
 // Definitions
 //
 #define TIME_INT_PS_ACTIVITY			250		// мс
+//
+#define EXT_LAMP_ON_STATE_TIME			500		// Время работы внешнего индикатора, мс
 
 // Variables
 //
-DeviceState CONTROL_State = DS_None;
-SubState CONTROL_SubState = SS_None;
+volatile DeviceState CONTROL_State = DS_None;
+volatile SubState CONTROL_SubState = SS_None;
 static Boolean CycleActive = false;
 //
 volatile Int16U CONTROL_Values_DUTCurrent[VALUES_x_SIZE];
@@ -48,12 +51,15 @@ void CONTROL_ResetToDefaults(bool StopPowerSupply);
 void CONTROL_Idle();
 void CONTROL_WatchDogUpdate();
 void CONTROL_RegistersReset();
-void CONTROL_HandleBatteryCharge();
+void CONTROL_HandleBatteryCharge_DCU();
+void CONTROL_HandleBatteryCharge_RCU();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
 Int16U CONTROL_CalcPostPulseDelay();
 void CONTROL_CoolingProcess();
+void CONTROL_HandleFanLogic(bool IsImpulse);
+void CONTROL_HandleExternalLamp(bool IsImpulse);
 
 // Functions
 //
@@ -64,14 +70,12 @@ void CONTROL_Init()
 	Int16U EPSized[EP_COUNT] = { VALUES_x_SIZE };
 	pInt16U EPCounters[EP_COUNT] = { (pInt16U)&CONTROL_Values_Counter };
 	pInt16U EPDatas[EP_COUNT] = { (pInt16U)CONTROL_Values_DUTCurrent };
-
-	// Конфигурация сервиса работы Data-table и EPROM
-	EPROMServiceConfig EPROMService = { (FUNC_EPROM_WriteValues)&NFLASH_WriteDT, (FUNC_EPROM_ReadValues)&NFLASH_ReadDT };
-	// Инициализация data table
-	DT_Init(EPROMService, false);
-	DT_SaveFirmwareInfo(CAN_SLAVE_NID, 0);
+	// Инициализация функций связанных с CAN NodeID
+	Int16U NodeID = DataTable[REG_CFG_NODE_ID] ? DataTable[REG_CFG_NODE_ID] : CAN_SLAVE_NID;
+	DT_SaveFirmwareInfo(NodeID, 0);
+	INITCFG_ConfigCAN(NodeID);
 	// Инициализация device profile
-	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive);
+	DEVPROFILE_Init(&CONTROL_DispatchAction, &CycleActive, NodeID);
 	DEVPROFILE_InitEPService(EPIndexes, EPSized, EPCounters, EPDatas);
 	// Сброс значений
 	DEVPROFILE_ResetControlSection();
@@ -100,6 +104,8 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
 				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
 				LOGIC_BatteryCharge(true);
+				if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+					LOGIC_SetReversVoltage();
 			}
 			else if(CONTROL_State != DS_Ready)
 				*pUserError = ERR_OPERATION_BLOCKED;
@@ -165,7 +171,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 void CONTROL_Idle()
 {
 	// Process battery charge
-	CONTROL_HandleBatteryCharge();
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? CONTROL_HandleBatteryCharge_RCU() : CONTROL_HandleBatteryCharge_DCU();
 
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
@@ -199,7 +205,15 @@ void CONTROL_HandleIntPSTune()
 	{
 		if(DataTable[REG_V_INTPS_SETPOINT])
 			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
-		DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
+
+		if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+		{
+			DataTable[REG_INT_PS_VOLTAGE] = MEASURE_ConvertIntPsVoltage(0, true) * 10;
+		}
+		else
+		{
+			DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
+		}
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
@@ -240,7 +254,6 @@ void CONTROL_CoolingProcess()
 	static Int64U TimeoutCounter = 0;
 	static Int16U CurrentPulseCounter = 0;
 
-
 	// Задержка после импульса
 	if (CONTROL_SubState == SS_PostPulseDelay)
 	{
@@ -280,7 +293,7 @@ void CONTROL_CoolingProcess()
 }
 //-----------------------------------------------
 
-void CONTROL_HandleBatteryCharge()
+void CONTROL_HandleBatteryCharge_DCU()
 {
 	DataTable[REG_BAT_VOLTAGE] = (Int16U) (LOGIC_BatteryVoltage * 10);
 
@@ -293,9 +306,47 @@ void CONTROL_HandleBatteryCharge()
 		else
 		{
 			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
-				CONTROL_SwitchToFault(DF_BATTERY);
+				CONTROL_SwitchToFault(DF_BATTERY_LOW);
 		}
 	}
+}
+//-----------------------------------------------
+
+void CONTROL_HandleBatteryCharge_RCU()
+{
+	float BatteryVoltage;
+	BatteryVoltage = MEASURE_ConvertBatteryVoltage(0, true) * 10;
+
+	if(CONTROL_SubState == SS_PowerPrepare)
+	{
+		if(BatteryVoltage < (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+			LL_PowerOnSolidStateRelay(true);
+
+		if(BatteryVoltage >= (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
+		{
+			LL_PowerOnSolidStateRelay(false);
+			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+		}
+		else
+		{
+			if(CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
+				CONTROL_SwitchToFault(DF_BATTERY_LOW);
+		}
+	}
+	// Поддержание заряда батареи
+	if(CONTROL_State == DS_Ready)
+	{
+		if(BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
+		{
+			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
+			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+		}
+		if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST))
+		{
+			CONTROL_SwitchToFault(DF_BATTERY_UP);
+		}
+	}
+	DataTable[REG_BAT_VOLTAGE] = (Int16U)BatteryVoltage;
 }
 //-----------------------------------------------
 
@@ -331,6 +382,7 @@ void CONTROL_RegistersReset()
 	DataTable[REG_WARNING] = 0;
 	DataTable[REG_PROBLEM] = 0;
 	DataTable[REG_FAULT_REASON] = 0;
+	DataTable[REG_FAILED_SUBSTATE] = 0;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -341,6 +393,7 @@ void CONTROL_SwitchToFault(Int16U Reason)
 {
 	CONTROL_SetDeviceState(DS_Fault, SS_None);
 	DataTable[REG_FAULT_REASON] = Reason;
+	DataTable[REG_FAILED_SUBSTATE] = CONTROL_SubState;
 
 	LOGIC_ResetHWToDefaults(true);
 }
@@ -359,5 +412,59 @@ void CONTROL_WatchDogUpdate()
 {
 	if (BOOT_LOADER_VARIABLE != BOOT_LOADER_REQUEST)
 		IWDG_Refresh();
+}
+//-----------------------------------------------
+
+void CONTROL_HandleFanLogic(bool IsImpulse)
+{
+	static uint32_t IncrementCounter = 0;
+	static uint64_t FanOnTimeout = 0;
+
+	if(CONTROL_State != DS_None)
+	{
+		if(DataTable[REG_FAN_CTRL])
+		{
+			// Увеличение счётчика в простое
+			if (!IsImpulse)
+				IncrementCounter++;
+
+			// Включение вентилятора
+			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
+			{
+				IncrementCounter = 0;
+				FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
+				LL_FAN(true);
+			}
+
+			// Отключение вентилятора
+			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
+			{
+				FanOnTimeout = 0;
+				LL_FAN(false);
+			}
+		}
+		else
+			LL_FAN(false);
+	}
+}
+//-----------------------------------------------
+
+void CONTROL_HandleExternalLamp(bool IsImpulse)
+{
+	static Int64U ExternalLampTimeout = 0;
+
+	if(CONTROL_State != DS_None)
+	{
+		if(IsImpulse)
+		{
+			LL_ExternalLamp(true);
+			ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
+		}
+		else
+		{
+			if(CONTROL_TimeCounter >= ExternalLampTimeout)
+				LL_ExternalLamp(false);
+		}
+	}
 }
 //-----------------------------------------------

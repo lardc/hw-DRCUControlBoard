@@ -42,7 +42,7 @@ void LL_SW_Trig(bool Start)
 
 	if(Start)
 	{
-		PWM_PulseWidth = (float)DataTable[REG_PULSE_WIDTH] * 100 / TIMER16_uS * TIM16_MAX_VALUE;
+		PWM_PulseWidth = (float)DataTable[REG_PULSE_WIDTH] * 100 / (DataTable[REG_UNIT_DRCU] ? TIMER16_RCU_uS : TIMER16_DCU_uS) * TIM16_MAX_VALUE;
 
 		TIM_Reset(TIM16);
 		TIMx_PWM_SetValue(TIM16, TIMx_CHANNEL1, PWM_PulseWidth);
@@ -70,6 +70,7 @@ void LL_PowerOnSolidStateRelay(bool State)
 
 void LL_OutputCompensation(bool State)
 {
+	// Также выполняет функцию ReversVCompensation в RCU
 	GPIO_SetState(GPIO_OUTPUT_COMPENS, !State);
 }
 //------------------------------------------------------------------------------
@@ -123,6 +124,6 @@ bool LL_ReadLineSync()
 
 void LL_PulseEn(bool State)
 {
-	GPIO_SetState(GPIO_PULSE_EN, State);
+	GPIO_SetState(GPIO_PULSE_EN_DCU, State);
 }
 //------------------------------------------------------------------------------

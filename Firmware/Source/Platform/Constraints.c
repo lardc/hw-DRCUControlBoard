@@ -113,7 +113,7 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, CTRL2_K_DEF},								// 107
 		{0, 0, 0},																				// 108
 		{0, 0, 0},																				// 109
-		{0, 0, 0},																				// 110
+		{VERSION_DCU, VERSION_RCU, VERSION_DCU},												// 110
 		{0, 0, 0},																				// 111
 		{0, 0, 0},																				// 112
 		{0, 0, 0},																				// 113
@@ -128,8 +128,8 @@ const TableItemConstraint NVConstraint[DATA_TABLE_NV_SIZE] = {
 		{0, INT16U_MAX, 0},																		// 122
 		{GAIN_COEFFICIENT_MIN, GAIN_COEFFICIENT_MAX, GAIN_COEFFICIENT_DEF},						// 123
 		{0, INT16U_MAX, 0},																		// 124
-		{0, 0, 0},																				// 125
-		{0, 0, 0},																				// 126
+		{0, INT16U_MAX, 0},																		// 125
+		{0, CURRENT_SETPOINT_MAX, CURRENT_SETPOINT_DEF},										// 126
 		{0, 0, 0}																				// 127
 };
 
@@ -158,8 +158,8 @@ const TableItemConstraint VConstraint[DATA_TABLE_WP_START - DATA_TABLE_WR_START]
 		{0, 0, 0},																				// 149
 		{0, INT16U_MAX, 0},																		// 150
 		{0, INT16U_MAX, 0},																		// 151
-		{0, 0, 0},																				// 152
-		{0, 0, 0},																				// 153
+		{0, INT16U_MAX, 0},																		// 152
+		{0, INT16U_MAX, 0},																		// 153																				// 153
 		{0, 0, 0},																				// 154
 		{0, 0, 0},																				// 155
 		{0, 0, 0},																				// 156

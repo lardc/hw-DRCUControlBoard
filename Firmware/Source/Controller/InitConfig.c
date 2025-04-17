@@ -5,6 +5,9 @@
 #include "Logic.h"
 #include "Global.h"
 #include "BCCIxParams.h"
+#include "DataTable.h"
+#include "Constraints.h"
+#include "ZwCommon.h"
 
 // Forward functions
 //
@@ -36,9 +39,9 @@ void INITCFG_ConfigIO()
 	// Входы
 	GPIO_InitInput(GPIO_SYNC, Pull_Down);
 	//
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? GPIO_InitInput(GPIO_PROTECTION_RCU, NoPull) : GPIO_InitPushPullOutput(GPIO_PULSE_EN_DCU);
 	
 	// Выходы
-	GPIO_InitPushPullOutput(GPIO_PULSE_EN);
 	GPIO_InitPushPullOutput(GPIO_OUTPUT_COMPENS);
 	GPIO_InitPushPullOutput(GPIO_RELAY_MECH);
 	GPIO_InitPushPullOutput(GPIO_RELAY_SOLID);
@@ -70,9 +73,12 @@ void INITCFG_ConfigIO()
 
 void INITCFG_ConfigExtInterrupt()
 {
-	// Вход PROTECTION
-	//EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
-	//EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+	// Вход PROTECTION (только для RCU)
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		EXTI_Config(EXTI_PC, EXTI_13, FALL_TRIG, 0);
+		EXTI_EnableInterrupt(EXTI15_10_IRQn, 0, true);
+	}
 
 	// Вход SYNC
 	EXTI_Config(EXTI_PB, EXTI_6, BOTH_TRIG, 0);
@@ -80,12 +86,14 @@ void INITCFG_ConfigExtInterrupt()
 }
 //------------------------------------------------
 
-void INITCFG_ConfigCAN()
+void INITCFG_ConfigCAN(Int16U NodeID)
 {
+	Int32U Mask = ((Int32U)NodeID) << CAN_SLAVE_NID_MPY;
 	RCC_CAN_Clk_EN(CAN_1_ClkEN);
 	NCAN_Init(SYSCLK, CAN_BAUDRATE, false);
 	NCAN_FIFOInterrupt(true);
-	NCAN_FilterInit(0, CAN_SLAVE_FILTER_ID, CAN_SLAVE_FILTER_ID);
+	NCAN_FilterInit(0, Mask, Mask);
+	NCAN_InterruptSetPriority(0);
 }
 //------------------------------------------------------------------------------
 
@@ -107,15 +115,23 @@ void INITCFG_ConfigADC()
 	RCC_ADC_Clk_EN(ADC_12_ClkEN);
 	ADC_Calibration(ADC1);
 	ADC_Enable(ADC1);
-	ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
-	ADC_ChannelSeqReset(ADC1);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, ADC_CURRENT_SEQ);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_BAT_VOLTAGE_CHANNEL, ADC_BAT_VOLTAGE_SEQ);
-	ADC_ChannelSet_Sequence(ADC1, ADC1_INT_PS_VOLTAGE_CHANNEL, ADC_INTPS_VOLTAGE_SEQ);
-	ADC_ChannelSeqLen(ADC1, ADC_CHANNELS);
-	ADC_DMAConfig(ADC1);
-	ADC_DMAEnable(ADC1, true);
-	ADC_SamplingStart(ADC1);
+
+	if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		ADC_SoftTrigConfig(ADC1);
+	}
+	else
+	{
+		ADC_TrigConfig(ADC1, ADC12_TIM6_TRGO, RISE);
+		ADC_ChannelSeqReset(ADC1);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_CURRENT_CHANNEL, ADC_CURRENT_SEQ);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_BAT_VOLTAGE_CHANNEL, ADC_BAT_VOLTAGE_SEQ);
+		ADC_ChannelSet_Sequence(ADC1, ADC1_INT_PS_VOLTAGE_CHANNEL, ADC_INTPS_VOLTAGE_SEQ);
+		ADC_ChannelSeqLen(ADC1, ADC_CHANNELS);
+		ADC_DMAConfig(ADC1);
+		ADC_DMAEnable(ADC1, true);
+		ADC_SamplingStart(ADC1);
+	}
 }
 //------------------------------------------------------------------------------
 
@@ -132,13 +148,19 @@ void INITCFG_ConfigTimer2_3()
 	TIM_Config(TIM3, SYSCLK, TIMER2_3_uS);
 	TIMx_PWM_ConfigChannel(TIM3, TIMx_CHANNEL4);
 	TIM_InterruptEventConfig(TIM3, TIM_DIER_CC4IE, true);
+
+	if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		TIM_OnePulseMode(TIM2, true);
+		TIM_OnePulseMode(TIM3, true);
+	}
 }
 //------------------------------------------------------------------------------
 
 void INITCFG_ConfigTimer16()
 {
 	TIM_Clock_En(TIM_16);
-	TIM_Config(TIM16, SYSCLK, TIMER16_uS);
+	TIM_Config(TIM16, SYSCLK, (DataTable[REG_UNIT_DRCU] ? TIMER16_RCU_uS : TIMER16_DCU_uS));
 	TIM_OnePulseMode(TIM16, true);
 	TIMx_PWM_ConfigChannel(TIM16, TIMx_CHANNEL1);
 }
@@ -156,10 +178,19 @@ void INITCFG_ConfigTimer7()
 void INITCFG_ConfigTimer6()
 {
 	TIM_Clock_En(TIM_6);
-	TIM_Config(TIM6, SYSCLK, TIMER6_uS);
-	TIM_DMA(TIM6, DMAEN);
-	TIM_MasterMode(TIM6, MMS_UPDATE);
-	TIM_Start(TIM6);
+	if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		TIM_Config(TIM6, SYSCLK, TIMER6_RCU_uS);
+		TIM_Interupt(TIM6, 0, true);
+		TIM_Reset(TIM6);
+	}
+	else
+	{
+		TIM_Config(TIM6, SYSCLK, TIMER6_DCU_uS);
+		TIM_DMA(TIM6, DMAEN);
+		TIM_MasterMode(TIM6, MMS_UPDATE);
+		TIM_Start(TIM6);
+	}
 }
 //------------------------------------------------------------------------------
 

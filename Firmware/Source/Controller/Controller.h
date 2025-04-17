@@ -23,6 +23,7 @@ typedef enum __SubState
 	SS_FallEdge			= 5,
 	SS_PostPulseDelay	= 6,
 	SS_Cooling			= 7,
+	SS_FallPlate		= 8,
 } SubState;
 //
 typedef enum __DeviceState
@@ -43,8 +44,8 @@ extern volatile Int64U CONTROL_TimeCounter;
 extern volatile Int16U CONTROL_Values_DUTCurrent[];
 extern volatile Int16U CONTROL_Values_Counter;
 //
-extern DeviceState CONTROL_State;
-extern SubState CONTROL_SubState;
+extern volatile DeviceState CONTROL_State;
+extern volatile SubState CONTROL_SubState;
 
 
 // Functions
@@ -52,5 +53,7 @@ extern SubState CONTROL_SubState;
 void CONTROL_SetDeviceState(DeviceState NewState, SubState NewSubState);
 void CONTROL_StopProcess();
 void CONTROL_SwitchToFault(Int16U Reason);
+void CONTROL_HandleFanLogic(bool IsImpulse);
+void CONTROL_HandleExternalLamp(bool IsImpulse);
 
 #endif // __CONTROLLER_H

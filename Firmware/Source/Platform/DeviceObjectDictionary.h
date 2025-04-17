@@ -22,6 +22,7 @@
 #define ACT_DBG_GENERATE_PULSE					60		// Отладочный режим - формирование импульса
 #define ACT_DBG_CURRENT_READY_OUTPUT			61		// Отладочный режим - формирования сигнала CurrentReady
 #define ACT_DBG_SET_COMPENSATION				62		// Отладочный режим - установка напряжения компенсации
+#define ACT_DBG_REVERS_V_COMPENSATION			63		// Отладочный режим - формирование отрицательного напряжения
 //
 #define ACT_CONFIG_UNIT							100		// Конфигурация блока
 #define ACT_SOFTWARE_START						101		// Программный запуск
@@ -146,7 +147,11 @@
 #define REG_CTRL2_OFFSET						106		// Смещение грубой подстройки тока
 #define REG_CTRL2_K								107		// Коэффициент грубой подстройки тока
 
-// 108-119
+// 108
+#define REG_CFG_NODE_ID							109		// Настройка CAN NodeID: DCU начинаются с 160, RCU с 170
+#define REG_UNIT_DRCU							110		// 0 - блок DCU
+														// 1 - RCU
+// 111-119
 
 #define REG_I_TO_DAC_OFFSET						120		// Смещение преобразования ток->ЦАП
 #define REG_I_TO_DAC_K							121		// Коэффициент преобразования ток->ЦАП
@@ -154,7 +159,8 @@
 #define REG_I_TO_DAC_P1							123		// Регистр тонкой подстройки Р1
 #define REG_I_TO_DAC_P2							124		// Регистр тонкой подстройки Р2
 //
-
+#define REG_V_TO_DAC_OFFSET						125		// Смещение обратного напряжения в В*10
+#define REG_I_FALL_PLATE						126		// Ток при котором начинается полка тока на заднем фронте, А
 
 #define REG_CURRENT_SETPOINT					128		// Амплитуда задаваемого тока, А
 #define REG_CURRENT_RATE						129		// Скорость измерения тока, А/мкс
@@ -164,8 +170,8 @@
 #define REG_I_TO_V_INTPS_EXT_OFFSET				132 	// Добавочное смещение преобразования тока в напряжение внутреннего источника
 #define REG_I_TO_V_INTPS_EXT_K					133		// Добавочный коэффицент преобразования тока в напряжение внутреннего источника
 #define REG_I_TO_V_INTPS_EXT_K2					134		// Добавочный квадратичный коэффициент преобразования тока в напряжение внутреннего источника
-#define REG_CTRL_EXT_OFFSET						135		// Добавочное смещение грубой подстройки амплитуды прямого тока
-#define REG_CTRL_EXT_K							136		// Добавочный коэффицент грубой подстройки амплитуды прямого тока
+#define REG_CTRL_EXT_OFFSET						135		// Добавочное смещение грубой подстройки амплитуды прямого(DCU) и обратного(RCU) тока
+#define REG_CTRL_EXT_K							136		// Добавочный коэффицент грубой подстройки амплитуды прямого(DCU) и обратного(RCU) тока
 #define REG_I_TO_DAC_EXT_P0						137		// Добавочное смещение компенсации амплитуды прямого тока
 #define REG_I_TO_DAC_EXT_P1						138		// Добавочный коэффициент компенсации амплитуды прямого тока
 #define REG_I_TO_DAC_EXT_P2						139		// Добавочный квадратичный коэффициент компенсации амплитуды прямого тока
@@ -175,6 +181,8 @@
 
 #define REG_DBG									150		// Отладочный регистр 1
 #define REG_DBG2								151		// Отладочный регистр 2
+#define REG_DBGRATETEMP							152		//
+#define REG_DBGRATECORR							153		//
 // -----------------------------------------------
 
 #define REG_DEV_STATE							192		// Статус работы блока
@@ -183,16 +191,17 @@
 #define REG_WARNING								195		// Предупреждение
 #define REG_PROBLEM								196		// Регистр Problem
 #define REG_DEV_SUBSTATE						197		// Подстатус работы блока
+#define REG_FAILED_SUBSTATE						198		// Подстатус на котором возник фолт
 //
 #define REG_BAT_VOLTAGE							200		// Напряжение на конденсаторной батарее 1 (в В х10)
 #define REG_INT_PS_VOLTAGE						201		// Напряжение источника формирователя, (в В х10)
 #define REG_CURRENT								202		// Измеренное значение амплитуды тока (в А*10)
 // -----------------------------
-#define REG_FWINFO_SLAVE_NID					256	// Device CAN slave node ID
-#define REG_FWINFO_MASTER_NID					257	// Device CAN master node ID (if presented)
+#define REG_FWINFO_SLAVE_NID					256		// Device CAN slave node ID
+#define REG_FWINFO_MASTER_NID					257		// Device CAN master node ID (if presented)
 // 258 - 259
-#define REG_FWINFO_STR_LEN						260	// Length of the information string record
-#define REG_FWINFO_STR_BEGIN					261	// Begining of the information string record
+#define REG_FWINFO_STR_LEN						260		// Length of the information string record
+#define REG_FWINFO_STR_BEGIN					261		// Begining of the information string record
 
 
 // ENDPOINTS
@@ -203,14 +212,16 @@
 // FAULT & DISABLE
 //
 #define DF_NONE									0
-#define DF_BATTERY								1		// Ошибка заряда батареи
-//#define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
+#define DF_BATTERY_LOW							1		// Ошибка заряда батареи
+#define DF_PROTECTION							2		// Защита от перенапряжения в цепи управления
 #define DF_SYNC									3		// Длительность импульса синхронизации превышена
+#define DF_BATTERY_UP							4		// Напряжение батареи выше заданного
 
 // WARNINGS
 //
 #define WARNING_NONE							0
 #define WARNING_CURRENT_NOT_READY				1		// Ток не вышел на заданный уровень
+#define WARNING_SYNC							2		// Длительность импульса синхронизации превышена
 
 // User Errors
 // 

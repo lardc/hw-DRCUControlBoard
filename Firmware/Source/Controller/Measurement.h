@@ -5,10 +5,10 @@
 
 // Functions
 //
-float MEASURE_ConvertBatteryVoltage(Int16U ADCValue);
-float MEASURE_ConvertIntPsVoltage(Int16U ADCValue);
+float MEASURE_ConvertBatteryVoltage(Int16U ADCValue, bool RCU_Flag);
+float MEASURE_ConvertIntPsVoltage(Int16U ADCValue, bool RCU_Flag);
 float MEASURE_ConvertCurrent(Int16U ADCValue);
-Int16U MEASURE_ConvertValxtoDAC(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0,
+Int16U MEASURE_ConvertValxtoDAC_DCU(float Value, Int16U RegisterOffset, Int16U RegisterK, Int16U RegisterP2,  Int16U RegisterP1,  Int16U RegisterP0,
 		Int16U RegisterExtP2,  Int16U RegisterExtP1,  Int16U RegisterExtP0);
-
+Int16U MEASURE_ConvertValxtoDAC_RCU();
 #endif // __MEASUREMENT_H

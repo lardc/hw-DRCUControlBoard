@@ -15,6 +15,7 @@
 #include "InitConfig.h"
 #include "Delay.h"
 #include "Measurement.h"
+#include "Constraints.h"
 
 // Definitions
 //
@@ -45,9 +46,6 @@
 //
 #define ARRAY_SORTING_PART_LENGHT	10					// Часть массива для сортировки
 #define RESULT_AVERAGE_POINTS		10					// Количество точек усредения результата измерения
-//
-#define EXT_LAMP_ON_STATE_TIME		500					// Время работы внешнего индикатора, мс
-
 
 // Structs
 //
@@ -64,7 +62,7 @@ float LOGIC_IntPsVoltage = 0;
 // Forward functions
 //
 void LOGIC_SetCompensationVoltage(Int16U Current);
-int MEASURE_SortCondition(const void *A, const void *B);
+int LOGIC_SortCondition(const void *A, const void *B);
 void LOGIC_SetCurrentRangeRate(Int16U Code);
 void LOGIC_CurrentSourceTurnOff();
 
@@ -73,27 +71,42 @@ void LOGIC_CurrentSourceTurnOff();
 // Сброс аппаратных линий в состояния по умолчанию
 void LOGIC_ResetHWToDefaults(bool StopPowerSupply)
 {
-	LL_PulseEn(false);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		LL_OutputCompensation(true);
+	}
+	else
+	{
+		LL_PulseEn(false);
+		LL_OutputCompensation(false);
+		LL_External_DC_RDY(false);
+	}
+
 	LOGIC_SofwarePulseStart(false);
 	LOGIC_CurrentSourceTurnOff();
 
 	if (StopPowerSupply)
 		LOGIC_BatteryCharge(false);
 
-
 	LL_OutputLock(true);
 	LL_IntPowerSupplyDischarge(false);
 	LL_IntPowerSupplyEn(false);
 	LL_OverVoltageProtectionReset();
-	LL_OutputCompensation(false);
-	LL_External_DC_RDY(false);
 }
 //-------------------------------------------
 
 void LOGIC_CurrentSourceTurnOff()
 {
-	LOGIC_ConstantPulseRateConfig(0, 0);
-	LOGIC_VariablePulseRateConfig(0);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		LOGIC_ConstantPulseRateConfig_RCU(0);
+		LOGIC_VariablePulseRateConfig_RCU(0, 0);
+	}
+	else
+	{
+		LOGIC_ConstantPulseRateConfig_DCU(0, 0);
+		LOGIC_VariablePulseRateConfig_DCU(0);
+	}
 	LOGIC_SetCurrentRangeRate(CODE_CURRENT_RATE_OFF);
 }
 //-------------------------------------------
@@ -117,7 +130,7 @@ void LOGIC_BatteryCharge(bool State)
 
 void LOGIC_Config()
 {
-	float CurrentTemp, RateTemp, correctedRate;
+	float CurrentTemp, RateTemp, CorrectedRate, CurrentTempCtrl2_Up, CurrentTempCtrl2_Low, CurrentTempCtrl1Ext;
 
 	DEVPROFILE_ResetScopes(0);
 	DEVPROFILE_ResetEPReadState();
@@ -125,11 +138,11 @@ void LOGIC_Config()
 	// Настройка аппаратной части
 	LL_PowerOnSolidStateRelay(false);
 
-	// Кеширование переменных для скорости спада тока
+	// Кеширование переменных для скорости нарастания тока(RCU) и спада тока(DCU)
 	TestCurrent = DataTable[REG_CURRENT_SETPOINT];
-	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 1e3;
-	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e6;
-	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e9;
+	ConfigParams.IntPsVoltageOffset_Ext = (Int16S)DataTable[REG_I_TO_V_INTPS_EXT_OFFSET] / 10;
+	ConfigParams.IntPsVoltageK_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K] / 1e4;
+	ConfigParams.IntPsVoltageK2_Ext = (float)(Int16S)DataTable[REG_I_TO_V_INTPS_EXT_K2] / 1e7;
 
 	switch(DataTable[REG_CURRENT_RATE])
 	{
@@ -265,39 +278,64 @@ void LOGIC_Config()
 		ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 	else
 	{
-		// Расчет напряжения для скорости спада по коэффицентам
+		// Расчет напряжения для скорости нарастания(RCU) и спада(DCU) по коэффицентам
 		RateTemp = ConfigParams.IntPsVoltageK4 / (TestCurrent * TestCurrent * TestCurrent * TestCurrent) +
 						TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2 + TestCurrent * ConfigParams.IntPsVoltageK + ConfigParams.IntPsVoltageOffset;
-		correctedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
-		ConfigParams.IntPsVoltage = RateTemp + RateTemp * correctedRate / 100;
+		DataTable[REG_DBGRATETEMP] = (Int16S)RateTemp;
+		CorrectedRate = TestCurrent * TestCurrent * ConfigParams.IntPsVoltageK2_Ext + TestCurrent * ConfigParams.IntPsVoltageK_Ext + ConfigParams.IntPsVoltageOffset_Ext;
+		DataTable[REG_DBGRATECORR] = (Int16S)CorrectedRate;
+		ConfigParams.IntPsVoltage = RateTemp + RateTemp * CorrectedRate / 100;
 	}
 	if(ConfigParams.IntPsVoltage > INTPS_VOLTAGE_MAX)
 		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MAX;
 
-	if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN)
-		ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN;
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN_RCU)
+			ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN_RCU;
+	}
+	else
+	{
+		if(ConfigParams.IntPsVoltage < INTPS_VOLTAGE_MIN_DCU)
+			ConfigParams.IntPsVoltage = INTPS_VOLTAGE_MIN_DCU;
+	}
 
 	LOGIC_SetCurrentRangeRate(ConfigParams.CurrentRateCode);
 
 		// Кеширование переменных для амплитуды тока
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	ConfigParams.PulseWidth_CTRL_K_Ext = (float)DataTable[REG_CTRL_EXT_K] / 1000;
+	ConfigParams.PulseWidth_CTRL_K_Ext = ((DataTable[REG_UNIT_DRCU]) ? (float)(Int16S)DataTable[REG_CTRL_EXT_K] : (float)DataTable[REG_CTRL_EXT_K]) / 1000;
 	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		CurrentTempCtrl2_Up = (TestCurrent - DataTable[REG_I_FALL_PLATE]) * ConfigParams.PulseWidth_CTRL2_K;
+		CurrentTempCtrl2_Low = DataTable[REG_I_FALL_PLATE] * ConfigParams.PulseWidth_CTRL2_K + ConfigParams.PulseWidth_CTRL2_Offset;
+		ConfigParams.PulseWidth_CTRL2_Up = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Up / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+		ConfigParams.PulseWidth_CTRL2_Low = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTempCtrl2_Low / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	CurrentTemp = ((TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext) +
+		// Амплитуда тока по коэффицентам
+		CurrentTempCtrl1Ext = TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext;
+		ConfigParams.PulseWidth_CTRL1 = (Int32U)((CurrentTempCtrl1Ext + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+
+		LOGIC_VariablePulseRateConfig_RCU(ConfigParams.PulseWidth_CTRL1, ConfigParams.IntPsVoltage);
+		LOGIC_ConstantPulseRateConfig_RCU(ConfigParams.PulseWidth_CTRL2_Up);
+	}
+	else
+	{
+		CurrentTemp = ((TestCurrent * ConfigParams.PulseWidth_CTRL_K_Ext + ConfigParams.PulseWidth_CTRL_Offset_Ext) +
 			ConfigParams.PulseWidth_CTRL2_Offset) * ConfigParams.PulseWidth_CTRL2_K;
 
-	ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
+		ConfigParams.PulseWidth_CTRL2 = (Int16U)(DataTable[REG_CTRL2_MAX_WIDTH] * CurrentTemp / DataTable[REG_MAXIMUM_UNIT_CURRENT]);
 
-	ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
+		ConfigParams.PulseWidth_CTRL1 = (Int16U)((TestCurrent + ConfigParams.PulseWidth_CTRL1_Offset) * ConfigParams.PulseWidth_CTRL1_K);
 
-	if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
-		ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
+		if(ConfigParams.PulseWidth_CTRL1 > ConfigParams.MaxPulseWidth_CTRL1)
+			ConfigParams.PulseWidth_CTRL1 = ConfigParams.MaxPulseWidth_CTRL1;
 
-	LOGIC_ConstantPulseRateConfig(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
-	LOGIC_SetCompensationVoltage(TestCurrent);
-
+		LOGIC_ConstantPulseRateConfig_DCU(ConfigParams.PulseWidth_CTRL2, ConfigParams.IntPsVoltage);
+		LOGIC_SetCompensationVoltage(TestCurrent);
+	}
 }
 //-------------------------------------------
 
@@ -311,13 +349,13 @@ void LOGIC_SetCurrentRangeRate(Int16U Code)
 
 void LOGIC_SetCompensationVoltage(Int16U Current)
 {
-	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
-			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P0, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P2));
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC_DCU(Current, REG_I_TO_DAC_OFFSET, REG_I_TO_DAC_K,
+			REG_I_TO_DAC_P2,  REG_I_TO_DAC_P1,  REG_I_TO_DAC_P0, REG_I_TO_DAC_EXT_P2, REG_I_TO_DAC_EXT_P1, REG_I_TO_DAC_EXT_P0));
 	DAC_ForceSWTrigCh1(DAC1);
 }
 //-------------------------------------------
 
-void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
+void LOGIC_ConstantPulseRateConfig_DCU(Int16U PulseWidth, Int16U IntPsVoltage)
 {
 	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
 	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
@@ -327,8 +365,29 @@ void LOGIC_ConstantPulseRateConfig(Int16U PulseWidth, Int16U IntPsVoltage)
 }
 //-------------------------------------------
 
-void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
+void LOGIC_ConstantPulseRateConfig_RCU(Int16U PulseWidth)
 {
+	TIM_Reset(TIM2);
+	TIMx_PWM_SetValue(TIM2, TIMx_CHANNEL3, PulseWidth);
+	TIM2->CNT = PulseWidth;
+}
+//-------------------------------------------
+
+void LOGIC_VariablePulseRateConfig_DCU(Int16U PulseWidth)
+{
+	TIM_Reset(TIM3);
+	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
+}
+//-------------------------------------------
+
+void LOGIC_VariablePulseRateConfig_RCU(Int32U PulseWidth, Int16U IntPsVoltage)
+{
+	// Коэффициент компенсации амлитуды тока от напряжения внутренего источника
+	PulseWidth = PulseWidth * (INTPS_VOLTAGE_MAX / IntPsVoltage);
+
+	if(PulseWidth > (Int32U)ConfigParams.MaxPulseWidth_CTRL1)
+		PulseWidth = (Int32U)ConfigParams.MaxPulseWidth_CTRL1;
+
 	TIM_Reset(TIM3);
 	TIMx_PWM_SetValue(TIM3, TIMx_CHANNEL4, PulseWidth);
 }
@@ -336,15 +395,26 @@ void LOGIC_VariablePulseRateConfig(Int16U PulseWidth)
 
 void LOGIC_StartRiseEdge()
 {
-	TIM_Start(TIM2);
+	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? TIM_Start(TIM3) : TIM_Start(TIM2);
 }
 //-------------------------------------------
 
 void LOGIC_StartFallEdge()
 {
-	LOGIC_SofwarePulseStart(false);
-	TIM_Start(TIM3);
-	LL_OutputCompensation(false);
+	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
+	{
+		TIM_Stop(TIM3);
+		LOGIC_SofwarePulseStart(false);
+		TIM_Reset(TIM2);
+		TIM_Start(TIM2);
+		LOGIC_VariablePulseRateConfig_RCU(0, 0);
+	}
+	else
+	{
+		LOGIC_SofwarePulseStart(false);
+		TIM_Start(TIM3);
+		LL_OutputCompensation(false);
+	}
 }
 //-------------------------------------------
 void LOGIC_StopFallEdge()
@@ -375,7 +445,7 @@ Int16U LOGIC_ExctractCurrentValue()
 	// Сортировка
 	SortStartIndex = CONTROL_Values_Counter / ARRAY_SORTING_PART_LENGHT;
 	SortSize = CONTROL_Values_Counter - SortStartIndex;
-	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), MEASURE_SortCondition);
+	qsort((ArrayTemp + SortStartIndex), SortSize, sizeof(*ArrayTemp), LOGIC_SortCondition);
 
 	// Усреднение и возврат результата
 	for (int i = CONTROL_Values_Counter - RESULT_AVERAGE_POINTS; i < CONTROL_Values_Counter; ++i)
@@ -404,7 +474,7 @@ void LOGIC_HandleAdcSamples()
 		// Определение выхода тока на заданный уровень
 		if(CONTROL_SubState == SS_Plate)
 		{
-			Error = abs(100 - Current / TestCurrent * 100);
+			Error = fabs(100 - Current / TestCurrent * 100);
 
 			if ((Error <= ((float)DataTable[REG_ALLOWED_ERROR] / 10)) || (Current > TestCurrent))
 				AllowedErrorCounter++;
@@ -421,68 +491,21 @@ void LOGIC_HandleAdcSamples()
 	}
 	else
 	{
-		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS]);
-		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS]);
+		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS], false);
+		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS], false);
 	}
 }
 //-------------------------------------------
 
-int MEASURE_SortCondition(const void *A, const void *B)
+int LOGIC_SortCondition(const void *A, const void *B)
 {
 	return (int)(*(Int16U *)A) - (int)(*(Int16U *)B);
 }
 //-----------------------------------------
 
-void CONTROL_HandleFanLogic(bool IsImpulse)
+void LOGIC_SetReversVoltage()
 {
-	static uint32_t IncrementCounter = 0;
-	static uint64_t FanOnTimeout = 0;
-
-	if(CONTROL_State != DS_None)
-	{
-		if(DataTable[REG_FAN_CTRL])
-		{
-			// Увеличение счётчика в простое
-			if (!IsImpulse)
-				IncrementCounter++;
-
-			// Включение вентилятора
-			if ((IncrementCounter > ((uint32_t)DataTable[REG_FAN_OPERATE_PERIOD] * 1000)) || IsImpulse)
-			{
-				IncrementCounter = 0;
-				FanOnTimeout = CONTROL_TimeCounter + ((uint32_t)DataTable[REG_FAN_OPERATE_TIME] * 1000);
-				LL_FAN(true);
-			}
-
-			// Отключение вентилятора
-			if (FanOnTimeout && (CONTROL_TimeCounter > FanOnTimeout))
-			{
-				FanOnTimeout = 0;
-				LL_FAN(false);
-			}
-		}
-		else
-			LL_FAN(false);
-	}
+	DAC_SetValueCh1(DAC1, MEASURE_ConvertValxtoDAC_RCU());
+	DAC_ForceSWTrigCh1(DAC1);
 }
-//-----------------------------------------------
-
-void CONTROL_HandleExternalLamp(bool IsImpulse)
-{
-	static Int64U ExternalLampTimeout = 0;
-
-	if(CONTROL_State != DS_None)
-	{
-		if(IsImpulse)
-		{
-			LL_ExternalLamp(true);
-			ExternalLampTimeout = CONTROL_TimeCounter + EXT_LAMP_ON_STATE_TIME;
-		}
-		else
-		{
-			if(CONTROL_TimeCounter >= ExternalLampTimeout)
-				LL_ExternalLamp(false);
-		}
-	}
-}
-//-----------------------------------------------
+//-------------------------------------------

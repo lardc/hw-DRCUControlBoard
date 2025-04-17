@@ -57,7 +57,7 @@ static void DEVPROFILE_FillWRPartDefault();
 
 // Functions
 //
-void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, Boolean* MaskChanges)
+void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, Boolean* MaskChanges, Int16U NodeID)
 {
 	// Save values
 	ControllerDispatchFunction = SpecializedDispatch;
@@ -81,8 +81,8 @@ void DEVPROFILE_Init(xCCI_FUNC_CallbackAction SpecializedDispatch, Boolean* Mask
 	// Init interface driver
 	SCCI_Init(&DEVICE_RS232_Interface, &RS232_IOConfig, &X_ServiceConfig, (pInt16U)DataTable,
 			  DATA_TABLE_SIZE, SCCI_TIMEOUT_TICKS, &RS232_EPState);
-	BCCI_Init(&DEVICE_CAN_Interface, &CAN_IOConfig, &X_ServiceConfig, (pInt16U)DataTable,
-			  DATA_TABLE_SIZE, &CAN_EPState);
+	BCCI_InitWithNodeID(&DEVICE_CAN_Interface, &CAN_IOConfig, &X_ServiceConfig, (pInt16U)DataTable, DATA_TABLE_SIZE,
+				&CAN_EPState, NodeID);
 
 	// Set write protection
 	SCCI_AddProtectedArea(&DEVICE_RS232_Interface, DATA_TABLE_WP_START, DATA_TABLE_SIZE - 1);
@@ -130,6 +130,16 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 {
 	if (ENABLE_LOCKING && !UnlockedForNVWrite && (Address < DATA_TABLE_WR_START))
 		return FALSE;
+
+	if (Address == REG_PULSE_WIDTH)
+	{
+		Int16U RCUPulseWidthMin = 5;
+		Int16U RCUPulseWidthMax = 38;
+		Int16U Min = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMin : VConstraint[Address].Min;
+		Int16U Max = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMax : VConstraint[Address].Max;
+		if (Data < Min || Data > Max)
+			return FALSE;
+	}
 
 	if (Address < DATA_TABLE_WR_START)
 	{
