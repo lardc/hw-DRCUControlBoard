@@ -135,8 +135,8 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 	{
 		Int16U RCUPulseWidthMin = 5;
 		Int16U RCUPulseWidthMax = 38;
-		Int16U Min = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMin : VConstraint[Address].Min;
-		Int16U Max = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMax : VConstraint[Address].Max;
+		Int16U Min = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMin : VConstraint[Address - DATA_TABLE_WR_START].Min;
+		Int16U Max = DataTable[REG_UNIT_DRCU] ? RCUPulseWidthMax : VConstraint[Address - DATA_TABLE_WR_START].Max;
 		if (Data < Min || Data > Max)
 			return FALSE;
 	}
