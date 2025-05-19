@@ -206,7 +206,7 @@
 
 // ENDPOINTS
 //
-#define EP_DUT_I								1		// Оцифрованные данные тока DUT (в мА)
+#define EP_DUT_I								1		// Оцифрованные данные тока DUT (в А*10)
 
 
 // FAULT & DISABLE

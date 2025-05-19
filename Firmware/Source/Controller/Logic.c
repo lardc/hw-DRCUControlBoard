@@ -305,7 +305,7 @@ void LOGIC_Config()
 		// Кеширование переменных для амплитуды тока
 	ConfigParams.PulseWidth_CTRL2_K = (float)DataTable[REG_CTRL2_K] / 1000;
 	ConfigParams.PulseWidth_CTRL2_Offset = (Int16S)DataTable[REG_CTRL2_OFFSET];
-	ConfigParams.PulseWidth_CTRL_K_Ext = ((DataTable[REG_UNIT_DRCU]) ? (float)(Int16S)DataTable[REG_CTRL_EXT_K] : (float)DataTable[REG_CTRL_EXT_K]) / 1000;
+	ConfigParams.PulseWidth_CTRL_K_Ext = (float)DataTable[REG_CTRL_EXT_K] / 1000;
 	ConfigParams.PulseWidth_CTRL_Offset_Ext = (Int16S)DataTable[REG_CTRL_EXT_OFFSET];
 	if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 	{
