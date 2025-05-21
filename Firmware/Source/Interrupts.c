@@ -219,7 +219,7 @@ void TIMx_Process(TIM_TypeDef* TIMx, Int32U Event)
 	}
 }
 //-----------------------------------------
-
+/*
 void EXTI15_10_IRQHandler()
 {
 	if (EXTI_FlagCheck(EXTI_13))
@@ -229,7 +229,7 @@ void EXTI15_10_IRQHandler()
 	}
 }
 //-----------------------------------------
-
+*/
 void USART1_IRQHandler()
 {
 	if (ZwSCI_RecieveCheck(USART1))

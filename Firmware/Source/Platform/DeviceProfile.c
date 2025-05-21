@@ -147,7 +147,7 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 			|| Data > NVConstraint[Address - DATA_TABLE_NV_START].Max)
 			return FALSE;
 	}
-	else if (Address < DATA_TABLE_WP_START)
+	else if (Address < DATA_TABLE_WP_START && Address != REG_PULSE_WIDTH)
 	{
 		if (Data < VConstraint[Address - DATA_TABLE_WR_START].Min
 			|| Data > VConstraint[Address - DATA_TABLE_WR_START].Max)

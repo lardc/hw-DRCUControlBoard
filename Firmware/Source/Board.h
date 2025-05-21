@@ -33,7 +33,7 @@ GPIO_PortPinSettingMacro GPIO_SPI_RCK			= {GPIOA, Pin_15};
 
 // Определения для входных портов
 GPIO_PortPinSettingMacro GPIO_SYNC				= {GPIOB, Pin_6};
-GPIO_PortPinSettingMacro GPIO_PROTECTION_RCU	= {GPIOC, Pin_13};
+//GPIO_PortPinSettingMacro GPIO_PROTECTION_RCU	= {GPIOC, Pin_13};
 
 // Определения для аналоговых портов
 GPIO_PortPinSettingMacro GPIO_MEASURE_INT_PS 	= {GPIOA, Pin_0};

@@ -53,8 +53,7 @@ int main()
 	INITCFG_ConfigADC();
 
 	// Настройка DMA для АЦП
-	if (DataTable[REG_UNIT_DRCU] == VERSION_DCU)
-		INITCFG_ConfigDMA();
+	INITCFG_ConfigDMA();
 
 	// Настройка Timer6 тактирования АЦП(DCU) и для защиты от превышения длительности синхросигнала(RCU)
 	INITCFG_ConfigTimer6();

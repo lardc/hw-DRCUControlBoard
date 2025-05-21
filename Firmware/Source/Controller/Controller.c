@@ -51,8 +51,7 @@ void CONTROL_ResetToDefaults(bool StopPowerSupply);
 void CONTROL_Idle();
 void CONTROL_WatchDogUpdate();
 void CONTROL_RegistersReset();
-void CONTROL_HandleBatteryCharge_DCU();
-void CONTROL_HandleBatteryCharge_RCU();
+void CONTROL_HandleBatteryCharge();
 void CONTROL_HandleIntPSTune();
 void CONTROL_DeviceStateControl();
 void CONTROL_SaveResults();
@@ -171,7 +170,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 void CONTROL_Idle()
 {
 	// Process battery charge
-	(DataTable[REG_UNIT_DRCU] == VERSION_RCU) ? CONTROL_HandleBatteryCharge_RCU() : CONTROL_HandleBatteryCharge_DCU();
+	CONTROL_HandleBatteryCharge();
 
 	// Process internal power supply tune
 	CONTROL_HandleIntPSTune();
@@ -206,14 +205,7 @@ void CONTROL_HandleIntPSTune()
 		if(DataTable[REG_V_INTPS_SETPOINT])
 			ConfigParams.IntPsVoltage = DataTable[REG_V_INTPS_SETPOINT];
 
-		if(DataTable[REG_UNIT_DRCU] == VERSION_RCU)
-		{
-			DataTable[REG_INT_PS_VOLTAGE] = MEASURE_ConvertIntPsVoltage(0, true) * 10;
-		}
-		else
-		{
-			DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
-		}
+		DataTable[REG_INT_PS_VOLTAGE] = LOGIC_IntPsVoltage * 10;
 
 		dV = abs((float)(DataTable[REG_INT_PS_VOLTAGE] - ConfigParams.IntPsVoltage) / ConfigParams.IntPsVoltage * 1000);
 
@@ -293,29 +285,10 @@ void CONTROL_CoolingProcess()
 }
 //-----------------------------------------------
 
-void CONTROL_HandleBatteryCharge_DCU()
-{
-	DataTable[REG_BAT_VOLTAGE] = (Int16U) (LOGIC_BatteryVoltage * 10);
-
-	if (CONTROL_SubState == SS_PowerPrepare)
-	{
-		LL_PowerOnSolidStateRelay(true);
-
-		if (DataTable[REG_BAT_VOLTAGE] >= DataTable[REG_BAT_VOLTAGE_THRESHOLD])
-			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
-		else
-		{
-			if (CONTROL_TimeCounter > CONTROL_BatteryChargeTimeCounter)
-				CONTROL_SwitchToFault(DF_BATTERY_LOW);
-		}
-	}
-}
-//-----------------------------------------------
-
-void CONTROL_HandleBatteryCharge_RCU()
+void CONTROL_HandleBatteryCharge()
 {
 	float BatteryVoltage;
-	BatteryVoltage = MEASURE_ConvertBatteryVoltage(0, true) * 10;
+	BatteryVoltage = LOGIC_BatteryVoltage * 10;
 
 	if(CONTROL_SubState == SS_PowerPrepare)
 	{

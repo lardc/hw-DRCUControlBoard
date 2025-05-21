@@ -472,7 +472,7 @@ void LOGIC_HandleAdcSamples()
 		}
 
 		// Определение выхода тока на заданный уровень
-		if(CONTROL_SubState == SS_Plate)
+		if(CONTROL_SubState == SS_Plate && DataTable[REG_UNIT_DRCU] == VERSION_DCU)
 		{
 			Error = fabs(100 - Current / TestCurrent * 100);
 
@@ -491,8 +491,8 @@ void LOGIC_HandleAdcSamples()
 	}
 	else
 	{
-		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS], false);
-		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS], false);
+		LOGIC_BatteryVoltage = MEASURE_ConvertBatteryVoltage(LOGIC_ADCRaw[ADC_BAT_VOLTAGE_POS]);
+		LOGIC_IntPsVoltage = MEASURE_ConvertIntPsVoltage(LOGIC_ADCRaw[ADC_INTPS_VOLTAGE_POS]);
 	}
 }
 //-------------------------------------------

@@ -21,40 +21,27 @@ float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK)
 {
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 10000;
-	float ADCVariable = (DataTable[REG_UNIT_DRCU]) ? (float)ADC_Measure(ADC1, ADCValue) : (float)ADCValue;
+//	float ADCVariable = (DataTable[REG_UNIT_DRCU]) ? (float)ADC_Measure(ADC1, ADCValue) : (float)ADCValue;
+	float ADCVariable = (float)ADCValue;
 	float result = (ADCVariable - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 
 	return (result > 0) ? result : 0;
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_ConvertBatteryVoltage(Int16U ADCValue, bool RCU_Flag)
+float MEASURE_ConvertBatteryVoltage(Int16U ADCValue)
 {
-	if(RCU_Flag)
-	{
-		//В версии RCU передается номер канала
-		return MEASURE_VoltageX(ADC1_BAT_VOLTAGE_CHANNEL, REG_V_BAT_OFFSET, REG_V_BAT_K);
-	}
-	else
-	{
-		return MEASURE_VoltageX(ADCValue, REG_V_BAT_OFFSET, REG_V_BAT_K);
-	}
+	return MEASURE_VoltageX(ADCValue, REG_V_BAT_OFFSET, REG_V_BAT_K);
 }
 //------------------------------------------------------------------------------
 
-float MEASURE_ConvertIntPsVoltage(Int16U ADCValue, bool RCU_Flag)
+float MEASURE_ConvertIntPsVoltage(Int16U ADCValue)
 {
 	static Int16U MeasureCounter = 0;
 	static float DataArray[MEASURE_FILTER_SIZE];
 	float DataSum = 0;
-	if(RCU_Flag)
-	{
-		DataArray[MeasureCounter] = MEASURE_VoltageX(ADC1_INT_PS_VOLTAGE_CHANNEL, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
-	}
-	else
-	{
-		DataArray[MeasureCounter] = MEASURE_VoltageX(ADCValue, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
-	}
+
+	DataArray[MeasureCounter] = MEASURE_VoltageX(ADCValue, REG_V_INT_PS_OFFSET, REG_V_INT_PS_K);
 
 	MeasureCounter++;
 	MeasureCounter &= MEASURE_FILTER_MASK;
