@@ -21,7 +21,6 @@ float MEASURE_VoltageX(Int16U ADCValue, Int16U RegisterOffset, Int16U RegisterK)
 {
 	float Offset = (float)((Int16S)DataTable[RegisterOffset]);
 	float K = (float)DataTable[RegisterK] / 10000;
-//	float ADCVariable = (DataTable[REG_UNIT_DRCU]) ? (float)ADC_Measure(ADC1, ADCValue) : (float)ADCValue;
 	float ADCVariable = (float)ADCValue;
 	float result = (ADCVariable - Offset) * ADC_REF_VOLTAGE / ADC_RESOLUTION * K;
 

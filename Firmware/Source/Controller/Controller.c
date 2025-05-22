@@ -106,7 +106,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 				if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 					LOGIC_SetReversVoltage();
 			}
-			else if(CONTROL_State != DS_Ready)
+			else if((CONTROL_State != DS_Ready) || ((CONTROL_State == DS_InProcess) && (CONTROL_SubState == SS_PowerPrepare || CONTROL_SubState == SS_Cooling)))
 				*pUserError = ERR_OPERATION_BLOCKED;
 			break;
 
