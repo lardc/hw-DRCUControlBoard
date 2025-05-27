@@ -297,7 +297,6 @@ void CONTROL_HandleBatteryCharge()
 
 		if(BatteryVoltage >= (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
-			DataTable[REG_DBG]++;
 			LL_PowerOnSolidStateRelay(false);
 
 			if(CONTROL_State == DS_InProcess)
