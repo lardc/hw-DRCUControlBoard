@@ -141,13 +141,23 @@ static Boolean DEVPROFILE_Validate16(Int16U Address, Int16U Data)
 			return FALSE;
 	}
 
-	if (Address < DATA_TABLE_WR_START)
+	if (Address == REG_CFG_NODE_ID)
+	{
+		Int16U RCUCfgNodeIdMin = 170;
+		Int16U RCUCfgNodeIdMax = 179;
+		Int16U Min = DataTable[REG_UNIT_DRCU] ? RCUCfgNodeIdMin : NVConstraint[Address - DATA_TABLE_NV_START].Min;
+		Int16U Max = DataTable[REG_UNIT_DRCU] ? RCUCfgNodeIdMax : NVConstraint[Address - DATA_TABLE_NV_START].Max;
+		if (Data < Min || Data > Max)
+			return FALSE;
+	}
+
+	if (Address < DATA_TABLE_WR_START && Address != REG_CFG_NODE_ID)
 	{
 		if (Data < NVConstraint[Address - DATA_TABLE_NV_START].Min
 			|| Data > NVConstraint[Address - DATA_TABLE_NV_START].Max)
 			return FALSE;
 	}
-	else if (Address < DATA_TABLE_WP_START && Address != REG_PULSE_WIDTH)
+	else if (Address < DATA_TABLE_WP_START && Address != REG_PULSE_WIDTH && Address != REG_CFG_NODE_ID)
 	{
 		if (Data < VConstraint[Address - DATA_TABLE_WR_START].Min
 			|| Data > VConstraint[Address - DATA_TABLE_WR_START].Max)

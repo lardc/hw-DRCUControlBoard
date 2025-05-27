@@ -172,6 +172,10 @@
 #define VERSION_DCU						0
 #define VERSION_RCU						1
 
+//
+#define CFG_NODE_ID_MIN					160 // для RCU 170
+#define CFG_NODE_ID_MAX					169 // для RCU 179
+
 // Types
 //
 typedef struct __TableItemConstraint
