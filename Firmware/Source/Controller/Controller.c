@@ -101,7 +101,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			if(CONTROL_State == DS_None)
 			{
 				CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_FULL_CHRAGE_TIMEOUT];
-				CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+				CONTROL_SetDeviceState(DS_Ready, SS_PowerPrepare);
 				LOGIC_BatteryCharge(true);
 				if (DataTable[REG_UNIT_DRCU] == VERSION_RCU)
 					LOGIC_SetReversVoltage();
@@ -119,7 +119,7 @@ static Boolean CONTROL_DispatchAction(Int16U ActionID, pInt16U pUserError)
 			break;
 
 		case ACT_CONFIG_UNIT:
-			if (CONTROL_State == DS_Ready)
+			if (CONTROL_State == DS_Ready && CONTROL_SubState != SS_PowerPrepare)
 			{
 				CONTROL_SetDeviceState(DS_InProcess, SS_PulsePrepare);
 				LOGIC_Config();
@@ -297,8 +297,13 @@ void CONTROL_HandleBatteryCharge()
 
 		if(BatteryVoltage >= (float)DataTable[REG_BAT_VOLTAGE_THRESHOLD])
 		{
+			DataTable[REG_DBG]++;
 			LL_PowerOnSolidStateRelay(false);
-			CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+
+			if(CONTROL_State == DS_InProcess)
+				CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
+			else
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
 		}
 		else
 		{
@@ -307,17 +312,15 @@ void CONTROL_HandleBatteryCharge()
 		}
 	}
 	// Поддержание заряда батареи
-	if(CONTROL_State == DS_Ready)
+	if(CONTROL_State == DS_Ready && CONTROL_SubState == SS_PowerPrepare)
 	{
 		if(BatteryVoltage < (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] - BAT_VOLTAGE_HYST))
 		{
 			CONTROL_BatteryChargeTimeCounter = CONTROL_TimeCounter + DataTable[REG_BATTERY_RECHRAGE_TIMEOUT];
-			CONTROL_SetDeviceState(DS_InProcess, SS_PowerPrepare);
+			CONTROL_SetDeviceState(DS_Ready, SS_PowerPrepare);
 		}
 		if(BatteryVoltage > (float)(DataTable[REG_BAT_VOLTAGE_THRESHOLD] + BAT_VOLTAGE_HYST))
-		{
 			CONTROL_SwitchToFault(DF_BATTERY_UP);
-		}
 	}
 	DataTable[REG_BAT_VOLTAGE] = (Int16U)BatteryVoltage;
 }
