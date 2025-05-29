@@ -244,42 +244,58 @@ void CONTROL_HandleIntPSTune()
 void CONTROL_CoolingProcess()
 {
 	static Int64U TimeoutCounter = 0;
+	static Int64U TimeoutCounterCool = 0;
 	static Int16U CurrentPulseCounter = 0;
 
-	// Задержка после импульса
-	if (CONTROL_SubState == SS_PostPulseDelay)
+	
+	if (CONTROL_State == DS_InProcess)
 	{
-		if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
+		// Задержка после импульса
+		if(CONTROL_SubState == SS_PostPulseDelay)
 		{
-			if(!DataTable[REG_CALIBRATION_PROCESS])
+			if (CONTROL_TimeCounter >= CONTROL_AfterPulsePause)
 			{
-				CurrentPulseCounter++;
-				TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
-			}
-
-			CONTROL_SetDeviceState(DS_Ready, SS_None);
-		}
-	}
-
-	// Если в течении времени REG_PULSE_DELAY_TQ_TIMEOUT не было нового формирвоания тока,
-	// то блок переходит в режим охлаждения
-	if(!DataTable[REG_CALIBRATION_PROCESS])
-	{
-		if (CONTROL_State == DS_Ready)
-		{
-			if(CONTROL_TimeCounter >= TimeoutCounter || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
-			{
-				CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
-				TimeoutCounter = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
-				CurrentPulseCounter = 0;
+				if(!DataTable[REG_CALIBRATION_PROCESS])
+				{
+					CurrentPulseCounter++;
+					TimeoutCounter = CONTROL_TimeCounter + DataTable[REG_TQ_TIMEOUT];
+				}
+				else
+				{
+					CurrentPulseCounter = 0;
+					TimeoutCounter = 0;
+				}
+				CONTROL_SetDeviceState(DS_Ready, SS_None);
 			}
 		}
-
 		//Охлаждение блока
 		if (CONTROL_SubState == SS_Cooling)
 		{
-			if (CONTROL_TimeCounter >= TimeoutCounter)
+			if (CONTROL_TimeCounter >= TimeoutCounterCool)
+			{
 				CONTROL_SetDeviceState(DS_Ready, SS_None);
+				TimeoutCounter = 0;  // Сброс таймера задержки охлаждения
+				TimeoutCounterCool = 0;  // Сброс таймера охлаждения
+                CurrentPulseCounter = 0;   // Сброс счетчика импульсов
+			}	
+		}
+	}
+	if (CONTROL_State == DS_Ready)
+	{
+		if(CONTROL_SubState == SS_PostPulseDelay)
+			CONTROL_SetDeviceState(DS_Ready, SS_None);
+
+		// Если в течении времени REG_PULSE_DELAY_TQ_TIMEOUT не было нового формирвоания тока,
+		// то блок переходит в режим охлаждения
+
+		else if(!DataTable[REG_CALIBRATION_PROCESS])
+		{
+			if((CONTROL_TimeCounter >= TimeoutCounter && TimeoutCounter != 0) || CurrentPulseCounter >= UNIT_MAX_NUM_OF_PULSES)
+			{
+				CONTROL_SetDeviceState(DS_InProcess, SS_Cooling);
+				TimeoutCounterCool = CONTROL_TimeCounter + CONTROL_CalcPostPulseDelay() * CurrentPulseCounter;
+				CurrentPulseCounter = 0;
+			}
 		}
 	}
 }
@@ -302,7 +318,7 @@ void CONTROL_HandleBatteryCharge()
 			if(CONTROL_State == DS_InProcess)
 				CONTROL_SetDeviceState(DS_InProcess, SS_PostPulseDelay);
 			else
-				CONTROL_SetDeviceState(DS_Ready, SS_None);
+				CONTROL_SetDeviceState(DS_Ready, SS_PostPulseDelay);
 		}
 		else
 		{
